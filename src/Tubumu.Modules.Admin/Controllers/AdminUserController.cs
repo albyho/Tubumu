@@ -336,7 +336,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("SaveRoleName")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiResult> SaveRoleName([FromBody]SaveRoleNameInput saveRoleNameInput)
+        public async Task<ApiResult> SaveRoleName([FromBody]RoleNameInput saveRoleNameInput)
         {
             var result = new ApiResult();
             if (!await _roleService.EditNameAsync(saveRoleNameInput, ModelState))

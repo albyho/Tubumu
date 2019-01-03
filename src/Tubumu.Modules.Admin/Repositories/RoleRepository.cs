@@ -22,7 +22,7 @@ namespace Tubumu.Modules.Admin.Repositories
         Task<List<XM.Role>> GetListAsync();
         Task<XM.Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState);
         Task<bool> RemoveAsync(Guid roleId, ModelStateDictionary modelState);
-        Task<bool> SaveNameAsync(SaveRoleNameInput saveRoleNameInput, ModelStateDictionary modelState);
+        Task<bool> SaveNameAsync(RoleNameInput saveRoleNameInput, ModelStateDictionary modelState);
         Task<bool> MoveAsync(Guid roleId, MovingTarget target);
         Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, ModelStateDictionary modelState);
         Task<bool> MoveAsync(Guid sourceRoleId, Guid targetRoleId, ModelStateDictionary modelState);
@@ -184,7 +184,7 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
-        public async Task<bool> SaveNameAsync(SaveRoleNameInput saveRoleNameInput, ModelStateDictionary modelState)
+        public async Task<bool> SaveNameAsync(RoleNameInput saveRoleNameInput, ModelStateDictionary modelState)
         {
             var roleToRemove = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == saveRoleNameInput.RoleId);
             if (roleToRemove == null || roleToRemove.IsSystem)

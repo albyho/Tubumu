@@ -7,9 +7,15 @@ using System.Threading.Tasks;
 
 namespace Tubumu.Modules.Admin.Models.Input
 {
+    /// <summary>
+    /// 父 Id Input
+    /// </summary>
     public class ParentIdInput
     {
-        [Range(1, Int32.MaxValue, ErrorMessage = "请输入ParentId")]
+        /// <summary>
+        /// 父 Id
+        /// </summary>
+        [Range(1, Int32.MaxValue, ErrorMessage = "请输入 ParentId")]
         public int ParentId { get; set; }
     }
 }

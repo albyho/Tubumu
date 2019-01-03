@@ -6,6 +6,9 @@ using Tubumu.Modules.Framework.ModelValidation.Attributes;
 
 namespace Tubumu.Modules.Admin.Models.Input
 {
+    /// <summary>
+    /// 微信小程序登录 Input
+    /// </summary>
     public class WeixinAppLoginInput
     {
         /// <summary>

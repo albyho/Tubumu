@@ -12,14 +12,33 @@ namespace Tubumu.Modules.Admin.Models
     /// </summary>
     public class UserInfoWarpper
     {
+        /// <summary>
+        /// 用户 Id
+        /// </summary>
         [JsonProperty(PropertyName = "userId")]
         public int UserId { get; set; }
+
+        /// <summary>
+        /// 用户名
+        /// </summary>
         [JsonProperty(PropertyName = "username")]
         public string Username { get; set; }
+
+        /// <summary>
+        /// 显示名称
+        /// </summary>
         [JsonProperty(PropertyName = "displayName")]
         public string DisplayName { get; set; }
+
+        /// <summary>
+        /// HeadUrl
+        /// </summary>
         [JsonProperty(PropertyName = "headUrl")]
         public string HeadUrl { get; set; }
+
+        /// <summary>
+        /// LogoUrl
+        /// </summary>
         [JsonProperty(PropertyName = "logoUrl")]
         public string LogoUrl { get; set; }
     }
@@ -29,9 +48,16 @@ namespace Tubumu.Modules.Admin.Models
     /// </summary>
     public class Profile : UserInfoWarpper
     {
+        /// <summary>
+        /// 附加分组
+        /// </summary>
         [JsonProperty(PropertyName = "groups")]
         public IEnumerable<GroupInfo> Groups { get; set; }
-        [JsonConverter(typeof(Tubumu.Modules.Framework.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
+
+        /// <summary>
+        /// 角色
+        /// </summary>
+        [JsonConverter(typeof(Framework.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
         [JsonProperty(PropertyName = "role")]
         public RoleInfo Role { get; set; }
     }
@@ -41,20 +67,61 @@ namespace Tubumu.Modules.Admin.Models
     /// </summary>
     public class UserInfoProfile
     {
+        /// <summary>
+        /// 用户 Id
+        /// </summary>
         public int UserId { get; set; }
+
+        /// <summary>
+        /// 用户名
+        /// </summary>
         public string Username { get; set; }
+
+        /// <summary>
+        /// 显示名称
+        /// </summary>
         public string DisplayName { get; set; }
-        public string LogoUrl { get; set; }
-        public string RealName { get; set; }
-        public bool RealNameIsValid { get; set; }
-        public string Email { get; set; }
-        public bool EmailIsValid { get; set; }
-        public string Mobile { get; set; }
-        public bool MobileIsValid { get; set; }
+
+        /// <summary>
+        /// HeadUrl
+        /// </summary>
         public string HeadUrl { get; set; }
-        public string Token { get; set; }
-        public bool IsBindedToWeixin { get; set; }
-        public bool IsBindedToWeixinApp { get; set; }
+
+        /// <summary>
+        /// LogoUrl
+        /// </summary>
+        public string LogoUrl { get; set; }
+
+        /// <summary>
+        /// 真实名称
+        /// </summary>
+        public string RealName { get; set; }
+
+        /// <summary>
+        /// 真实名称是否已经验证
+        /// </summary>
+        public bool RealNameIsValid { get; set; }
+
+        /// <summary>
+        /// 邮箱
+        /// </summary>
+        public string Email { get; set; }
+
+        /// <summary>
+        /// 邮箱是否已经验证
+        /// </summary>
+        public bool EmailIsValid { get; set; }
+
+        /// <summary>
+        /// 手机号
+        /// </summary>
+        public string Mobile { get; set; }
+
+        /// <summary>
+        /// 手机号是否已经验证
+        /// </summary>
+        public bool MobileIsValid { get; set; }
+
         // public IEnumerable<string> Permissions { get; set; }
         // TODO: Group Role, etc.
     }

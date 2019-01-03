@@ -85,7 +85,7 @@ namespace Tubumu.Modules.Admin.Services
         public async Task<UserInfo> GenerateItemAsync(Guid groupId, UserStatus status, MobilePassswordValidationCodeRegisterInput input, ModelStateDictionary modelState)
         {
             // 密码加密
-            var password = UserService.GeneratePassword(input.Password);
+            var password = UserService.EncryptPassword(input.Password);
             var userInfo = await _repository.GenerateItemAsync(groupId, status, input.Mobile, password, modelState);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
@@ -96,7 +96,7 @@ namespace Tubumu.Modules.Admin.Services
         public async Task<bool> ResetPasswordAsync(MobileResetPassswordInput input, ModelStateDictionary modelState)
         {
             // 密码加密
-            var password = UserService.GeneratePassword(input.Password);
+            var password = UserService.EncryptPassword(input.Password);
             var userId = await _repository.ResetPasswordAsync(input.Mobile, password, modelState);
             if (userId <= 0 || !modelState.IsValid)
             {

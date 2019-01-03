@@ -20,7 +20,7 @@ namespace Tubumu.Modules.Admin.Services
         Task<List<Role>> GetListInCacheAsync();
         Task<Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState);
         Task<bool> RemoveAsync(Guid roleId, ModelStateDictionary modelState);
-        Task<bool> EditNameAsync(SaveRoleNameInput roleEditNameInput, ModelStateDictionary modelState);
+        Task<bool> EditNameAsync(RoleNameInput roleEditNameInput, ModelStateDictionary modelState);
         Task<bool> MoveAsync(Guid roleId, MovingTarget target);
         Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, ModelStateDictionary modelState);
         Task<bool> MoveAsync(Guid sourceRoleId, Guid targetRoleId, ModelStateDictionary modelState);
@@ -95,7 +95,7 @@ namespace Tubumu.Modules.Admin.Services
             return result;
         }
 
-        public async Task<bool> EditNameAsync(SaveRoleNameInput saveRoleNameInput, ModelStateDictionary modelState)
+        public async Task<bool> EditNameAsync(RoleNameInput saveRoleNameInput, ModelStateDictionary modelState)
         {
             var result = await _repository.SaveNameAsync(saveRoleNameInput, modelState);
             if (result)

@@ -4,9 +4,14 @@ using Tubumu.Modules.Framework.ModelValidation.Attributes;
 
 namespace Tubumu.Modules.Admin.Models.Input
 {
+    /// <summary>
+    /// 用户修改资料 Input
+    /// </summary>
     public class UserChangeProfileInput
     {
-
+        /// <summary>
+        /// 显示名称（昵称）
+        /// </summary>
         //public string Username { get; set; }
         //[Required(ErrorMessage = "昵称不能为空")]
         [StringLength(20, ErrorMessage = "昵称请保持在20个字符以内")]
@@ -14,10 +19,16 @@ namespace Tubumu.Modules.Admin.Models.Input
         [DisplayName("昵称")]
         public string DisplayName { get; set; }
 
+        /// <summary>
+        /// HeadUrl
+        /// </summary>
         [StringLength(200, ErrorMessage = "HeadUrl 请保持在200个字符以内")]
         [DisplayName("头像")]
         public string HeadUrl { get; set; }
 
+        /// <summary>
+        /// LogoUrl
+        /// </summary>
         [StringLength(200, ErrorMessage = "LogoUrl 请保持在200个字符以内")]
         [DisplayName("Logo")]
         public string LogoUrl { get; set; }

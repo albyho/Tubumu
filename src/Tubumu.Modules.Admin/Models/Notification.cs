@@ -7,91 +7,184 @@ using Tubumu.Modules.Framework.ModelValidation.Attributes;
 
 namespace Tubumu.Modules.Admin.Models
 {
+    /// <summary>
+    /// 通知信息
+    /// </summary>
     public class NotificationBase
     {
+        /// <summary>
+        /// 通知 Id
+        /// </summary>
         [JsonProperty(PropertyName = "notificationId")]
         public int NotificationId { get; set; }
 
+        /// <summary>
+        /// 发送自
+        /// </summary>
         [JsonProperty(PropertyName = "fromUser")]
         public UserInfoWarpper FromUser { get; set; }
 
+        /// <summary>
+        /// 发送至
+        /// </summary>
         [JsonProperty(PropertyName = "toUser")]
         [JsonConverter(typeof(NullValueJsonConverter<int>), "UserId", 0)]
         public UserInfoWarpper ToUser { get; set; }
 
+        /// <summary>
+        /// 创建时间
+        /// </summary>
         [JsonProperty(PropertyName = "creationDate")]
         public DateTime CreationDate { get; set; }
 
+        /// <summary>
+        /// 标题
+        /// </summary>
         [JsonProperty(PropertyName = "title")]
         public string Title { get; set; }
 
+        /// <summary>
+        /// Url
+        /// </summary>
         [JsonProperty(PropertyName = "url")]
         public string Url { get; set; }
     }
+
+    /// <summary>
+    /// 通知信息
+    /// </summary>
     public class Notification : NotificationBase
     {
+        /// <summary>
+        /// 消息
+        /// </summary>
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
     }
 
+    /// <summary>
+    /// 通知信息
+    /// </summary>
     public class NotificationUser : Notification
     {
 
+        /// <summary>
+        /// 读取时间
+        /// </summary>
         [JsonProperty(PropertyName = "readTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? ReadTime { get; set; }
 
+        /// <summary>
+        /// 删除时间
+        /// </summary>
         [JsonProperty(PropertyName = "deleteTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? DeleteTime { get; set; }
     }
 
+    /// <summary>
+    /// 通知 Id Input
+    /// </summary>
     public class NotificationIdInput
     {
-        [Required(ErrorMessage = "请输入通知Id")]
+        /// <summary>
+        /// 通知 Id
+        /// </summary>
+        [Required(ErrorMessage = "请输入通知 Id")]
         public int NotificationId { get; set; }
     }
 
+    /// <summary>
+    /// 通知 Id Input
+    /// </summary>
     public class NotificationIdListInput
     {
+        /// <summary>
+        /// 通知Id
+        /// </summary>
         [CollectionElementRange(1, Int32.MaxValue, ErrorMessage = "请输入合法的通知Id集")]
         public int[] NotificationIds { get; set; }
     }
 
+    /// <summary>
+    /// 通知 Input
+    /// </summary>
     public class NotificationInput
     {
-        [Range(1, Int32.MaxValue, ErrorMessage = "请输入通知Id")]
+        /// <summary>
+        /// 通知 Id
+        /// </summary>
+        [Range(1, Int32.MaxValue, ErrorMessage = "请输入通知 Id")]
         public int? NotificationId { get; set; }
 
+        /// <summary>
+        /// 发送自
+        /// </summary>
         public int? FromUserId { get; set; }    // 内部赋值
 
+        /// <summary>
+        /// 发送至（ null 则发送至所有人）
+        /// </summary>
         public int? ToUserId { get; set; }
 
+        /// <summary>
+        /// 标题
+        /// </summary>
         [Required(ErrorMessage = "请输入通知标题")]
         [StringLength(100, ErrorMessage = "通知标题请保持在100个字符以内")]
         public string Title { get; set; }
 
+        /// <summary>
+        /// 消息
+        /// </summary>
         [Required(ErrorMessage = "请输入通知内容")]
         [StringLength(1000, ErrorMessage = "通知内容请保持在1000个字符以内")]
         public string Message { get; set; }
 
+        /// <summary>
+        /// Url
+        /// </summary>
         [StringLength(200, ErrorMessage = "URL保持在200个字符以内")]
         public string Url { get; set; }
     }
 
+    /// <summary>
+    /// 通知搜索条件
+    /// </summary>
     public class NotificationSearchCriteria
     {
+        /// <summary>
+        /// 分页信息
+        /// </summary>
         public PagingInfo PagingInfo { get; set; }
 
+        /// <summary>
+        /// 是否已读
+        /// </summary>
         public bool? IsReaded { get; set; }
 
+        /// <summary>
+        /// 发送自
+        /// </summary>
         public int? FromUserId { get; set; }
 
+        /// <summary>
+        /// 发送至
+        /// </summary>
         public int? ToUserId { get; set; }
 
+        /// <summary>
+        /// 关键字
+        /// </summary>
         public string Keyword { get; set; }
 
+        /// <summary>
+        /// 创建时间开始
+        /// </summary>
         public DateTime? CreationDateBegin { get; set; }
 
+        /// <summary>
+        /// 创建时间结束
+        /// </summary>
         public DateTime? CreationDateEnd { get; set; }
-
     }
 }

@@ -1,21 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
-using Senparc.Weixin.Exceptions;
-using Senparc.Weixin.Open.QRConnect;
-using Senparc.Weixin.WxOpen.AdvancedAPIs.Sns;
-using Senparc.Weixin.WxOpen.Entities;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
-using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.Services;
@@ -25,15 +16,75 @@ namespace Tubumu.Modules.Admin.Services
 {
     public interface IUserService
     {
+        /// <summary>
+        /// 通过用户 Id 获取用户信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByUserIdAsync(int userId, UserStatus? status = null);
+
+        /// <summary>
+        /// 通过用户名获取用户信息
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByUsernameAsync(string username, UserStatus? status = null);
+
+        /// <summary>
+        /// 通过邮箱获取用户信息
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="emailIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, UserStatus? status = null);
+
+        /// <summary>
+        /// 通过手机号获取用户信息
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid, UserStatus? status = null);
+
+        /// <summary>
+        /// 获取用户信息列表
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <returns></returns>
         Task<List<UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds);
+
+        /// <summary>
+        /// 获取 HeadUrl
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<string> GetHeadUrlAsync(int userId);
+
+        /// <summary>
+        /// 通过用户 Id 判断用户是否存在
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<bool> IsExistsAsync(int userId, UserStatus? status = null);
+
+        /// <summary>
+        /// 通过用户名判断用户是否存在
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         Task<bool> IsExistsUsernameAsync(string username);
-        Task<bool> IsExistsEmailAsync(string username);
+
+        /// <summary>
+        /// 通过邮箱判断用户是否存在
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        Task<bool> IsExistsEmailAsync(string email);
         Task<bool> VerifyExistsUsernameAsync(int userId, string username);
         Task<bool> VerifyExistsEmailAsync(int userId, string email);
         Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState);
@@ -46,7 +97,6 @@ namespace Tubumu.Modules.Admin.Services
         Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState);
         Task<bool> ResetPasswordByAccountAsync(string account, string newPassword, ModelStateDictionary modelState);
         Task<bool> ChangeHeadAsync(int userId, string newHead);
-        Task<bool> GetPasswordAsync(UserGetPasswordInput input, ModelStateDictionary modelState);
         Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState);
         Task<bool> ChangeStatusAsync(int userId, UserStatus status);
         Task<bool> SignInAsync(Func<Task<UserInfo>> getUser, Action<UserInfo> afterSignIn = null);
@@ -59,13 +109,21 @@ namespace Tubumu.Modules.Admin.Services
         private readonly IUserRepository _repository;
         private readonly IGroupService _groupService;
 
+        /// <summary>
+        /// 用户信息缓存 Key
+        /// </summary>
         public const string UserCacheKeyFormat = "User:{0}";
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="cache"></param>
+        /// <param name="repository"></param>
+        /// <param name="groupService"></param>
         public UserService(
             IDistributedCache cache,
             IUserRepository repository,
-            IGroupService groupService,
-            ISmsSender smsSender
+            IGroupService groupService
             )
         {
             _cache = cache;
@@ -75,6 +133,12 @@ namespace Tubumu.Modules.Admin.Services
 
         #region IUserService Members
 
+        /// <summary>
+        /// 通过用户 Id 获取用户信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByUserIdAsync(int userId, UserStatus? status = null)
         {
             if (status == UserStatus.Normal)
@@ -83,6 +147,13 @@ namespace Tubumu.Modules.Admin.Services
             }
             return await _repository.GetItemByUserIdAsync(userId, status);
         }
+
+        /// <summary>
+        /// 通过用户名获取用户信息
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByUsernameAsync(string username, UserStatus? status = null)
         {
             if (username.IsNullOrWhiteSpace()) return null;
@@ -93,6 +164,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// 通过邮箱获取用户信息
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="emailIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, UserStatus? status = null)
         {
             if (email.IsNullOrWhiteSpace()) return null;
@@ -103,6 +182,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// 通过手机号获取用户信息
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, UserStatus? status = null)
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
@@ -113,23 +200,54 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// 获取用户信息列表
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <returns></returns>
         public async Task<List<UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds)
         {
             return await _repository.GetUserInfoWarpperListAsync(userIds);
         }
+
+        /// <summary>
+        /// 获取 HeadUrl
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<string> GetHeadUrlAsync(int userId)
         {
             return await _repository.GetHeadUrlAsync(userId);
         }
+
+        /// <summary>
+        /// 通过用户 Id 判断用户是否存在
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsAsync(int userId, UserStatus? status = null)
         {
             return await _repository.IsExistsAsync(userId, status);
         }
+
+        /// <summary>
+        /// 通过用户名判断用户是否存在
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsUsernameAsync(string username)
         {
             if (username.IsNullOrWhiteSpace()) return false;
             return await _repository.IsExistsUsernameAsync(username);
         }
+
+        /// <summary>
+        /// 通过邮箱判断用户是否存在
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsEmailAsync(string email)
         {
             if (email.IsNullOrWhiteSpace()) return false;
@@ -163,7 +281,7 @@ namespace Tubumu.Modules.Admin.Services
             }
             //生成密码
             if (!userInput.Password.IsNullOrWhiteSpace())
-                userInput.Password = userInput.PasswordConfirm = GeneratePassword(userInput.Password);
+                userInput.Password = userInput.PasswordConfirm = EncryptPassword(userInput.Password);
             else
                 userInput.Password = userInput.PasswordConfirm = String.Empty;
 
@@ -229,7 +347,7 @@ namespace Tubumu.Modules.Admin.Services
         }
         public async Task<bool> ChangePasswordAsync(int userId, string newPassword, ModelStateDictionary modelState)
         {
-            var password = GeneratePassword(newPassword);
+            var password = EncryptPassword(newPassword);
             var result = await _repository.ChangePasswordAsync(userId, password, modelState);
             if (result)
             {
@@ -253,7 +371,7 @@ namespace Tubumu.Modules.Admin.Services
         }
         public async Task<bool> ResetPasswordByAccountAsync(string account, string newPassword, ModelStateDictionary modelState)
         {
-            var password = GeneratePassword(newPassword);
+            var password = EncryptPassword(newPassword);
             var userId = await _repository.ResetPasswordByAccountAsync(account, password, modelState);
             if (userId <= 0 || !modelState.IsValid)
             {
@@ -262,58 +380,6 @@ namespace Tubumu.Modules.Admin.Services
 
             await CleanCache(userId);
             return true;
-        }
-        public async Task<bool> GetPasswordAsync(UserGetPasswordInput input, ModelStateDictionary modelState)
-        {
-            if (input == null || input.Username.IsNullOrWhiteSpace())
-            {
-                modelState.AddModelError("Username", "请输入用户名");
-                return false;
-            }
-            if (input.Email.IsNullOrWhiteSpace())
-            {
-                modelState.AddModelError("Email", "请输入安全邮箱");
-                return false;
-            }
-            var userInfo = await _repository.GetItemByUsernameAsync(input.Username);
-            if (userInfo == null)
-            {
-                modelState.AddModelError("Username", "该用户不存在");
-                return false;
-            }
-            else if (userInfo.Status != UserStatus.Normal)
-            {
-                modelState.AddModelError("Username", "该帐号已被停用");
-                return false;
-            }
-            else if (userInfo.Email.IsNullOrWhiteSpace())
-            {
-                modelState.AddModelError("Email", "该帐号尚未设置安全邮箱");
-                return false;
-            }
-            else if (userInfo.Email != input.Email)
-            {
-                modelState.AddModelError("Email", "该邮箱不是您设置的安全邮箱");
-                return false;
-            }
-
-            //重置密码
-            string newPassword = GenerateRandomPassword(6);
-            string password = GeneratePassword(newPassword);
-            int userId = await _repository.ChangePasswordAsync(input.Username, password, modelState);
-            if (userId <= 0 || !modelState.IsValid)
-            {
-                modelState.AddModelError("Username", "该用户不存在");
-            }
-            else
-            {
-                await CleanCache(userId);
-            }
-
-            // TODO: 发送短信或邮件
-
-            return true;
-
         }
         public async Task<bool> ChangeHeadAsync(int userId, string newHead)
         {
@@ -361,6 +427,37 @@ namespace Tubumu.Modules.Admin.Services
 
         #endregion
 
+        /// <summary>
+        /// 加密密码
+        /// </summary>
+        /// <param name="rawPassword"></param>
+        /// <returns></returns>
+        public static string EncryptPassword(string rawPassword)
+        {
+            if (rawPassword.IsNullOrWhiteSpace()) return String.Empty;
+            string passwordSalt = Guid.NewGuid().ToString("N");
+            string data = SHA256.Encrypt(rawPassword, passwordSalt);
+            return "{0}|{1}".FormatWith(passwordSalt, data);
+        }
+
+        /// <summary>
+        /// 生成随机密码
+        /// </summary>
+        /// <param name="pwdlen"></param>
+        /// <returns></returns>
+        public static string GenerateRandomPassword(int pwdlen)
+        {
+            const string pwdChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+            string tmpstr = "";
+            var rnd = new Random();
+            for (int i = 0; i < pwdlen; i++)
+            {
+                int iRandNum = rnd.Next(pwdChars.Length);
+                tmpstr += pwdChars[iRandNum];
+            }
+            return tmpstr;
+        }
+
         private async Task CacheUser(UserInfo userInfo)
         {
             var cacheKey = UserCacheKeyFormat.FormatWith(userInfo.UserId);
@@ -374,27 +471,6 @@ namespace Tubumu.Modules.Admin.Services
         {
             var cacheKey = UserCacheKeyFormat.FormatWith(userId);
             await _cache.RemoveAsync(cacheKey);
-        }
-
-        public static string GeneratePassword(string rawPassword)
-        {
-            if (rawPassword.IsNullOrWhiteSpace()) return String.Empty;
-            string passwordSalt = Guid.NewGuid().ToString("N");
-            string data = SHA256.Encrypt(rawPassword, passwordSalt);
-            return "{0}|{1}".FormatWith(passwordSalt, data);
-        }
-
-        public static string GenerateRandomPassword(int pwdlen)
-        {
-            const string pwdChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-            string tmpstr = "";
-            var rnd = new Random();
-            for (int i = 0; i < pwdlen; i++)
-            {
-                int iRandNum = rnd.Next(pwdChars.Length);
-                tmpstr += pwdChars[iRandNum];
-            }
-            return tmpstr;
         }
 
         private async Task GengerateGroupIdsAsync(UserSearchCriteria criteria)
