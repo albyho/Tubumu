@@ -141,9 +141,9 @@ namespace Tubumu.Modules.Admin.Repositories
         /// ChangeDisplayNameAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newDisplayName"></param>
+        /// <param name="displayName"></param>
         /// <returns></returns>
-        Task<bool> ChangeDisplayNameAsync(int userId, string newDisplayName);
+        Task<bool> ChangeDisplayNameAsync(int userId, string displayName);
 
         /// <summary>
         /// ChangeLogoAsync
@@ -157,10 +157,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// ChangePasswordAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newPassword"></param>
+        /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangePasswordAsync(int userId, string newPassword, ModelStateDictionary modelState);
+        Task<bool> ChangePasswordAsync(int userId, string password, ModelStateDictionary modelState);
 
         /// <summary>
         /// ChangeProfileAsync
@@ -182,10 +182,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// ChangePasswordAsync
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="newPassword"></param>
+        /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<int> ChangePasswordAsync(string username, string newPassword, ModelStateDictionary modelState);
+        Task<int> ChangePasswordAsync(string username, string password, ModelStateDictionary modelState);
 
         /// <summary>
         /// ResetPasswordByAccountAsync
@@ -550,7 +550,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 Email = String.Empty,
                 Mobile = String.Empty,
             };
-            if (userInput.UserId.HasValue) //根据用户Id编辑
+            if (userInput.UserId.HasValue) //根据用户 Id 编辑
             {
 
                 item = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId != userInput.UserId.Value &&
@@ -938,14 +938,14 @@ namespace Tubumu.Modules.Admin.Repositories
         /// ChangeDisplayNameAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newDisplayName"></param>
+        /// <param name="displayName"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeDisplayNameAsync(int userId, string newDisplayName)
+        public async Task<bool> ChangeDisplayNameAsync(int userId, string displayName)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
                 return false;
-            user.DisplayName = newDisplayName;
+            user.DisplayName = displayName;
             await _tubumuContext.SaveChangesAsync();
 
             return true;
@@ -972,10 +972,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// ChangePasswordAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newPassword"></param>
+        /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangePasswordAsync(int userId, string newPassword, ModelStateDictionary modelState)
+        public async Task<bool> ChangePasswordAsync(int userId, string password, ModelStateDictionary modelState)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
@@ -984,7 +984,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
 
-            user.Password = newPassword;
+            user.Password = password;
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
@@ -993,10 +993,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// ChangePasswordAsync
         /// </summary>
         /// <param name="username"></param>
-        /// <param name="newPassword"></param>
+        /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<int> ChangePasswordAsync(string username, string newPassword, ModelStateDictionary modelState)
+        public async Task<int> ChangePasswordAsync(string username, string password, ModelStateDictionary modelState)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.Username == username);
             if (user == null)
@@ -1005,7 +1005,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return 0;
             }
 
-            user.Password = newPassword;
+            user.Password = password;
             await _tubumuContext.SaveChangesAsync();
             return user.UserId;
         }

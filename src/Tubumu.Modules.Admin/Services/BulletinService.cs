@@ -8,29 +8,61 @@ using Tubumu.Modules.Framework.Extensions;
 
 namespace Tubumu.Modules.Admin.Services
 {
+    /// <summary>
+    /// IBulletinService
+    /// </summary>
     public interface IBulletinService
     {
+        /// <summary>
+        /// 从缓存获取
+        /// </summary>
+        /// <returns></returns>
         Task<Bulletin> GetItemInCacheAsync();
+
+        /// <summary>
+        /// 保存
+        /// </summary>
+        /// <param name="bulletin"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> SaveAsync(BulletinInput bulletin, ModelStateDictionary modelState);
     }
 
+    /// <summary>
+    /// BulletinService
+    /// </summary>
     public class BulletinService : IBulletinService
     {
         private readonly IDistributedCache _cache;
         private readonly IBulletinRepository _repository;
         private const string CacheKey = "Bulletin";
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="cache"></param>
+        /// <param name="repository"></param>
         public BulletinService(IDistributedCache cache, IBulletinRepository repository)
         {
             _cache = cache;
             _repository = repository;
         }
 
+        /// <summary>
+        /// 从缓存获取
+        /// </summary>
+        /// <returns></returns>
         public async Task<Bulletin> GetItemInCacheAsync()
         {
             return await GetItemInCacheInternalAsync();
         }
 
+        /// <summary>
+        /// 保存
+        /// </summary>
+        /// <param name="bulletin"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> SaveAsync(BulletinInput bulletin, ModelStateDictionary modelState)
         {
             bool result = await _repository.SaveAsync(bulletin, modelState);

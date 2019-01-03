@@ -4,15 +4,41 @@ using Tubumu.Modules.Admin.Models.Input;
 
 namespace Tubumu.Modules.Admin.Services
 {
+    /// <summary>
+    /// IAdminUserService
+    /// </summary>
     public interface IAdminUserService
     {
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ChangePasswordAsync(int userId, UserChangePasswordInput userInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改资料
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userInput, ModelStateDictionary modelState);
     }
+
+    /// <summary>
+    /// AdminUserService
+    /// </summary>
     public class AdminUserService : IAdminUserService
     {
         private readonly IUserService _userService;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="userService"></param>
         public AdminUserService(IUserService userService)
         {
             _userService = userService;
@@ -20,6 +46,13 @@ namespace Tubumu.Modules.Admin.Services
 
         #region IAdminUserService Members
 
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="input"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ChangePasswordAsync(int userId, UserChangePasswordInput input, ModelStateDictionary modelState)
         {
             //判断当前密码是否输入正确
@@ -34,6 +67,13 @@ namespace Tubumu.Modules.Admin.Services
 
         }
 
+        /// <summary>
+        /// 修改资料
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="input"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput input, ModelStateDictionary modelState)
         {
             return await _userService.ChangeProfileAsync(userId, input, modelState);
