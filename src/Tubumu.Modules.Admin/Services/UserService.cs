@@ -9,7 +9,6 @@ using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Services;
 using Tubumu.Modules.Framework.Utilities.Cryptography;
 
 namespace Tubumu.Modules.Admin.Services
@@ -85,21 +84,137 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="email"></param>
         /// <returns></returns>
         Task<bool> IsExistsEmailAsync(string email);
+
+        /// <summary>
+        /// 验证除指定用户 Id 外，用户名是否被使用
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
         Task<bool> VerifyExistsUsernameAsync(int userId, string username);
+
+        /// <summary>
+        /// 验证除指定用户 Id 外，邮箱是否被使用
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         Task<bool> VerifyExistsEmailAsync(int userId, string email);
+
+        /// <summary>
+        /// 验证除指定用户 Id 外，用户名、邮箱或手机是否被使用
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 获取用户信息分页
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         Task<Page<UserInfo>> GetPageAsync(UserSearchCriteria criteria);
+
+        /// <summary>
+        /// 保存用户信息
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<UserInfo> SaveAsync(UserInput userInput, ModelStateDictionary modelState);
-        Task<bool> ChangeUsernameAsync(int userId, string newUsername, ModelStateDictionary modelState);
-        Task<bool> ChangeDisplayNameAsync(int userId, string newDisplayName, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改用户名
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangeUsernameAsync(int userId, string username, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改显示名称（昵称）
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="displayName"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改 HeadUrl
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="headUrl"></param>
+        /// <returns></returns>
+        Task<bool> ChangeHeadAsync(int userId, string headUrl);
+
+        /// <summary>
+        /// 修改 LogoUrl
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="logoUrl"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState);
-        Task<bool> ChangePasswordAsync(int userId, string newPassword, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangePasswordAsync(int userId, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改资料
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userChangeProfileInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState);
-        Task<bool> ResetPasswordByAccountAsync(string account, string newPassword, ModelStateDictionary modelState);
-        Task<bool> ChangeHeadAsync(int userId, string newHead);
+
+        /// <summary>
+        /// 根据账号(用户名、邮箱或手机)重置密码
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ResetPasswordByAccountAsync(string account, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改用户状态
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<bool> ChangeStatusAsync(int userId, UserStatus status);
+
+        /// <summary>
+        /// 用户登录
+        /// </summary>
+        /// <param name="getUser"></param>
+        /// <param name="afterSignIn"></param>
+        /// <returns></returns>
         Task<bool> SignInAsync(Func<Task<UserInfo>> getUser, Action<UserInfo> afterSignIn = null);
+
+        /// <summary>
+        /// 用户注销
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> SignOutAsync(int userId);
     }
 
@@ -253,25 +368,59 @@ namespace Tubumu.Modules.Admin.Services
             if (email.IsNullOrWhiteSpace()) return false;
             return await _repository.IsExistsEmailAsync(email);
         }
+
+        /// <summary>
+        /// 验证除指定用户 Id 外，用户名是否被使用
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
         {
             if (username.IsNullOrWhiteSpace()) return false;
             return await _repository.VerifyExistsUsernameAsync(userId, username);
         }
+
+        /// <summary>
+        /// 验证除指定用户 Id 外，邮箱是否被使用
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyExistsEmailAsync(int userId, string email)
         {
             if (email.IsNullOrWhiteSpace()) return false;
             return await _repository.VerifyExistsEmailAsync(userId, email);
         }
+
+        /// <summary>
+        /// 验证除指定用户 Id 外，用户名、邮箱或手机是否被使用
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState)
         {
             return await _repository.VerifyExistsAsync(userInput, modelState);
         }
+
+        /// <summary>
+        /// 获取用户信息分页
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         public async Task<Page<UserInfo>> GetPageAsync(UserSearchCriteria criteria)
         {
             await GengerateGroupIdsAsync(criteria);
             return await _repository.GetPageAsync(criteria);
         }
+
+        /// <summary>
+        /// 保存用户信息
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<UserInfo> SaveAsync(UserInput userInput, ModelStateDictionary modelState)
         {
             //验证用户名、手机号码和邮箱是否被占用
@@ -306,9 +455,17 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
-        public async Task<bool> ChangeUsernameAsync(int userId, string newUsername, ModelStateDictionary modelState)
+
+        /// <summary>
+        /// 修改用户名
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> ChangeUsernameAsync(int userId, string username, ModelStateDictionary modelState)
         {
-            bool result = await _repository.ChangeUsernameAsync(userId, newUsername, modelState);
+            bool result = await _repository.ChangeUsernameAsync(userId, username, modelState);
             if (!result)
             {
                 modelState.AddModelError("UserId", "修改用户名失败，可能当前用户不存在或新用户名已经被使用");
@@ -319,9 +476,17 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
-        public async Task<bool> ChangeDisplayNameAsync(int userId, string newDisplayName, ModelStateDictionary modelState)
+
+        /// <summary>
+        /// 修改显示名称（昵称）
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="displayName"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState)
         {
-            bool result = await _repository.ChangeDisplayNameAsync(userId, newDisplayName);
+            bool result = await _repository.ChangeDisplayNameAsync(userId, displayName);
             if (!result)
             {
                 modelState.AddModelError("UserId", "修改昵称失败");
@@ -332,6 +497,30 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// 修改 HeadUrl
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="headUrl"></param>
+        /// <returns></returns>
+        public async Task<bool> ChangeHeadAsync(int userId, string headUrl)
+        {
+            var result = await _repository.ChangeHeadAsync(userId, headUrl);
+            if (result)
+            {
+                await CleanCache(userId);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 修改 LogoUrl
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="logoUrl"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState)
         {
             bool result = await _repository.ChangeLogoAsync(userId, logoUrl);
@@ -345,16 +534,32 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
-        public async Task<bool> ChangePasswordAsync(int userId, string newPassword, ModelStateDictionary modelState)
+
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> ChangePasswordAsync(int userId, string password, ModelStateDictionary modelState)
         {
-            var password = EncryptPassword(newPassword);
-            var result = await _repository.ChangePasswordAsync(userId, password, modelState);
+            var encryptedPassword = EncryptPassword(password);
+            var result = await _repository.ChangePasswordAsync(userId, encryptedPassword, modelState);
             if (result)
             {
                 await CleanCache(userId);
             }
             return result;
         }
+
+        /// <summary>
+        /// 修改资料
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userChangeProfileInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState)
         {
             bool result = await _repository.ChangeProfileAsync(userId, userChangeProfileInput);
@@ -369,10 +574,18 @@ namespace Tubumu.Modules.Admin.Services
             return result;
 
         }
-        public async Task<bool> ResetPasswordByAccountAsync(string account, string newPassword, ModelStateDictionary modelState)
+
+        /// <summary>
+        /// 根据账号(用户名、邮箱或手机)重置密码
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> ResetPasswordByAccountAsync(string account, string password, ModelStateDictionary modelState)
         {
-            var password = EncryptPassword(newPassword);
-            var userId = await _repository.ResetPasswordByAccountAsync(account, password, modelState);
+            var encryptedPassword = EncryptPassword(password);
+            var userId = await _repository.ResetPasswordByAccountAsync(account, encryptedPassword, modelState);
             if (userId <= 0 || !modelState.IsValid)
             {
                 return false;
@@ -381,15 +594,13 @@ namespace Tubumu.Modules.Admin.Services
             await CleanCache(userId);
             return true;
         }
-        public async Task<bool> ChangeHeadAsync(int userId, string newHead)
-        {
-            var result = await _repository.ChangeHeadAsync(userId, newHead);
-            if (result)
-            {
-                await CleanCache(userId);
-            }
-            return result;
-        }
+
+        /// <summary>
+        /// 删除用户
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState)
         {
             var result = await _repository.RemoveAsync(userId, modelState);
@@ -399,6 +610,13 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// 修改用户状态
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeStatusAsync(int userId, UserStatus status)
         {
             var result = await _repository.ChangeStatusAsync(userId, status);
@@ -408,6 +626,13 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// 用户登录
+        /// </summary>
+        /// <param name="getUser"></param>
+        /// <param name="afterSignIn"></param>
+        /// <returns></returns>
         public async Task<bool> SignInAsync(Func<Task<UserInfo>> getUser, Action<UserInfo> afterSignIn = null)
         {
             var user = await getUser();
@@ -419,6 +644,12 @@ namespace Tubumu.Modules.Admin.Services
 
             return false;
         }
+
+        /// <summary>
+        /// 用户注销
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> SignOutAsync(int userId)
         {
             await CleanCache(userId);
