@@ -6,6 +6,10 @@ using Tubumu.Modules.Framework.Extensions;
 
 namespace Tubumu.Modules.Admin.Models
 {
+    /// <summary>
+    /// 用户信息包装
+    /// <remark>简单信息</remark>
+    /// </summary>
     public class UserInfoWarpper
     {
         [JsonProperty(PropertyName = "userId")]
@@ -20,6 +24,9 @@ namespace Tubumu.Modules.Admin.Models
         public string LogoUrl { get; set; }
     }
 
+    /// <summary>
+    /// 用户信息
+    /// </summary>
     public class Profile : UserInfoWarpper
     {
         [JsonProperty(PropertyName = "groups")]
@@ -29,6 +36,9 @@ namespace Tubumu.Modules.Admin.Models
         public RoleInfo Role { get; set; }
     }
 
+    /// <summary>
+    /// 用户信息
+    /// </summary>
     public class UserInfoProfile
     {
         public int UserId { get; set; }
@@ -49,40 +59,139 @@ namespace Tubumu.Modules.Admin.Models
         // TODO: Group Role, etc.
     }
 
+    /// <summary>
+    /// 用户信息
+    /// </summary>
     public class UserInfoBase
     {
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public UserInfoBase()
         {
             Groups = new HashSet<GroupInfo>();
         }
+
+        /// <summary>
+        /// 用户 Id
+        /// </summary>
         public int UserId { get; set; }
+
+        /// <summary>
+        /// 用户名
+        /// </summary>
         public string Username { get; set; }
+
+        /// <summary>
+        /// 显示名称
+        /// </summary>
         public string DisplayName { get; set; }
+
+        /// <summary>
+        /// LogoUrl
+        /// </summary>
         public string LogoUrl { get; set; }
+
+        /// <summary>
+        /// 真实名称
+        /// </summary>
         public string RealName { get; set; }
+
+        /// <summary>
+        /// 真实名称是否已经验证
+        /// </summary>
         public bool RealNameIsValid { get; set; }
+
+        /// <summary>
+        /// 邮箱
+        /// </summary>
         public string Email { get; set; }
+
+        /// <summary>
+        /// 邮箱是否已经验证
+        /// </summary>
         public bool EmailIsValid { get; set; }
+
+        /// <summary>
+        /// 手机号码
+        /// </summary>
         public string Mobile { get; set; }
+
+        /// <summary>
+        /// 手机号码是否已经验证
+        /// </summary>
         public bool MobileIsValid { get; set; }
+
+        /// <summary>
+        /// 用户状态
+        /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public UserStatus Status { get; set; }
+
+        /// <summary>
+        /// 文本形式的用户状态
+        /// </summary>
         public string StatusText => Status.GetEnumDisplayName();
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
         public DateTime CreationDate { get; set; }
+
+        /// <summary>
+        /// HeadUrl
+        /// </summary>
         public string HeadUrl { get; set; }
+
+        /// <summary>
+        /// WeixinMobileEndOpenId
+        /// </summary>
         public string WeixinMobileEndOpenId { get; set; }
+
+        /// <summary>
+        /// WeixinAppOpenId
+        /// </summary>
         public string WeixinAppOpenId { get; set; }
+
+        /// <summary>
+        /// WeixinWebOpenId
+        /// </summary>
         public string WeixinWebOpenId { get; set; }
+
+        /// <summary>
+        /// WeixinUnionId
+        /// </summary>
         public string WeixinUnionId { get; set; }
+
+        /// <summary>
+        /// 是否是开发人员
+        /// </summary>
         public bool IsDeveloper { get; set; }
+
+        /// <summary>
+        /// 是否是测试人员
+        /// </summary>
         public bool IsTester { get; set; }
 
-        public GroupInfo Group { get; set; } // Group 比较常用，故放在基类中
+        /// <summary>
+        /// 所属分组
+        /// </summary>
+        public GroupInfo Group { get; set; }
+
+        /// <summary>
+        /// 所属附件分组
+        /// </summary>
         public IEnumerable<GroupInfo> Groups { get; set; }
 
-        [JsonConverter(typeof(Tubumu.Modules.Framework.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
+        /// <summary>
+        /// 拥有角色
+        /// </summary>
+        [JsonConverter(typeof(Framework.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
         public RoleInfo Role { get; set; }
 
+        /// <summary>
+        /// DisplayName 并包含 RealName 的名称
+        /// </summary>
         public string FullDisplayName
         {
             get
@@ -106,6 +215,9 @@ namespace Tubumu.Modules.Admin.Models
             }
         }
 
+        /// <summary>
+        /// DisplayName 优先，其次 RealName 的名称
+        /// </summary>
         public string DisplayNameRealName
         {
             get
@@ -125,6 +237,9 @@ namespace Tubumu.Modules.Admin.Models
             }
         }
 
+        /// <summary>
+        /// RealName 优先，其次 DisplayName 的名称
+        /// </summary>
         public string RealNameDisplayNme
         {
             get
@@ -146,8 +261,14 @@ namespace Tubumu.Modules.Admin.Models
 
     }
 
+    /// <summary>
+    /// 用户信息
+    /// </summary>
     public class UserInfo : UserInfoBase
     {
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public UserInfo()
         {
             Roles = new HashSet<RoleInfo>();
@@ -161,49 +282,70 @@ namespace Tubumu.Modules.Admin.Models
             RolePermissions = new HashSet<PermissionBase>();
             RolesPermissions = new HashSet<PermissionBase>();
         }
+
+        /// <summary>
+        /// 密码
+        /// </summary>
         public string Password { get; set; }
+
+        /// <summary>
+        /// 描述
+        /// </summary>
         public string Description { get; set; }
+
         /// <summary>
         /// 用户拥有的特定角色
         /// </summary>
         public IEnumerable<RoleInfo> Roles { get; set; }
+
         /// <summary>
         /// 用户所属分组所拥有的角色
         /// </summary>
         public IEnumerable<RoleInfo> GroupRoles { get; set; }
+
         /// <summary>
         /// 用户所属分组所拥有的角色
         /// </summary>
         public IEnumerable<RoleInfo> GroupsRoles { get; set; }
+
         /// <summary>
         /// 用户拥有的特定权限
         /// </summary>
         public IEnumerable<PermissionBase> Permissions { get; set; }
+
         /// <summary>
         /// 用户所属分组所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupPermissions { get; set; }
+
         /// <summary>
         /// 用户所属分组所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupsPermissions { get; set; }
+
         /// <summary>
         /// 用户所属分组所拥有的角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupRolesPermissions { get; set; }
+
         /// <summary>
         /// 用户所属分组所拥有的角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupsRolesPermissions { get; set; }
+
         /// <summary>
         /// 用户的直接角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> RolePermissions { get; set; }
+
         /// <summary>
         /// 用户拥有的角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> RolesPermissions { get; set; }
 
+        /// <summary>
+        /// 所有分组
+        /// </summary>
         [JsonIgnore]
         public IEnumerable<GroupInfo> AllGroups
         {
@@ -217,6 +359,9 @@ namespace Tubumu.Modules.Admin.Models
             }
         }
 
+        /// <summary>
+        /// 所有角色
+        /// </summary>
         [JsonIgnore]
         public IEnumerable<RoleInfo> AllRoles
         {
@@ -243,6 +388,9 @@ namespace Tubumu.Modules.Admin.Models
             }
         }
 
+        /// <summary>
+        /// 所有权限
+        /// </summary>
         [JsonIgnore]
         public IEnumerable<PermissionBase> AllPermissions
         {

@@ -8,6 +8,11 @@ namespace Tubumu.Modules.Framework.Json
     /// </summary>
     public class NullValueJsonConverterGuid : NullValueJsonConverter<Guid>
     {
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="equaValue"></param>
         public NullValueJsonConverterGuid(string propertyName, string equaValue) : base(propertyName, new Guid(equaValue))
         {
         }

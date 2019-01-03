@@ -19,16 +19,27 @@ using Tubumu.Modules.Framework.Services;
 
 namespace Tubumu.Modules.Admin
 {
+    /// <summary>
+    /// Startup
+    /// </summary>
     public class Startup : StartupBase
     {
         private readonly IConfiguration _configuration;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(
             IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// ConfigureServices
+        /// </summary>
+        /// <param name="services"></param>
         public override void ConfigureServices(IServiceCollection services)
         {
             // Permission
@@ -87,6 +98,12 @@ namespace Tubumu.Modules.Admin
             services.Configure<WeixinWebSettings>(_configuration.GetSection("WeixinSettings:Web"));
         }
 
+        /// <summary>
+        /// Configure
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="routes"></param>
+        /// <param name="serviceProvider"></param>
         public override void Configure(IApplicationBuilder app, IRouteBuilder routes, IServiceProvider serviceProvider)
         {
             //string[] controllerNamespaces = new string[] { "Tubumu.Modules.Admin.Controllers" };

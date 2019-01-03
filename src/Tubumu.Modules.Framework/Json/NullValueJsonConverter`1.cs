@@ -13,17 +13,36 @@ namespace Tubumu.Modules.Framework.Json
     {
         private readonly string _propertyName;
         private readonly T _equalValue;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="equalValue"></param>
         public NullValueJsonConverter(string propertyName, T equalValue)
         {
             _propertyName = propertyName;
             _equalValue = equalValue;
         }
 
+        /// <summary>
+        /// CanConvert
+        /// </summary>
+        /// <param name="objectType"></param>
+        /// <returns></returns>
         public override bool CanConvert(Type objectType)
         {
             return true;
         }
-
+        
+        /// <summary>
+        /// ReadJson
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="objectType"></param>
+        /// <param name="existingValue"></param>
+        /// <param name="serializer"></param>
+        /// <returns></returns>
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             try
@@ -36,6 +55,12 @@ namespace Tubumu.Modules.Framework.Json
             }
         }
 
+        /// <summary>
+        /// WriteJson
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="value"></param>
+        /// <param name="serializer"></param>
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             if (value == null)

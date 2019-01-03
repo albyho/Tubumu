@@ -1,47 +1,162 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Modules.Admin.Entities;
-using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Utilities.Cryptography;
-using Tubumu.Modules.Framework.Models;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
 {
+    /// <summary>
+    /// IWeixinUserRepository
+    /// </summary>
     public interface IWeixinUserRepository
     {
+        /// <summary>
+        /// GetItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByWeixinMobileEndOpenIdAsync(string openId);
+
+        /// <summary>
+        /// GetItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByWeixinAppOpenIdAsync(string openId);
+
+        /// <summary>
+        /// GetItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByWeixinWebOpenIdAsync(string openId);
+
+        /// <summary>
+        /// GetItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByWeixinUnionIdAsync(string unionId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetOrGenerateItemByWeixinMobileEndOpenIdAsync(Guid groupId, XM.UserStatus generateStatus, string openId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid groupId, XM.UserStatus generateStatus, string openId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetOrGenerateItemByWeixinWebOpenIdAsync(Guid groupId, XM.UserStatus generateStatus, string openId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetOrGenerateItemByWeixinUnionIdAsync(Guid groupId, XM.UserStatus generateStatus, string unionId);
+
+        /// <summary>
+        /// UpdateWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinMobileEndOpenIdAsync(int userId, string openId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinMobileEndOpenIdAsync(int userId);
+
+        /// <summary>
+        /// UpdateWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinAppOpenIdAsync(int userId, string openId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinAppOpenIdAsync(int userId);
+
+        /// <summary>
+        /// UpdateWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinWebOpenIdAsync(int userId, string openId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinWebOpenIdAsync(int userId);
+
+        /// <summary>
+        /// UpdateWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="unionId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinUnionIdAsync(int userId, string unionId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinUnionIdAsync(int userId);
     }
 
+    /// <summary>
+    /// WeixinUserRepository
+    /// </summary>
     public class WeixinUserRepository : IWeixinUserRepository
     {
         private readonly Expression<Func<User, XM.UserInfo>> _selector;
 
         private readonly TubumuContext _tubumuContext;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="tubumuContext"></param>
         public WeixinUserRepository(TubumuContext tubumuContext)
         {
             _tubumuContext = tubumuContext;
@@ -168,30 +283,61 @@ namespace Tubumu.Modules.Admin.Repositories
 
         #region IWeixinUserRepository 成员
 
+        /// <summary>
+        /// GetItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByWeixinMobileEndOpenIdAsync(string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
             XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinMobileEndOpenId == openId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
+
+        /// <summary>
+        /// GetItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByWeixinAppOpenIdAsync(string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
             XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinAppOpenId == openId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
+
+        /// <summary>
+        /// GetItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByWeixinWebOpenIdAsync(string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
             XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinWebOpenId == openId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
+
+        /// <summary>
+        /// GetItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByWeixinUnionIdAsync(string unionId)
         {
             if (unionId.IsNullOrWhiteSpace()) return null;
             XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinUnionId == unionId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetOrGenerateItemByWeixinMobileEndOpenIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
@@ -215,6 +361,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return user;
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
@@ -239,6 +393,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return user;
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetOrGenerateItemByWeixinWebOpenIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
@@ -262,6 +424,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return user;
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetOrGenerateItemByWeixinUnionIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string unionId)
         {
             if (unionId.IsNullOrWhiteSpace()) return null;
@@ -284,6 +454,14 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             return user;
         }
+
+        /// <summary>
+        /// UpdateWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinMobileEndOpenIdAsync(int userId, string openId, ModelStateDictionary modelState)
         {
             if (openId.IsNullOrWhiteSpace())
@@ -319,6 +497,12 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// CleanWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinMobileEndOpenIdAsync(int userId)
         {
             var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -328,6 +512,14 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// UpdateWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinAppOpenIdAsync(int userId, string openId, ModelStateDictionary modelState)
         {
             if (openId.IsNullOrWhiteSpace())
@@ -363,6 +555,12 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// CleanWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinAppOpenIdAsync(int userId)
         {
             var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -372,6 +570,14 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// UpdateWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinWebOpenIdAsync(int userId, string openId, ModelStateDictionary modelState)
         {
             if (openId.IsNullOrWhiteSpace())
@@ -407,6 +613,12 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// CleanWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinWebOpenIdAsync(int userId)
         {
             var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -416,6 +628,14 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// UpdateWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="unionId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinUnionIdAsync(int userId, string unionId, ModelStateDictionary modelState)
         {
             if (unionId.IsNullOrWhiteSpace())
@@ -451,6 +671,12 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// CleanWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinUnionIdAsync(int userId)
         {
             var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);

@@ -6,6 +6,9 @@ using Tubumu.Modules.Framework.ModelValidation.Attributes;
 
 namespace Tubumu.Modules.Admin.Models.Input
 {
+    /// <summary>
+    /// WeixinMobileEndLoginInput
+    /// </summary>
     public class WeixinMobileEndLoginInput
     {
         /// <summary>

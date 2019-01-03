@@ -22,6 +22,9 @@ using Senparc.Weixin.Open;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// Authentication Controller
+    /// </summary>
     [Route("api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
@@ -35,6 +38,14 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly IMobileUserService _mobileUserService;
         private readonly IWeixinUserService _weixinUserService;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="authenticationSettingsOptions"></param>
+        /// <param name="tokenValidationSettings"></param>
+        /// <param name="userService"></param>
+        /// <param name="mobileUserService"></param>
+        /// <param name="weixinUserService"></param>
         public AuthenticationController(
             IOptions<AuthenticationSettings> authenticationSettingsOptions,
             TokenValidationSettings tokenValidationSettings,
@@ -269,7 +280,7 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 微信手机登录
+        /// 微信移动端登录
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -388,7 +399,7 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 已登录用户绑定手机微信
+        /// 已登录用户移动端绑定微信
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

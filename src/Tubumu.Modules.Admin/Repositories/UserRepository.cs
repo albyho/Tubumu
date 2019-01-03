@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -10,46 +9,222 @@ using Microsoft.EntityFrameworkCore;
 using Tubumu.Modules.Admin.Entities;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Utilities.Cryptography;
 using Tubumu.Modules.Framework.Models;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
 {
+    /// <summary>
+    /// IUserRepository
+    /// </summary>
     public interface IUserRepository
     {
+        /// <summary>
+        /// GetItemByUserIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByUserIdAsync(int userId, XM.UserStatus? status = null);
+
+        /// <summary>
+        /// GetItemByUsernameAsync
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByUsernameAsync(string username, XM.UserStatus? status = null);
+
+        /// <summary>
+        /// GetItemByEmailAsync
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="emailIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, XM.UserStatus? status = null);
+
+        /// <summary>
+        /// GetItemByMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, XM.UserStatus? status = null);
+
+        /// <summary>
+        /// GetHeadUrlAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<string> GetHeadUrlAsync(int userId);
+
+        /// <summary>
+        /// GetUserInfoWarpperListAsync
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <returns></returns>
         Task<List<XM.UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds);
+
+        /// <summary>
+        /// IsExistsUsernameAsync
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         Task<bool> IsExistsUsernameAsync(string username);
+
+        /// <summary>
+        /// IsExistsEmailAsync
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         Task<bool> IsExistsEmailAsync(string email);
+
+        /// <summary>
+        /// IsExistsAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<bool> IsExistsAsync(int userId, XM.UserStatus? status = null);
+
+        /// <summary>
+        /// VerifyExistsUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
         Task<bool> VerifyExistsUsernameAsync(int userId, string username);
+
+        /// <summary>
+        /// VerifyExistsEmailAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         Task<bool> VerifyExistsEmailAsync(int userId, string email);
+
+        /// <summary>
+        /// VerifyExistsAsync
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// GetPageAsync
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         Task<Page<XM.UserInfo>> GetPageAsync(XM.UserSearchCriteria criteria);
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> SaveAsync(UserInput userInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newUsername"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ChangeUsernameAsync(int userId, string newUsername, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeDisplayNameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newDisplayName"></param>
+        /// <returns></returns>
         Task<bool> ChangeDisplayNameAsync(int userId, string newDisplayName);
-        Task<bool> ChangeLogoAsync(int userId, string logoURL);
+
+        /// <summary>
+        /// ChangeLogoAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="logoUrl"></param>
+        /// <returns></returns>
+        Task<bool> ChangeLogoAsync(int userId, string logoUrl);
+
+        /// <summary>
+        /// ChangePasswordAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ChangePasswordAsync(int userId, string newPassword, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeProfileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userChangeProfileInput"></param>
+        /// <returns></returns>
         Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput);
+
+        /// <summary>
+        /// ChangeHeadAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newHeadUrl"></param>
+        /// <returns></returns>
         Task<bool> ChangeHeadAsync(int userId, string newHeadUrl);
+
+        /// <summary>
+        /// ChangePasswordAsync
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<int> ChangePasswordAsync(string username, string newPassword, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ResetPasswordByAccountAsync
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<int> ResetPasswordByAccountAsync(string account, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeStatusAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status);
     }
 
+    /// <summary>
+    /// UserRepository
+    /// </summary>
     public class UserRepository : IUserRepository
     {
+        private readonly TubumuContext _tubumuContext;
         private readonly Expression<Func<User, XM.UserInfo>> _selector;
 
-        private readonly TubumuContext _tubumuContext;
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="tubumuContext"></param>
         public UserRepository(TubumuContext tubumuContext)
         {
             _tubumuContext = tubumuContext;
@@ -176,6 +351,13 @@ namespace Tubumu.Modules.Admin.Repositories
 
         #region IUserRepository 成员
 
+
+        /// <summary>
+        /// GetItemByUserIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByUserIdAsync(int userId, XM.UserStatus? status = null)
         {
             XM.UserInfo user;
@@ -189,6 +371,13 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             return user;
         }
+
+        /// <summary>
+        /// GetItemByUsernameAsync
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByUsernameAsync(string username, XM.UserStatus? status = null)
         {
             XM.UserInfo user;
@@ -203,6 +392,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return user;
         }
+
+        /// <summary>
+        /// GetItemByEmailAsync
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="emailIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, XM.UserStatus? status = null)
         {
             XM.UserInfo user;
@@ -216,6 +413,14 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             return user;
         }
+
+        /// <summary>
+        /// GetItemByMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, XM.UserStatus? status = null)
         {
             XM.UserInfo user;
@@ -229,11 +434,23 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             return user;
         }
+
+        /// <summary>
+        /// GetHeadUrlAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<string> GetHeadUrlAsync(int userId)
         {
             var head = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.HeadUrl).FirstOrDefaultAsync();
             return head;
         }
+
+        /// <summary>
+        /// GetUserInfoWarpperListAsync
+        /// </summary>
+        /// <param name="userIds"></param>
+        /// <returns></returns>
         public async Task<List<XM.UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds)
         {
             if (userIds == null) return new List<XM.UserInfoWarpper>(0);
@@ -249,15 +466,34 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return list;
         }
+
+        /// <summary>
+        /// IsExistsUsernameAsync
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsUsernameAsync(string username)
         {
             return await _tubumuContext.User.AnyAsync(m => m.Username == username);
         }
+
+        /// <summary>
+        /// IsExistsEmailAsync
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsEmailAsync(string email)
         {
             if (email.IsNullOrWhiteSpace()) return false;
             return await _tubumuContext.User.AnyAsync(m => m.Email == email);
         }
+
+        /// <summary>
+        /// IsExistsAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsAsync(int userId, XM.UserStatus? status = null)
         {
             if (status.HasValue)
@@ -269,15 +505,36 @@ namespace Tubumu.Modules.Admin.Repositories
                 return await _tubumuContext.User.AnyAsync(m => m.UserId == userId);
             }
         }
+
+        /// <summary>
+        /// VerifyExistsUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
         {
             return await _tubumuContext.User.AnyAsync(m => m.UserId != userId && m.Username == username);
         }
+
+        /// <summary>
+        /// VerifyExistsEmailAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyExistsEmailAsync(int userId, string email)
         {
             if (email.IsNullOrWhiteSpace()) return false;
             return await _tubumuContext.User.AnyAsync(m => m.UserId != userId && m.Email == email);
         }
+
+        /// <summary>
+        /// VerifyExistsAsync
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState)
         {
             var username = userInput.Username;
@@ -351,6 +608,12 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return isExistsUsername || isExistsMobile || isExistsEmail;
         }
+
+        /// <summary>
+        /// GetPageAsync
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         public async Task<Page<XM.UserInfo>> GetPageAsync(XM.UserSearchCriteria criteria)
         {
             // 精简数据
@@ -449,6 +712,13 @@ namespace Tubumu.Modules.Admin.Repositories
             var page = await orderedQuery.Select(selector).GetPageAsync(criteria.PagingInfo);
             return page;
         }
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> SaveAsync(UserInput userInput, ModelStateDictionary modelState)
         {
             User userToSave;
@@ -631,6 +901,14 @@ namespace Tubumu.Modules.Admin.Repositories
             //return new[] { userToSave }.Select(_selector.Compile()).First();
             return await GetItemByUserIdAsync(userToSave.UserId);
         }
+
+        /// <summary>
+        /// ChangeUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newUsername"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeUsernameAsync(int userId, string newUsername, ModelStateDictionary modelState)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -655,6 +933,13 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return true;
         }
+
+        /// <summary>
+        /// ChangeDisplayNameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newDisplayName"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeDisplayNameAsync(int userId, string newDisplayName)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -665,6 +950,13 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return true;
         }
+
+        /// <summary>
+        /// ChangeLogoAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="logoUrl"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeLogoAsync(int userId, string logoUrl)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -675,6 +967,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return true;
         }
+
+        /// <summary>
+        /// ChangePasswordAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ChangePasswordAsync(int userId, string newPassword, ModelStateDictionary modelState)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -688,6 +988,14 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return true;
         }
+
+        /// <summary>
+        /// ChangePasswordAsync
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="newPassword"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<int> ChangePasswordAsync(string username, string newPassword, ModelStateDictionary modelState)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.Username == username);
@@ -701,6 +1009,13 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return user.UserId;
         }
+
+        /// <summary>
+        /// ChangeProfileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userChangeProfileInput"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -715,6 +1030,14 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
 
         }
+
+        /// <summary>
+        /// ResetPasswordByAccountAsync
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<int> ResetPasswordByAccountAsync(string account, string password, ModelStateDictionary modelState)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.Username == account || (m.MobileIsValid && m.Mobile == account) || (m.EmailIsValid && m.Email == account));
@@ -728,6 +1051,13 @@ namespace Tubumu.Modules.Admin.Repositories
             await _tubumuContext.SaveChangesAsync();
             return user.UserId;
         }
+
+        /// <summary>
+        /// ChangeHeadAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="headUrl"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeHeadAsync(int userId, string headUrl)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -739,6 +1069,13 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return true;
         }
+
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState)
         {
             User user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -772,6 +1109,13 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return true;
         }
+
+        /// <summary>
+        /// ChangeStatusAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status)
         {
             User user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);

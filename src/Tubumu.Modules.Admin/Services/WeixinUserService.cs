@@ -23,30 +23,165 @@ using Tubumu.Modules.Framework.Utilities.Cryptography;
 
 namespace Tubumu.Modules.Admin.Services
 {
+    /// <summary>
+    /// IWeixinUserService
+    /// </summary>
     public interface IWeixinUserService
     {
+        /// <summary>
+        /// GetItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByWeixinMobileEndOpenIdAsync(string openId);
+
+        /// <summary>
+        /// GetItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByWeixinAppOpenIdAsync(string openId);
+
+        /// <summary>
+        /// GetItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByWeixinWebOpenIdAsync(string openId);
+
+        /// <summary>
+        /// GetItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetItemByWeixinUnionIdAsync(string unionId);
+
+        /// <summary>
+        /// GetWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         Task<string> GetWeixinAppOpenIdAsync(string code);
+
+        /// <summary>
+        /// GetWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         Task<string> GetWeixinMobileEndOpenIdAsync(string code);
+
+        /// <summary>
+        /// GetWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         Task<string> GetWeixinWebOpenIdAsync(string code);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetOrGenerateItemByWeixinMobileEndOpenIdAsync(Guid generateGroupId, UserStatus generateStatus, string openId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid generateGroupId, UserStatus generateStatus, string openId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetOrGenerateItemByWeixinWebOpenIdAsync(Guid generateGroupId, UserStatus generateStatus, string openId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         Task<UserInfo> GetOrGenerateItemByWeixinUnionIdAsync(Guid generateGroupId, UserStatus generateStatus, string unionId);
+
+        /// <summary>
+        /// UpdateWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinMobileEndOpenIdAsync(int userId, String openId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinMobileEndOpenIdAsync(int userId);
+
+        /// <summary>
+        /// UpdateWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinAppOpenIdAsync(int userId, String openId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinAppOpenIdAsync(int userId);
+
+        /// <summary>
+        /// UpdateWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinWebOpenIdAsync(int userId, String openId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinWebOpenIdAsync(int userId);
+
+        /// <summary>
+        /// UpdateWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="unionId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> UpdateWeixinUnionIdAsync(int userId, String unionId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// CleanWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         Task<bool> CleanWeixinUnionIdAsync(int userId);
 
     }
 
+    /// <summary>
+    /// WeixinUserService
+    /// </summary>
     public class WeixinUserService : IWeixinUserService
     {
         private readonly WeixinAppSettings _weixinAppSettings;
@@ -56,6 +191,16 @@ namespace Tubumu.Modules.Admin.Services
         private readonly IWeixinUserRepository _repository;
         private readonly IGroupService _groupService;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="weixinAppSettingsOptions"></param>
+        /// <param name="weixinMobileSettingsOptions"></param>
+        /// <param name="weixinWebSettingsOptions"></param>
+        /// <param name="cache"></param>
+        /// <param name="repository"></param>
+        /// <param name="groupService"></param>
+        /// <param name="smsSender"></param>
         public WeixinUserService(IOptions<WeixinAppSettings> weixinAppSettingsOptions,
             IOptions<WeixinMobileEndSettings> weixinMobileSettingsOptions,
             IOptions<WeixinWebSettings> weixinWebSettingsOptions,
@@ -75,6 +220,11 @@ namespace Tubumu.Modules.Admin.Services
 
         #region IWeixinUserService Members
 
+        /// <summary>
+        /// GetItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByWeixinMobileEndOpenIdAsync(string openId)
         {
             var userInfo = await _repository.GetItemByWeixinMobileEndOpenIdAsync(openId);
@@ -84,6 +234,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// GetItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByWeixinAppOpenIdAsync(string openId)
         {
             var userInfo = await _repository.GetItemByWeixinAppOpenIdAsync(openId);
@@ -93,6 +249,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// GetItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByWeixinWebOpenIdAsync(string openId)
         {
             var userInfo = await _repository.GetItemByWeixinWebOpenIdAsync(openId);
@@ -102,6 +264,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// GetItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetItemByWeixinUnionIdAsync(string unionId)
         {
             var userInfo = await _repository.GetItemByWeixinUnionIdAsync(unionId);
@@ -111,6 +279,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// GetWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public async Task<string> GetWeixinAppOpenIdAsync(string code)
         {
             // https://developers.weixin.qq.com/miniprogram/dev/api/code2Session.html
@@ -125,6 +299,12 @@ namespace Tubumu.Modules.Admin.Services
                 return null;
             }
         }
+
+        /// <summary>
+        /// GetWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public async Task<string> GetWeixinMobileEndOpenIdAsync(string code)
         {
             // https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317851&token=&lang=zh_CN
@@ -139,6 +319,12 @@ namespace Tubumu.Modules.Admin.Services
                 return null;
             }
         }
+
+        /// <summary>
+        /// GetWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
         public async Task<string> GetWeixinWebOpenIdAsync(string code)
         {
             // https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419316505&token=&lang=zh_CN
@@ -153,6 +339,14 @@ namespace Tubumu.Modules.Admin.Services
                 return null;
             }
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetOrGenerateItemByWeixinMobileEndOpenIdAsync(Guid generateGroupId, UserStatus generateStatus, string openId)
         {
             var userInfo = await _repository.GetOrGenerateItemByWeixinMobileEndOpenIdAsync(generateGroupId, generateStatus, openId);
@@ -162,6 +356,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid generateGroupId, UserStatus generateStatus, string openId)
         {
             var userInfo = await _repository.GetOrGenerateItemByWeixinAppOpenIdAsync(generateGroupId, generateStatus, openId);
@@ -171,6 +373,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetOrGenerateItemByWeixinWebOpenIdAsync(Guid generateGroupId, UserStatus generateStatus, string openId)
         {
             var userInfo = await _repository.GetOrGenerateItemByWeixinWebOpenIdAsync(generateGroupId, generateStatus, openId);
@@ -180,6 +390,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="unionId"></param>
+        /// <returns></returns>
         public async Task<UserInfo> GetOrGenerateItemByWeixinUnionIdAsync(Guid generateGroupId, UserStatus generateStatus, string unionId)
         {
             var userInfo = await _repository.GetOrGenerateItemByWeixinUnionIdAsync(generateGroupId, generateStatus, unionId);
@@ -189,6 +407,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
+        /// <summary>
+        /// UpdateWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinMobileEndOpenIdAsync(int userId, string openId, ModelStateDictionary modelState)
         {
             var result = await _repository.UpdateWeixinMobileEndOpenIdAsync(userId, openId, modelState);
@@ -198,6 +424,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// CleanWeixinMobileEndOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinMobileEndOpenIdAsync(int userId)
         {
             var result = await _repository.CleanWeixinMobileEndOpenIdAsync(userId);
@@ -207,6 +439,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// UpdateWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinAppOpenIdAsync(int userId, String openId, ModelStateDictionary modelState)
         {
             var result = await _repository.UpdateWeixinAppOpenIdAsync(userId, openId, modelState);
@@ -216,6 +456,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// CleanWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinAppOpenIdAsync(int userId)
         {
             var result = await _repository.CleanWeixinAppOpenIdAsync(userId);
@@ -225,6 +471,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// UpdateWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinWebOpenIdAsync(int userId, String openId, ModelStateDictionary modelState)
         {
             var result = await _repository.UpdateWeixinWebOpenIdAsync(userId, openId, modelState);
@@ -234,6 +488,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// CleanWeixinWebOpenIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinWebOpenIdAsync(int userId)
         {
             var result = await _repository.CleanWeixinWebOpenIdAsync(userId);
@@ -243,6 +503,14 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// UpdateWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="openId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> UpdateWeixinUnionIdAsync(int userId, String openId, ModelStateDictionary modelState)
         {
             var result = await _repository.UpdateWeixinUnionIdAsync(userId, openId, modelState);
@@ -252,6 +520,12 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
+        /// <summary>
+        /// CleanWeixinUnionIdAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> CleanWeixinUnionIdAsync(int userId)
         {
             var result = await _repository.CleanWeixinUnionIdAsync(userId);

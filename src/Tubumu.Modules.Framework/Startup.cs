@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -19,7 +21,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using OrchardCore.Modules;
+using OrchardCore.Modules.Manifest;
 using Swashbuckle.AspNetCore.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Mappings;
@@ -29,11 +33,21 @@ using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Framework
 {
+    /// <summary>
+    /// Startup
+    /// </summary>
     public class Startup : StartupBase
     {
         private readonly IConfiguration _configuration;
         private readonly IHostingEnvironment _environment;
         private readonly ILogger<Startup> _logger;
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="environment"></param>
+        /// <param name="logger"></param>
         public Startup(
             IConfiguration configuration,
             IHostingEnvironment environment,
@@ -44,6 +58,10 @@ namespace Tubumu.Modules.Framework
             _logger = logger;
         }
 
+        /// <summary>
+        /// ConfigureServices
+        /// </summary>
+        /// <param name="services"></param>
         public override void ConfigureServices(IServiceCollection services)
         {
             // Cache
@@ -174,10 +192,19 @@ namespace Tubumu.Modules.Framework
                     {"Bearer", new string[] { }},
                 };
                 c.AddSecurityRequirement(security);
+                c.DescribeAllEnumsAsStrings();
                 c.DocumentFilter<HiddenApiFilter>();
+                c.OrderActionsBy(m=>m.ActionDescriptor.DisplayName);
+                IncludeXmlCommentsForModules(c);
             });
         }
 
+        /// <summary>
+        /// Configure
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="routes"></param>
+        /// <param name="serviceProvider"></param>
         public override void Configure(IApplicationBuilder app, IRouteBuilder routes, IServiceProvider serviceProvider)
         {
             app.UseCookiePolicy();
@@ -190,6 +217,19 @@ namespace Tubumu.Modules.Framework
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tubumu API v1");
+            });
+        }
+
+        private void IncludeXmlCommentsForModules(SwaggerGenOptions swaggerGenOptions)
+        {
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            var assembly = Assembly.Load(new AssemblyName(_environment.ApplicationName));
+            var moduleNames = assembly.GetCustomAttributes<ModuleNameAttribute>().Select(m => m.Name);
+            moduleNames.ForEach(m =>
+            {
+                var commentsFileName = m + ".XML";
+                var commentsFilePath = Path.Combine(baseDirectory, commentsFileName);
+                swaggerGenOptions.IncludeXmlComments(commentsFilePath);
             });
         }
     }

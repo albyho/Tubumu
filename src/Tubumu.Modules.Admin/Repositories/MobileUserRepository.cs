@@ -16,24 +16,95 @@ using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
 {
+    /// <summary>
+    /// IMobileUserRepository
+    /// </summary>
     public interface IMobileUserRepository
     {
+        /// <summary>
+        /// IsExistsMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
         Task<bool> IsExistsMobileAsync(string mobile);
+
+        /// <summary>
+        /// IsExistsMobilesAsync
+        /// </summary>
+        /// <param name="mobiles"></param>
+        /// <returns></returns>
         Task<bool> IsExistsMobilesAsync(IEnumerable<string> mobiles);
+
+        /// <summary>
+        /// VerifyExistsMobileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
         Task<bool> VerifyExistsMobileAsync(int userId, string mobile);
+
+        /// <summary>
+        /// ChangeMobileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newMobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// GenerateItemAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="status"></param>
+        /// <param name="mobile"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GenerateItemAsync(Guid groupId, XM.UserStatus status, string mobile, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ResetPasswordAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<int> ResetPasswordAsync(string mobile, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// GetItemByMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, XM.UserStatus? status = null);
+
+        /// <summary>
+        /// GetOrGenerateItemByMobileAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <returns></returns>
         Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, XM.UserStatus generateStatus, string mobile, bool mobileIsValid);
     }
 
+    /// <summary>
+    /// MobileUserRepository
+    /// </summary>
     public class MobileUserRepository : IMobileUserRepository
     {
+        private readonly TubumuContext _tubumuContext;
         private readonly Expression<Func<User, XM.UserInfo>> _selector;
 
-        private readonly TubumuContext _tubumuContext;
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="tubumuContext"></param>
         public MobileUserRepository(TubumuContext tubumuContext)
         {
             _tubumuContext = tubumuContext;
@@ -158,12 +229,22 @@ namespace Tubumu.Modules.Admin.Repositories
             };
         }
 
+        /// <summary>
+        /// IsExistsMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsMobileAsync(string mobile)
         {
             if (mobile.IsNullOrWhiteSpace()) return false;
             return await _tubumuContext.User.AnyAsync(m => m.Mobile == mobile);
         }
 
+        /// <summary>
+        /// IsExistsMobilesAsync
+        /// </summary>
+        /// <param name="mobiles"></param>
+        /// <returns></returns>
         public async Task<bool> IsExistsMobilesAsync(IEnumerable<string> mobiles)
         {
             var enumerable = mobiles as string[] ?? mobiles.ToArray();
@@ -171,12 +252,26 @@ namespace Tubumu.Modules.Admin.Repositories
             return await _tubumuContext.User.Where(m => mobiles.Contains(m.Mobile)).AnyAsync();
         }
 
+        /// <summary>
+        /// VerifyExistsMobileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
         public async Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
         {
             if (mobile.IsNullOrWhiteSpace()) return false;
             return await _tubumuContext.User.AnyAsync(m => m.UserId != userId && m.Mobile == mobile);
         }
 
+        /// <summary>
+        /// ChangeMobileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newMobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState)
         {
             var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
@@ -203,6 +298,15 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// GenerateItemAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="status"></param>
+        /// <param name="mobile"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GenerateItemAsync(Guid groupId, XM.UserStatus status, string mobile, string password, ModelStateDictionary modelState)
         {
             if(await _tubumuContext.User.AnyAsync(m => m.Mobile == mobile))
@@ -227,6 +331,13 @@ namespace Tubumu.Modules.Admin.Repositories
             return await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.UserId == newUser.UserId);
         }
 
+        /// <summary>
+        /// ResetPasswordAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<int> ResetPasswordAsync(string mobile, string password, ModelStateDictionary modelState)
         {
             if(!await _tubumuContext.User.AnyAsync(m => m.Mobile == mobile))
@@ -252,6 +363,13 @@ namespace Tubumu.Modules.Admin.Repositories
             return user.UserId;
         }
 
+        /// <summary>
+        /// GetItemByMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, XM.UserStatus? status = null)
         {
             XM.UserInfo user;
@@ -267,6 +385,14 @@ namespace Tubumu.Modules.Admin.Repositories
             return user;
         }
 
+        /// <summary>
+        /// GetOrGenerateItemByMobileAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="mobile"></param>
+        /// <param name="mobileIsValid"></param>
+        /// <returns></returns>
         public async Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, XM.UserStatus generateStatus, string mobile, bool mobileIsValid)
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
