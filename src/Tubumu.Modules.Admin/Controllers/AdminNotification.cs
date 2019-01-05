@@ -18,11 +18,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="criteria"></param>
         /// <returns></returns>
         [HttpPost("GetNotifications")]
-        public async Task<ApiResult> GetNotifications([FromBody]NotificationSearchCriteria criteria)
+        public async Task<ApiPageResult<NotificationUser>> GetNotifications([FromBody]NotificationSearchCriteria criteria)
         {
             criteria.ToUserId = HttpContext.User.GetUserId();
             var page = await _notificationService.GetPageAsync(criteria);
-            var result = new ApiPageResult
+            var result = new ApiPageResult<NotificationUser>
             {
                 Code = 200,
                 Message = "获取通知列表成功",
@@ -80,10 +80,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="currentNotificationId"></param>
         /// <returns></returns>
         [HttpPost("GetNewestNotification")]
-        public async Task<ApiItemResult> GetNewestNotification(int? currentNotificationId)
+        public async Task<ApiItemResult<NotificationUser>> GetNewestNotification(int? currentNotificationId)
         {
             int userId = int.Parse(HttpContext.User.Identity.Name);
-            var result = new ApiItemResult
+            var result = new ApiItemResult<NotificationUser>
             {
                 Code = 200,
                 Message = "获取最新消息成功",

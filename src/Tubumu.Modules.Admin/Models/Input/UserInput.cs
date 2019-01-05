@@ -25,17 +25,11 @@ namespace Tubumu.Modules.Admin.Models.Input
     public abstract class UserInput
     {
         /// <summary>
-        /// 用户 Id
+        /// 主要分组
         /// </summary>
-        [DisplayName("用户 Id")]
-        public int? UserId { get; set; }
-
-        /// <summary>
-        /// 所属分组
-        /// </summary>
-        [Required(ErrorMessage = "请选择分组")]
-        [Guid(ErrorMessage = "所属分组不正确")]
-        [DisplayName("所属分组")]
+        [Required(ErrorMessage = "请选择主要分组")]
+        [Guid(ErrorMessage = "主要分组不正确")]
+        [DisplayName("主要分组")]
         public Guid GroupId { get; set; }
 
         /// <summary>
@@ -47,8 +41,9 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// <summary>
         /// 用户状态
         /// </summary>
-        //[Required(ErrorMessage = "用户状态不能为空")]
-        //[Range(0, 3, ErrorMessage = "用户状态不正确")]
+        /// <remarks>Status: 1 待审 2 待审 3 待删</remarks>
+        [Required(ErrorMessage = "请选择用户状态")]
+        //[Range(1, 3, ErrorMessage = "用户状态不正确")]
         [DisplayName("用户状态")]
         public UserStatus Status { get; set; }
 

@@ -19,22 +19,35 @@ using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// BasicData Controller
+    /// </summary>
+    /// <remarks>基础数据</remarks>
     [Route("api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
     public partial class BasicDataController : ControllerBase
     {
         private readonly IRegionService _regionService;
-
+        
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="regionService"></param>
         public BasicDataController(IRegionService regionService)
         {
             _regionService = regionService;
         }
 
+        /// <summary>
+        /// 获取区域信息列表
+        /// </summary>
+        /// <param name="parentId">父节点 Id 。 不为 null ,可获取该节点的子节点；否则获取第一级节点列表</param>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<ApiListResult> GetRegionBaseInfoList(int? parentId)
+        public async Task<ApiListResult<List<RegionInfoBase>>> GetRegionBaseInfoList(int? parentId)
         {
-            var returnResult = new ApiListResult();
+            var returnResult = new ApiListResult<List<RegionInfoBase>>();
             var list = await _regionService.GetRegionInfoBaseListAsync(parentId);
             returnResult.List = list;
             returnResult.Code = 200;

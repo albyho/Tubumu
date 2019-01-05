@@ -19,10 +19,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetNotificationsForManager")]
         [PermissionAuthorize(Permissions = "通知管理")]
-        public async Task<ApiPageResult> GetNotificationsForManager([FromBody]NotificationSearchCriteria criteria)
+        public async Task<ApiPageResult<NotificationUser>> GetNotificationsForManager([FromBody]NotificationSearchCriteria criteria)
         {
             var page = await _notificationService.GetPageAsync(criteria);
-            var result = new ApiPageResult
+            var result = new ApiPageResult<NotificationUser>
             {
                 Code = 200,
                 Message = "获取通知列表成功",

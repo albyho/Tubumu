@@ -27,9 +27,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetUsers")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiPageResult> GetUsers([FromBody]UserSearchCriteria criteria)
+        public async Task<ApiPageResult<UserInfo>> GetUsers([FromBody]UserSearchCriteria criteria)
         {
-            var result = new ApiPageResult();
+            var result = new ApiPageResult<UserInfo>();
             var page = await _userService.GetPageAsync(criteria);
             result.Code = 200;
             result.Message = "获取用户列表成功";
@@ -48,13 +48,6 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> AddUser([FromBody]UserInputAdd userInput)
         {
             var result = new ApiResult();
-            if (userInput.UserId.HasValue)
-            {
-                // Guid.Empty 也不允许
-                result.Code = 400;
-                result.Message = "添加用户失败：无需提供参数 UserId";
-                return result;
-            }
 
             if (await _userService.SaveAsync(userInput, ModelState) == null)
             {
@@ -136,11 +129,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpGet("GetGroups")]
         [PermissionAuthorize(Permissions = "分组管理")]
-        public async Task<ApiListResult> GetGroups()
+        public async Task<ApiListResult<List<Group>>> GetGroups()
         {
             var groups = await _groupService.GetListInCacheAsync();
             ProjectGroups(groups);
-            var result = new ApiListResult
+            var result = new ApiListResult<List<Group>>
             {
                 Code = 200,
                 Message = "获取分组列表成功",
@@ -298,10 +291,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetRoles")]
-        public async Task<ApiListResult> GetRoles()
+        public async Task<ApiListResult<List<Role>>> GetRoles()
         {
             var roles = await _roleService.GetListInCacheAsync();
-            var result = new ApiListResult
+            var result = new ApiListResult<List<Role>>
             {
                 Code = 200,
                 Message = "获取角色列表成功",
@@ -316,10 +309,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetRoleBases")]
-        public async Task<ApiListResult> GetRoleBases()
+        public async Task<ApiListResult<List<RoleBase>>> GetRoleBases()
         {
             var roles = await _roleService.GetBaseListInCacheAsync();
-            var result = new ApiListResult
+            var result = new ApiListResult<List<RoleBase>>
             {
                 Code = 200,
                 Message = "获取角色列表成功",
@@ -360,9 +353,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("EditRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiItemResult> EditRole([FromBody]RoleInput roleInput)
+        public async Task<ApiItemResult<Role>> EditRole([FromBody]RoleInput roleInput)
         {
-            var result = new ApiItemResult();
+            var result = new ApiItemResult<Role>();
             if (!ModelState.IsValid)
             {
                 result.Code = 400;
@@ -398,9 +391,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("AddRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiItemResult> AddRole([FromBody]RoleInput roleInput)
+        public async Task<ApiItemResult<Role>> AddRole([FromBody]RoleInput roleInput)
         {
-            var result = new ApiItemResult();
+            var result = new ApiItemResult<Role>();
             if (roleInput.RoleId.HasValue)
             {
                 // Guid.Empty 也不允许
@@ -518,10 +511,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetUserStatus")]
-        public ApiListResult GetUserStatus()
+        public ApiListResult<IEnumerable<KeyValuePair<UserStatus, string>>> GetUserStatus()
         {
             var list = typeof(UserStatus).GetEnumDictionary<UserStatus>();
-            var result = new ApiListResult
+            var result = new ApiListResult<IEnumerable<KeyValuePair<UserStatus, string>>>
             {
                 Code = 200,
                 Message = "获取用户状态列表成功",

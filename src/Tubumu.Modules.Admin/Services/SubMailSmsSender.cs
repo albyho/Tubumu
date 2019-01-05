@@ -19,23 +19,24 @@ namespace Tubumu.Modules.Admin.Services
             _subMailSmsSettings = subMailSmsSettingsOptons.Value;
 
         }
-        public async Task<bool> SendAsync(string mobile, string message, string expirationInterval = null)
+        public async Task<bool> SendAsync(string mobile, string content)
         {
             var client = _clientFactory.CreateClient();
 
-            var uri = new Uri("https://api.submail.cn/message/xsend.json");
+            const string requestUri = "https://api.submail.cn/message/xsend.json";
             var httpContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("appid", _subMailSmsSettings.AppId),
                 new KeyValuePair<string, string>("project", _subMailSmsSettings.Project),
                 new KeyValuePair<string, string>("signature", _subMailSmsSettings.Signature),
                 new KeyValuePair<string, string>("to", mobile),
-                new KeyValuePair<string, string>("vars", "{\"code\":\""+ message +"\",\"time\":\""+ expirationInterval +"\"}"),
+                // message: "{\"code\":\""+ content +"\",\"time\":\""+ expirationInterval +"\"}"
+                new KeyValuePair<string, string>("vars", content),
             });
             try
             {
-                var response = await client.PostAsync(uri, httpContent);
-                var content = await response.Content.ReadAsStringAsync();
+                var response = await client.PostAsync(requestUri, httpContent);
+                var responseText = await response.Content.ReadAsStringAsync();
                 // TODO: 检查短信发送结果
                 return true;
             }

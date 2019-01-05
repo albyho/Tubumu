@@ -26,16 +26,26 @@ namespace Tubumu.Modules.Admin.Services
     public interface IMobileUserService
     {
         Task<bool> IsExistsMobileAsync(string mobile);
+
         Task<bool> VerifyExistsMobileAsync(int userId, string mobile);
+
         Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState);
+
         Task<UserInfo> GenerateItemAsync(Guid groupId, UserStatus status, MobilePassswordValidationCodeRegisterInput input, ModelStateDictionary modelState);
+
         Task<bool> ResetPasswordAsync(MobileResetPassswordInput input, ModelStateDictionary modelState);
+
         Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, UserStatus? status = null);
+
         Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, UserStatus generateStatus, string mobile, bool mobileIsValid, ModelStateDictionary modelState);
+
         Task<bool> GetMobileValidationCodeAsync(GetMobileValidationCodeInput getMobileValidationCodeInput, ModelStateDictionary modelState);
+
         Task<bool> VerifyMobileValidationCodeAsync(VerifyMobileValidationCodeInput verifyMobileValidationCodeInput, ModelStateDictionary modelState, string defaultCode = null);
+
         Task<bool> FinishVerifyMobileValidationCodeAsync(string mobile, MobileValidationCodeType type, ModelStateDictionary modelState);
     }
+
     public class MobileUserService : IMobileUserService
     {
         private readonly MobileValidationCodeSettings _mobileValidationCodeSettings;
@@ -64,11 +74,13 @@ namespace Tubumu.Modules.Admin.Services
             if (mobile.IsNullOrWhiteSpace()) return false;
             return await _repository.IsExistsMobileAsync(mobile);
         }
+
         public async Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
         {
             if (mobile.IsNullOrWhiteSpace()) return false;
             return await _repository.VerifyExistsMobileAsync(userId, mobile);
         }
+
         public async Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState)
         {
             bool result = await _repository.ChangeMobileAsync(userId, newMobile, mobileIsValid, modelState);
@@ -82,6 +94,7 @@ namespace Tubumu.Modules.Admin.Services
             }
             return result;
         }
+
         public async Task<UserInfo> GenerateItemAsync(Guid groupId, UserStatus status, MobilePassswordValidationCodeRegisterInput input, ModelStateDictionary modelState)
         {
             // 密码加密
@@ -93,6 +106,7 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
         public async Task<bool> ResetPasswordAsync(MobileResetPassswordInput input, ModelStateDictionary modelState)
         {
             // 密码加密
@@ -105,6 +119,7 @@ namespace Tubumu.Modules.Admin.Services
             await CleanCache(userId);
             return true;
         }
+
         public async Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, UserStatus? status = null)
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
@@ -115,6 +130,7 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
         public async Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, UserStatus generateStatus, string mobile, bool mobileIsValid, ModelStateDictionary modelState)
         {
             var userInfo = await _repository.GetItemByMobileAsync(mobile);
@@ -129,6 +145,7 @@ namespace Tubumu.Modules.Admin.Services
             }
             return userInfo;
         }
+
         public async Task<bool> GetMobileValidationCodeAsync(GetMobileValidationCodeInput getMobileValidationCodeInput, ModelStateDictionary modelState)
         {
             if (getMobileValidationCodeInput.Type == MobileValidationCodeType.Register)
@@ -189,9 +206,10 @@ namespace Tubumu.Modules.Admin.Services
                     SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
                 });
             }
-
-            return await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, validationCode, (_mobileValidationCodeSettings.Expiration / 60).ToString());
+            var sms =  "{\"code\":\""+ validationCode +"\",\"time\":\""+ (_mobileValidationCodeSettings.Expiration / 60) +"\"}";
+            return await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, sms);
         }
+
         public async Task<bool> VerifyMobileValidationCodeAsync(VerifyMobileValidationCodeInput verifyMobileValidationCodeInput, ModelStateDictionary modelState, string defaultCode = null)
         {
             if (!defaultCode.IsNullOrWhiteSpace() && defaultCode.Equals(verifyMobileValidationCodeInput.ValidationCode, StringComparison.InvariantCultureIgnoreCase))
@@ -247,6 +265,7 @@ namespace Tubumu.Modules.Admin.Services
 
             return true;
         }
+        
         public async Task<bool> FinishVerifyMobileValidationCodeAsync(string mobile, MobileValidationCodeType type, ModelStateDictionary modelState)
         {
             var cacheKey = MobileValidationCodeCacheKeyFormat.FormatWith(mobile);
@@ -320,6 +339,5 @@ namespace Tubumu.Modules.Admin.Services
             }
             return validateNumberStr;
         }
-
     }
 }

@@ -68,7 +68,6 @@ namespace Tubumu.Modules.Admin
             services.AddScoped<IWeixinUserRepository, WeixinUserRepository>();
             
             // Services
-            services.AddSingleton<ISmsSender, SubMailSmsSender>();
             services.AddScoped<IRegionService, RegionService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IBulletinService, BulletinService>();
@@ -83,8 +82,13 @@ namespace Tubumu.Modules.Admin
             // Frontend
             services.Configure<FrontendSettings>(_configuration.GetSection("FrontendSettings"));
 
-            // SubMail 短信发送接口参数配置
-            services.Configure<SubMailSmsSettings>(_configuration.GetSection("SubMailSmsSettings"));
+            // SubMail 短信发送接口及参数配置
+            //services.AddSingleton<ISmsSender, SubMailSmsSender>();
+            //services.Configure<SubMailSmsSettings>(_configuration.GetSection("SubMailSmsSettings"));
+
+            // SmbBao 短信发送接口及参数配置
+            services.AddSingleton<ISmsSender, SmsBaoSmsSender>();
+            services.Configure<SmsBaoSmsSettings>(_configuration.GetSection("SmsBaoSmsSettings"));
 
             // 认证设置
             services.Configure<AuthenticationSettings>(_configuration.GetSection("AuthenticationSettings"));

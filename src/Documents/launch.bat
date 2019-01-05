@@ -1,0 +1,1 @@
+dotnet Tubumu.Web.dll --urls=http://localhost:5000

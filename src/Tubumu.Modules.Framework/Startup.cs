@@ -74,7 +74,7 @@ namespace Tubumu.Modules.Framework
             // Cors
             services.AddCors(options => options.AddPolicy("DefaultPolicy",
                 builder => builder.WithOrigins("http://localhost:9090", "http://localhost:8080").AllowAnyMethod().AllowAnyHeader().AllowCredentials())
-                // builder => builder.AllowAnyOrigin.AllowAnyMethod().AllowAnyHeader().AllowCredentials())
+            // builder => builder.AllowAnyOrigin.AllowAnyMethod().AllowAnyHeader().AllowCredentials())
             );
 
             // Cookie
@@ -166,7 +166,7 @@ namespace Tubumu.Modules.Framework
 
             // JSON Date format
             void JsonSetup(MvcJsonOptions options) => options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-            services.Configure((Action<MvcJsonOptions>) JsonSetup);
+            services.Configure((Action<MvcJsonOptions>)JsonSetup);
 
             // SignalR
             services.AddSignalR();
@@ -179,7 +179,7 @@ namespace Tubumu.Modules.Framework
             // Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Tubumu API", Version = "v1" });
+                c.SwaggerDoc("v1", new Info { Title = _environment.ApplicationName + " API", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
                     Description = "权限认证(数据将在请求头中进行传输) 参数结构: \"Authorization: Bearer {token}\"",
@@ -194,7 +194,7 @@ namespace Tubumu.Modules.Framework
                 c.AddSecurityRequirement(security);
                 c.DescribeAllEnumsAsStrings();
                 c.DocumentFilter<HiddenApiFilter>();
-                c.OrderActionsBy(m=>m.ActionDescriptor.DisplayName);
+                c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
                 IncludeXmlCommentsForModules(c);
             });
         }
@@ -216,7 +216,7 @@ namespace Tubumu.Modules.Framework
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tubumu API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", _environment.ApplicationName + " API v1");
             });
         }
 

@@ -12,6 +12,9 @@ using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// Admin Controller
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     [IgnoreAntiforgeryToken]

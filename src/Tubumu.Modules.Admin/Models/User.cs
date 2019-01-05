@@ -241,7 +241,7 @@ namespace Tubumu.Modules.Admin.Models
         public bool IsTester { get; set; }
 
         /// <summary>
-        /// 所属分组
+        /// 主要分组
         /// </summary>
         public GroupInfo Group { get; set; }
 
@@ -366,12 +366,12 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<RoleInfo> Roles { get; set; }
 
         /// <summary>
-        /// 用户所属分组所拥有的角色
+        /// 用户主要分组所拥有的角色
         /// </summary>
         public IEnumerable<RoleInfo> GroupRoles { get; set; }
 
         /// <summary>
-        /// 用户所属分组所拥有的角色
+        /// 用户主要分组所拥有的角色
         /// </summary>
         public IEnumerable<RoleInfo> GroupsRoles { get; set; }
 
@@ -381,22 +381,22 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<PermissionBase> Permissions { get; set; }
 
         /// <summary>
-        /// 用户所属分组所拥有的权限
+        /// 用户主要分组所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupPermissions { get; set; }
 
         /// <summary>
-        /// 用户所属分组所拥有的权限
+        /// 用户主要分组所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupsPermissions { get; set; }
 
         /// <summary>
-        /// 用户所属分组所拥有的角色所拥有的权限
+        /// 用户主要分组所拥有的角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupRolesPermissions { get; set; }
 
         /// <summary>
-        /// 用户所属分组所拥有的角色所拥有的权限
+        /// 用户主要分组所拥有的角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupsRolesPermissions { get; set; }
 

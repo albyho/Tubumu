@@ -7,6 +7,6 @@ namespace Tubumu.Modules.Framework.Services
 {
     public interface ISmsSender
     {
-        Task<bool> SendAsync(string mobile, string message, string expirationInterval = null);
+        Task<bool> SendAsync(string mobile, string content);
     }
 }

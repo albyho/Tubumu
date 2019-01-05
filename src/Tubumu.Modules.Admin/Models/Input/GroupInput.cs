@@ -11,7 +11,10 @@ namespace Tubumu.Modules.Admin.Models.Input
     /// </summary>
     public class GroupIdInput
     {
-        [Required(ErrorMessage = "请输入分组Id")]
+        /// <summary>
+        /// 分组 Id
+        /// </summary>
+        [Required(ErrorMessage = "请输入分组 Id")]
         public Guid GroupId { get; set; }
     }
 
@@ -23,13 +26,14 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// <summary>
         /// 分组 Id
         /// </summary>
+        /// <remarks>添加时为 null；编辑时未非 null</remarks>
         [DisplayName("分组 Id")]
         public Guid? GroupId { get; set; }
 
         /// <summary>
-        /// 所属分组（父分组） Id
+        /// 主要分组（父分组） Id
         /// </summary>
-        [DisplayName("所属分组")]
+        [DisplayName("主要分组")]
         public Guid? ParentId { get; set; }
 
         /// <summary>
@@ -44,11 +48,13 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// <summary>
         /// 是否停用
         /// </summary>
+        [Required(ErrorMessage = "请选择是否停用")]
         public bool IsDisabled { get; set; }
 
         /// <summary>
         /// 是否允许包含用户
         /// </summary>
+        [Required(ErrorMessage = "请选择是否包含用户")]
         public bool IsContainsUser { get; set; }
 
         /// <summary>
@@ -75,16 +81,19 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// <summary>
         /// 源分组 Id
         /// </summary>
+        [Required(ErrorMessage = "请选择源分组")]
         public Guid SourceId { get; set; }
 
         /// <summary>
         /// 目标分组 Id
         /// </summary>
+        [Required(ErrorMessage = "请选择目标分组")]
         public Guid TargetId { get; set; }
 
         /// <summary>
         /// 移动位置
         /// </summary>
+        [Required(ErrorMessage = "请选择移动位置")]
         public MovingLocation MovingLocation { get; set; }
 
         /// <summary>

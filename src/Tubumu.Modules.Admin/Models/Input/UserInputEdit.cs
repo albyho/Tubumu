@@ -11,7 +11,12 @@ namespace Tubumu.Modules.Admin.Models.Input
     /// </summary>
     public class UserInputEdit : UserInput
     {
-
+        /// <summary>
+        /// 用户 Id
+        /// </summary>
+        /// <remarks>添加时为 null；编辑时未非 null</remarks>
+        [DisplayName("用户 Id")]
+        public int? UserId { get; set; }
     }
 
     /// <summary>

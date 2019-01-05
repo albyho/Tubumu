@@ -31,6 +31,8 @@ namespace Tubumu.Modules.Admin
               ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{67A9B69F-A513-4c20-928E-532FB5EC4B42}"), ParentId = new Guid("{418D9725-3C83-4119-A76C-221E2371944C}"), Name="角色管理"}
               ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{B16814AA-064D-42f5-B4B7-0E92A925C91F}"), ParentId = new Guid("{418D9725-3C83-4119-A76C-221E2371944C}"), Name="权限管理"}
 
+              ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{F29CD67F-49D3-49A0-82B7-E929ED25B886}"), Name="短信管理"}
+              ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{EB9574B8-0C2A-4AFF-BD33-021908EC1652}"), ParentId = new Guid("{F29CD67F-49D3-49A0-82B7-E929ED25B886}"), Name="短信发送"}
             };
 
             return permissions;

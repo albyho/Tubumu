@@ -25,6 +25,7 @@ namespace Tubumu.Modules.Admin.Controllers
     /// <summary>
     /// Authentication Controller
     /// </summary>
+    /// <remarks>用户认证</remarks>
     [Route("api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]

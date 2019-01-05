@@ -28,6 +28,7 @@ namespace Tubumu.Modules.Framework.Models
         /// <summary>
         /// 错误码
         /// </summary>
+        /// <remarks>code: 200 表示成功 其他如无特别提示表示失败</remarks>
         [JsonProperty(PropertyName = "code")]
         public int Code { get; set; }
 
@@ -59,25 +60,25 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// List ApiResult
     /// </summary>
-    public class ApiListResult : ApiResult
+    public class ApiListResult<T> : ApiResult where T: class
     {
         /// <summary>
         /// Lists
         /// </summary>
         [JsonProperty(PropertyName = "list", NullValueHandling = NullValueHandling.Ignore)]
-        public object List { get; set; }
+        public T List { get; set; }
     }
 
     /// <summary>
     /// Page ApiResult
     /// </summary>
-    public class ApiPageResult : ApiResult
+    public class ApiPageResult<T> : ApiResult where T: class
     {
         /// <summary>
         /// Pages
         /// </summary>
         [JsonProperty(PropertyName = "page", NullValueHandling = NullValueHandling.Ignore)]
-        public object Page { get; set; }
+        public Page<T> Page { get; set; }
     }
 
     /// <summary>
@@ -95,14 +96,14 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Item ApiResult
     /// </summary>
-    public class ApiItemResult : ApiResult
+    public class ApiItemResult<T> : ApiResult where T: class
     {
 
         /// <summary>
         /// Item
         /// </summary>
         [JsonProperty(PropertyName = "item", NullValueHandling = NullValueHandling.Ignore)]
-        public object Item { get; set; }
+        public T Item { get; set; }
     }
 
     /// <summary>

@@ -550,10 +550,10 @@ namespace Tubumu.Modules.Admin.Repositories
                 Email = String.Empty,
                 Mobile = String.Empty,
             };
-            if (userInput.UserId.HasValue) //根据用户 Id 编辑
+            if (userInput is UserInputEdit userInputEdit && userInputEdit.UserId.HasValue) //根据用户 Id 编辑
             {
 
-                item = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId != userInput.UserId.Value &&
+                item = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId != userInputEdit.UserId.Value &&
                 (m.Username == username ||
                 (mobile != null && m.Mobile == userInput.Mobile) ||
                 (email != null && m.Email == userInput.Email))).Select(m => new
@@ -722,13 +722,13 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<XM.UserInfo> SaveAsync(UserInput userInput, ModelStateDictionary modelState)
         {
             User userToSave;
-            if (userInput.UserId.HasValue)
+            if (userInput is UserInputEdit userInputEdit && userInputEdit.UserId.HasValue)
             {
                 userToSave = await _tubumuContext.User.
                     Include(m => m.UserGroup).
                     Include(m => m.UserRole).
                     Include(m => m.UserPermission).
-                    FirstOrDefaultAsync(m => m.UserId == userInput.UserId.Value);
+                    FirstOrDefaultAsync(m => m.UserId == userInputEdit.UserId.Value);
                 if (userToSave == null)
                 {
                     modelState.AddModelError("UserId", "尝试编辑不存在的记录");

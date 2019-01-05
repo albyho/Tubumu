@@ -46,6 +46,8 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// <summary>
         /// 角色 Id
         /// </summary>
+        /// <remarks>添加时为 null；编辑时未非 null</remarks>
+        [Required(ErrorMessage = "请输入角色 Id")]
         public Guid RoleId { get; set; }
 
         /// <summary>
@@ -66,11 +68,13 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// <summary>
         /// 源 DisplayOrder
         /// </summary>
+        [Required(ErrorMessage = "请输入 SourceDisplayOrder")]
         public int SourceDisplayOrder { get; set; }
 
         /// <summary>
         /// 目标 DisplayOrder
         /// </summary>
+        [Required(ErrorMessage = "请输入 TargetDisplayOrder")]
         public int TargetDisplayOrder { get; set; }
     }
 }
