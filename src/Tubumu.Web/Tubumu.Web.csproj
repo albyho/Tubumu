@@ -11,8 +11,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="OrchardCore" Version="1.0.0-beta3-70302" />
-    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-beta3-70302" />
+    <PackageReference Include="OrchardCore" Version="1.0.0-beta3-70374" />
+    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-beta3-70374" />
+    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-beta3-70374" />
   </ItemGroup>
 
   <ItemGroup>

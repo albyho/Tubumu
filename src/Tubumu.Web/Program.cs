@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using OrchardCore.Logging;
 
 namespace Tubumu.Web
 {
@@ -23,6 +24,7 @@ namespace Tubumu.Web
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseNLogWeb()
                 .UseStartup<Startup>();
     }
 }

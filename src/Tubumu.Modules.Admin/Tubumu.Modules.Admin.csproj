@@ -20,7 +20,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-70326" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-70374" />
     <PackageReference Include="Senparc.Weixin.Open" Version="4.3.2" />
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.3.1" />
   </ItemGroup>
