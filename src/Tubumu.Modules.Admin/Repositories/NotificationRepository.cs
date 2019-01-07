@@ -12,23 +12,74 @@ using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
 {
+    /// <summary>
+    /// INotificationRepository
+    /// </summary>
     public interface INotificationRepository
     {
+        /// <summary>
+        /// GetPageAsync
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         Task<Page<XM.NotificationUser>> GetPageAsync(XM.NotificationSearchCriteria criteria);
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="notificationInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> SaveAsync(XM.NotificationInput notificationInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="notificationId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> RemoveAsync(int notificationId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ReadAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notificationIds"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> ReadAsync(int userId, int[] notificationIds, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// DeleteAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notificationIds"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> DeleteAsync(int userId, int[] notificationIds, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// GetNewestAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="currentNotificationId"></param>
+        /// <returns></returns>
         Task<XM.NotificationUser> GetNewestAsync(int userId, int? currentNotificationId = null);
     }
 
+    /// <summary>
+    /// NotificationRepository
+    /// </summary>
     public class NotificationRepository : INotificationRepository
     {
+        private readonly TubumuContext _tubumuContext;
         private readonly Expression<Func<Notification, XM.Notification>> _notificationSelector;
         private readonly Expression<Func<Notification, XM.NotificationUser>> _notificationUserSelector;
 
-        private readonly TubumuContext _tubumuContext;
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="tubumuContext"></param>
         public NotificationRepository(TubumuContext tubumuContext)
         {
             _tubumuContext = tubumuContext;
@@ -36,22 +87,22 @@ namespace Tubumu.Modules.Admin.Repositories
             _notificationSelector = m => new XM.Notification
             {
                 NotificationId = m.NotificationId,
-                FromUser = new XM.UserInfoWarpper
+                FromUser = m.FromUser != null ? new XM.UserInfoWarpper
                 {
-                    UserId = m.FromUserId.HasValue ? m.FromUser.UserId : 0,
-                    Username = m.FromUserId.HasValue ? m.FromUser.Username : "",
-                    DisplayName = m.FromUserId.HasValue ? m.FromUser.DisplayName : "",
-                    HeadUrl = m.FromUserId.HasValue ? m.FromUser.HeadUrl : "",
-                    LogoUrl = m.FromUserId.HasValue ? m.FromUser.LogoUrl : "",
-                },
-                ToUser = new XM.UserInfoWarpper
+                    UserId = m.FromUser.UserId,
+                    Username = m.FromUser.Username,
+                    DisplayName = m.FromUser.DisplayName,
+                    HeadUrl = m.FromUser.HeadUrl,
+                    LogoUrl = m.FromUser.LogoUrl,
+                }: null,
+                ToUser = m.ToUser != null ? new XM.UserInfoWarpper
                 {
-                    UserId = m.ToUserId.HasValue ? m.ToUser.UserId : 0,
-                    Username = m.ToUserId.HasValue ? m.ToUser.Username : "",
-                    DisplayName = m.ToUserId.HasValue ? m.ToUser.DisplayName : "",
-                    HeadUrl = m.ToUserId.HasValue ? m.ToUser.HeadUrl : "",
-                    LogoUrl = m.ToUserId.HasValue ? m.ToUser.LogoUrl : "",
-                },
+                    UserId = m.ToUser.UserId,
+                    Username = m.ToUser.Username,
+                    DisplayName = m.ToUser.DisplayName,
+                    HeadUrl = m.ToUser.HeadUrl,
+                    LogoUrl = m.ToUser.LogoUrl,
+                }: null,
                 Title = m.Title,
                 Message = m.Message,
                 CreationDate = m.CreationDate,
@@ -61,22 +112,22 @@ namespace Tubumu.Modules.Admin.Repositories
             _notificationUserSelector = m => new XM.NotificationUser
             {
                 NotificationId = m.NotificationId,
-                FromUser = new XM.UserInfoWarpper
+                FromUser = m.FromUser != null ? new XM.UserInfoWarpper
                 {
-                    UserId = m.FromUserId.HasValue ? m.FromUser.UserId : 0,
-                    Username = m.FromUserId.HasValue ? m.FromUser.Username : "",
-                    DisplayName = m.FromUserId.HasValue ? m.FromUser.DisplayName : "",
-                    HeadUrl = m.FromUserId.HasValue ? m.FromUser.HeadUrl : "",
-                    LogoUrl = m.FromUserId.HasValue ? m.FromUser.LogoUrl : "",
-                },
-                ToUser = new XM.UserInfoWarpper
+                    UserId = m.FromUser.UserId,
+                    Username = m.FromUser.Username,
+                    DisplayName = m.FromUser.DisplayName,
+                    HeadUrl = m.FromUser.HeadUrl,
+                    LogoUrl = m.FromUser.LogoUrl,
+                }: null,
+                ToUser = m.ToUser != null ? new XM.UserInfoWarpper
                 {
-                    UserId = m.ToUserId.HasValue ? m.ToUser.UserId : 0,
-                    Username = m.ToUserId.HasValue ? m.ToUser.Username : "",
-                    DisplayName = m.ToUserId.HasValue ? m.ToUser.DisplayName : "",
-                    HeadUrl = m.ToUserId.HasValue ? m.ToUser.HeadUrl : "",
-                    LogoUrl = m.ToUserId.HasValue ? m.ToUser.LogoUrl : "",
-                },
+                    UserId = m.ToUser.UserId,
+                    Username = m.ToUser.Username,
+                    DisplayName = m.ToUser.DisplayName,
+                    HeadUrl = m.ToUser.HeadUrl,
+                    LogoUrl = m.ToUser.LogoUrl,
+                }: null,
                 Title = m.Title,
                 Message = m.Message,
                 CreationDate = m.CreationDate,
@@ -87,6 +138,11 @@ namespace Tubumu.Modules.Admin.Repositories
             };
         }
 
+        /// <summary>
+        /// GetPageAsync
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         public async Task<Page<XM.NotificationUser>> GetPageAsync(XM.NotificationSearchCriteria criteria)
         {
             if (criteria.ToUserId.HasValue)
@@ -136,6 +192,11 @@ namespace Tubumu.Modules.Admin.Repositories
             return page;
         }
 
+        /// <summary>
+        /// GetNotificationUserPageAsync
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
         private async Task<Page<XM.NotificationUser>> GetNotificationUserPageAsync(XM.NotificationSearchCriteria criteria)
         {
             if (!criteria.ToUserId.HasValue)
@@ -235,6 +296,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return page;
         }
 
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="notificationInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> SaveAsync(XM.NotificationInput notificationInput, ModelStateDictionary modelState)
         {
             User fromUser = null;
@@ -288,6 +355,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="notificationId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(int notificationId, ModelStateDictionary modelState)
         {
             // 需删除 NotificationUser 的记录
@@ -300,6 +373,13 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// ReadAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notificationIds"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> ReadAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
         {
             var notifications = await _tubumuContext.Notification.AsNoTracking().Where(m => notificationIds.Contains(m.NotificationId)).
@@ -339,6 +419,13 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// DeleteAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="notificationIds"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> DeleteAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
         {
             var notifications = await _tubumuContext.Notification.AsNoTracking().Where(m => notificationIds.Contains(m.NotificationId)).
@@ -378,6 +465,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// GetNewestAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="currentNotificationId"></param>
+        /// <returns></returns>
         public async Task<XM.NotificationUser> GetNewestAsync(int userId, int? currentNotificationId = null)
         {
             var userCreationDate = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.CreationDate).FirstOrDefaultAsync();
@@ -429,6 +522,5 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return await query2.FirstOrDefaultAsync();
         }
-
     }
 }

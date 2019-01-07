@@ -263,11 +263,11 @@ namespace Tubumu.Modules.Admin.Repositories
                              GroupId = ur.GroupId,
                              Name = ur.Group.Name,
                          },
-                Role = new XM.RoleInfo
+                Role = u.Role != null ? new XM.RoleInfo
                 {
-                    RoleId = u.Role != null ? u.Role.RoleId : Guid.Empty,
-                    Name = u.Role != null ? u.Role.Name : String.Empty,
-                },
+                    RoleId = u.Role.RoleId,
+                    Name = u.Role.Name,
+                }: null,
                 Roles = from ur in u.UserRole
                         select new XM.RoleInfo
                         {
@@ -350,7 +350,6 @@ namespace Tubumu.Modules.Admin.Repositories
         }
 
         #region IUserRepository 成员
-
 
         /// <summary>
         /// GetItemByUserIdAsync

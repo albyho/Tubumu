@@ -12,26 +12,107 @@ using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Services
 {
+    /// <summary>
+    /// IGroupService
+    /// </summary>
     public interface IGroupService
     {
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         Task<Group> GetItemAsync(Guid groupId);
+
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         Task<Group> GetItemAsync(string name);
+
+        /// <summary>
+        /// GetListInCacheAsync
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         Task<List<Group>> GetListInCacheAsync(Guid? parentId = null);
+
+        /// <summary>
+        /// GetBasePathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         Task<List<GroupBase>> GetBasePathAsync(Guid groupId);
+
+        /// <summary>
+        /// GetInfoPathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         Task<List<GroupInfo>> GetInfoPathAsync(Guid groupId);
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="groupInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> RemoveAsync(Guid groupId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="movingTarget"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(Guid groupId, MovingTarget movingTarget);
+
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceGroupId"></param>
+        /// <param name="targetGroupId"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(Guid sourceGroupId, Guid targetGroupId, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceDisplayOrder"></param>
+        /// <param name="targetDisplayOrder"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
     }
 
+    /// <summary>
+    /// GroupService
+    /// </summary>
     public class GroupService : IGroupService
     {
-        private readonly IDistributedCache _cache;
         private readonly IGroupRepository _repository;
+        private readonly IDistributedCache _cache;
         private const string GroupListCacheKey = "GroupList";
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="cache"></param>
+        /// <param name="repository"></param>
         public GroupService(IDistributedCache cache, IGroupRepository repository)
         {
             _cache = cache;
@@ -40,34 +121,65 @@ namespace Tubumu.Modules.Admin.Services
 
         #region IGroupService Members
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public async Task<Group> GetItemAsync(Guid groupId)
         {
             return await _repository.GetItemAsync(groupId);
         }
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<Group> GetItemAsync(string name)
         {
             return await _repository.GetItemAsync(name);
         }
 
+        /// <summary>
+        /// GetListInCacheAsync
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public async Task<List<Group>> GetListInCacheAsync(Guid? parentId = null)
         {
             var groups = await GetListInCacheInternalAsync();
             return GererateTree(groups);
         }
 
+        /// <summary>
+        /// GetBasePathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public async Task<List<GroupBase>> GetBasePathAsync(Guid groupId)
         {
             var groups = await GetListInCacheInternalAsync();
             return GenerateBasePath(groups, groupId);
         }
 
+        /// <summary>
+        /// GetInfoPathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public async Task<List<GroupInfo>> GetInfoPathAsync(Guid groupId)
         {
             var groups = await GetListInCacheInternalAsync();
             return GenerateInfoPath(groups, groupId);
         }
 
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="groupInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState)
         {
             if (!await ValidateExistsAsync(groupInput, modelState)) return false;
@@ -80,6 +192,12 @@ namespace Tubumu.Modules.Admin.Services
             return result;
         }
 
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(Guid groupId, ModelStateDictionary modelState)
         {
             var result = await _repository.RemoveAsync(groupId, modelState);
@@ -90,6 +208,12 @@ namespace Tubumu.Modules.Admin.Services
             return result;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="movingTarget"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(Guid groupId, MovingTarget movingTarget)
         {
             var result = await _repository.MoveAsync(groupId, movingTarget);
@@ -100,6 +224,15 @@ namespace Tubumu.Modules.Admin.Services
             return result;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceGroupId"></param>
+        /// <param name="targetGroupId"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(Guid sourceGroupId, Guid targetGroupId, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             var result = await _repository.MoveAsync(sourceGroupId, targetGroupId, movingLocation, isChild, modelState);
@@ -110,6 +243,15 @@ namespace Tubumu.Modules.Admin.Services
             return result;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceDisplayOrder"></param>
+        /// <param name="targetDisplayOrder"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             var result = await _repository.MoveAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);

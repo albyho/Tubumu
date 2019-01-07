@@ -184,13 +184,12 @@ namespace Tubumu.Modules.Admin.Services
     /// </summary>
     public class WeixinUserService : IWeixinUserService
     {
-        private readonly WeixinAppSettings _weixinAppSettings;
-        private readonly WeixinMobileEndSettings _weixinMobileSettings;
-        private readonly WeixinWebSettings _weixinWebSettings;
         private readonly IDistributedCache _cache;
         private readonly IWeixinUserRepository _repository;
         private readonly IGroupService _groupService;
-
+        private readonly WeixinAppSettings _weixinAppSettings;
+        private readonly WeixinMobileEndSettings _weixinMobileSettings;
+        private readonly WeixinWebSettings _weixinWebSettings;
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -201,21 +200,21 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="repository"></param>
         /// <param name="groupService"></param>
         /// <param name="smsSender"></param>
-        public WeixinUserService(IOptions<WeixinAppSettings> weixinAppSettingsOptions,
-            IOptions<WeixinMobileEndSettings> weixinMobileSettingsOptions,
-            IOptions<WeixinWebSettings> weixinWebSettingsOptions,
-            IDistributedCache cache,
+        public WeixinUserService(IDistributedCache cache,
             IWeixinUserRepository repository,
             IGroupService groupService,
-            ISmsSender smsSender
+            ISmsSender smsSender,
+            IOptions<WeixinAppSettings> weixinAppSettingsOptions,
+            IOptions<WeixinMobileEndSettings> weixinMobileSettingsOptions,
+            IOptions<WeixinWebSettings> weixinWebSettingsOptions
             )
         {
+            _repository = repository;
+            _cache = cache;
+            _groupService = groupService;
             _weixinAppSettings = weixinAppSettingsOptions.Value;
             _weixinMobileSettings = weixinMobileSettingsOptions.Value;
             _weixinWebSettings = weixinWebSettingsOptions.Value;
-            _cache = cache;
-            _repository = repository;
-            _groupService = groupService;
         }
 
         #region IWeixinUserService Members

@@ -14,6 +14,9 @@ using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
 {
+    /// <summary>
+    /// IPermissionRepository
+    /// </summary>
     public interface IPermissionRepository
     {
         Task<XM.Permission> GetItemAsync(Guid permissionId);
@@ -24,27 +27,49 @@ namespace Tubumu.Modules.Admin.Repositories
         Task<bool> MoveAsync(Guid permissionId, MovingTarget target);
     }
 
+    /// <summary>
+    /// PermissionRepository
+    /// </summary>
     public class PermissionRepository : IPermissionRepository
     {
         private readonly TubumuContext _tubumuContext;
 
+        /// <summary>
+        /// PermissionRepository
+        /// </summary>
+        /// <param name="tubumuContext"></param>
         public PermissionRepository(TubumuContext tubumuContext)
         {
             _tubumuContext = tubumuContext;
         }
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="permissionId"></param>
+        /// <returns></returns>
         public async Task<XM.Permission> GetItemAsync(Guid permissionId)
         {
             var item = await _tubumuContext.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.PermissionId == permissionId);
             return item.MapTo<XM.Permission>();
         }
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<XM.Permission> GetItemAsync(string name)
         {
             var item = await _tubumuContext.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.Name == name);
             return item.MapTo<XM.Permission>();
         }
 
+        /// <summary>
+        /// GetListAsync
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public async Task<List<XM.Permission>> GetListAsync(Guid? parentId = null)
         {
             //Func<Permission, XM.Permission> selector
@@ -94,6 +119,11 @@ namespace Tubumu.Modules.Admin.Repositories
             }
         }
 
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="permissionInput"></param>
+        /// <returns></returns>
         public async Task<bool> SaveAsync(PermissionInput permissionInput)
         {
             string sql;
@@ -301,6 +331,11 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="permissionId"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(Guid permissionId)
         {
             //移除无限级分类步骤：
@@ -343,6 +378,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="permissionId"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(Guid permissionId, MovingTarget target)
         {
             string sql;
@@ -466,10 +507,12 @@ namespace Tubumu.Modules.Admin.Repositories
                 .Select(m => m.DisplayOrder)
                 .FirstOrDefaultAsync();
         }
+
         private async Task<int> GetMaxDisplayOrderAsync()
         {
             return await _tubumuContext.Permission.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
         }
+
         private async Task<int> GetMaxDisplayOrderInParentTreeAsync(Guid parentId)
         {
             int maxDisplayOrder;
@@ -488,6 +531,7 @@ namespace Tubumu.Modules.Admin.Repositories
             return maxDisplayOrder;
 
         }
+
         private async Task<int> GetLevelAsync(Guid pessmissionId)
         {
             return await _tubumuContext.Permission.Where(m => m.PermissionId == pessmissionId).Select(m => m.Level).FirstOrDefaultAsync();

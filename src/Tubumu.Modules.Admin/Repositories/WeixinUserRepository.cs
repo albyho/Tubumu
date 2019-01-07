@@ -149,9 +149,8 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class WeixinUserRepository : IWeixinUserRepository
     {
-        private readonly Expression<Func<User, XM.UserInfo>> _selector;
-
         private readonly TubumuContext _tubumuContext;
+        private readonly Expression<Func<User, XM.UserInfo>> _selector;
 
         /// <summary>
         /// 构造函数
@@ -195,11 +194,11 @@ namespace Tubumu.Modules.Admin.Repositories
                              GroupId = ur.GroupId,
                              Name = ur.Group.Name,
                          },
-                Role = new XM.RoleInfo
+                Role = u.Role != null ? new XM.RoleInfo
                 {
-                    RoleId = u.Role != null ? u.Role.RoleId : Guid.Empty,
-                    Name = u.Role != null ? u.Role.Name : String.Empty,
-                },
+                    RoleId =  u.Role.RoleId,
+                    Name = u.Role.Name,
+                } : null,
                 Roles = from ur in u.UserRole
                         select new XM.RoleInfo
                         {

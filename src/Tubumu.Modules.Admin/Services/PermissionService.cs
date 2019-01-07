@@ -27,14 +27,14 @@ namespace Tubumu.Modules.Admin.Services
 
     public class PermissionService : IPermissionService
     {
-        private readonly IDistributedCache _cache;
         private readonly IPermissionRepository _repository;
+        private readonly IDistributedCache _cache;
         private const string PermissionListCacheKey = "PermissionList";
 
-        public PermissionService(IDistributedCache cache, IPermissionRepository repository)
+        public PermissionService(IPermissionRepository repository, IDistributedCache cache)
         {
-            _cache = cache;
             _repository = repository;
+            _cache = cache;
         }
 
         #region IPermissionService Members

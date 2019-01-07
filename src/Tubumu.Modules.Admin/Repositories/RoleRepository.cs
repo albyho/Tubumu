@@ -14,26 +14,100 @@ using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
 {
+    /// <summary>
+    /// IRoleRepository
+    /// </summary>
     public interface IRoleRepository
     {
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         Task<XM.Role> GetItemAsync(Guid roleId);
+
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         Task<XM.Role> GetItemAsync(string name);
+
+        /// <summary>
+        /// GetBaseListAsync
+        /// </summary>
+        /// <returns></returns>
         Task<List<XM.RoleBase>> GetBaseListAsync();
+
+        /// <summary>
+        /// GetListAsync
+        /// </summary>
+        /// <returns></returns>
         Task<List<XM.Role>> GetListAsync();
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="roleInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<XM.Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> RemoveAsync(Guid roleId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// SaveNameAsync
+        /// </summary>
+        /// <param name="saveRoleNameInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> SaveNameAsync(RoleNameInput saveRoleNameInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(Guid roleId, MovingTarget target);
+
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceDisplayOrder"></param>
+        /// <param name="targetDisplayOrder"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceRoleId"></param>
+        /// <param name="targetRoleId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(Guid sourceRoleId, Guid targetRoleId, ModelStateDictionary modelState);
     }
 
+    /// <summary>
+    /// RoleRepository
+    /// </summary>
     public class RoleRepository : IRoleRepository
     {
+        private readonly TubumuContext _tubumuContext;
         private readonly Expression<Func<Role, XM.Role>> _selector;
 
-        private readonly TubumuContext _tubumuContext;
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="tubumuContext"></param>
         public RoleRepository(TubumuContext tubumuContext)
         {
             _tubumuContext = tubumuContext;
@@ -57,16 +131,30 @@ namespace Tubumu.Modules.Admin.Repositories
 
         #region IRoleRepository 成员
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
         public async Task<XM.Role> GetItemAsync(Guid roleId)
         {
             return await _tubumuContext.Role.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.RoleId == roleId);
         }
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<XM.Role> GetItemAsync(string name)
         {
             return await _tubumuContext.Role.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
         }
 
+        /// <summary>
+        /// GetBaseListAsync
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<XM.RoleBase>> GetBaseListAsync()
         {
             return await (from r in _tubumuContext.Role.AsNoTracking()
@@ -80,11 +168,21 @@ namespace Tubumu.Modules.Admin.Repositories
                           }).AsNoTracking().ToListAsync();
         }
 
+        /// <summary>
+        /// GetListAsync
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<XM.Role>> GetListAsync()
         {
             return await _tubumuContext.Role.AsNoTracking().OrderBy(m => m.DisplayOrder).Select(_selector).AsNoTracking().ToListAsync();
         }
 
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="roleInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<XM.Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState)
         {
             Role roleToSave;
@@ -157,6 +255,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return role;
         }
 
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(Guid roleId, ModelStateDictionary modelState)
         {
             var roleToRemove = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == roleId);
@@ -184,6 +288,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// SaveNameAsync
+        /// </summary>
+        /// <param name="saveRoleNameInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> SaveNameAsync(RoleNameInput saveRoleNameInput, ModelStateDictionary modelState)
         {
             var roleToRemove = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == saveRoleNameInput.RoleId);
@@ -202,6 +312,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="roleId"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(Guid roleId, MovingTarget target)
         {
             var roleToMove = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == roleId);
@@ -236,6 +352,13 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceDisplayOrder"></param>
+        /// <param name="targetDisplayOrder"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, ModelStateDictionary modelState)
         {
             if (sourceDisplayOrder == targetDisplayOrder)
@@ -258,6 +381,13 @@ namespace Tubumu.Modules.Admin.Repositories
             return await MoveAsync(sourceRole, targetRole, modelState);
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceRoleId"></param>
+        /// <param name="targetRoleId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(Guid sourceRoleId, Guid targetRoleId, ModelStateDictionary modelState)
         {
             if (sourceRoleId == targetRoleId)
@@ -281,6 +411,13 @@ namespace Tubumu.Modules.Admin.Repositories
             return await MoveAsync(sourceRole, targetRole, modelState);
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceRole"></param>
+        /// <param name="targetRole"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         private async Task<bool> MoveAsync(Role sourceRole, Role targetRole, ModelStateDictionary modelState)
         {
             if (sourceRole.DisplayOrder == targetRole.DisplayOrder)

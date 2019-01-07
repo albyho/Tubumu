@@ -48,17 +48,16 @@ namespace Tubumu.Modules.Admin.Services
 
     public class MobileUserService : IMobileUserService
     {
-        private readonly MobileValidationCodeSettings _mobileValidationCodeSettings;
+        private readonly IMobileUserRepository _repository;
         private readonly IDistributedCache _cache;
         private readonly ISmsSender _smsSender;
-        private readonly IMobileUserRepository _repository;
-
+        private readonly MobileValidationCodeSettings _mobileValidationCodeSettings;
         private const string MobileValidationCodeCacheKeyFormat = "MobileValidationCode:{0}";
 
-        public MobileUserService(IOptions<MobileValidationCodeSettings> mobileValidationCodeSettingsOptions,
+        public MobileUserService(IMobileUserRepository repository, 
             IDistributedCache cache,
             ISmsSender smsSender,
-            IMobileUserRepository repository
+            IOptions<MobileValidationCodeSettings> mobileValidationCodeSettingsOptions
             )
         {
             _mobileValidationCodeSettings = mobileValidationCodeSettingsOptions.Value;

@@ -19,14 +19,14 @@ namespace Tubumu.Modules.Admin.Services
 
     public class RegionService : IRegionService
     {
-        private readonly IDistributedCache _cache;
         private readonly IRegionRepository _repository;
+        private readonly IDistributedCache _cache;
         private const string CacheKey = "Region";
 
-        public RegionService(IDistributedCache cache, IRegionRepository repository)
+        public RegionService(IRegionRepository repository, IDistributedCache cache)
         {
-            _cache = cache;
             _repository = repository;
+            _cache = cache;
         }
 
         private async Task<List<RegionInfoBase>> GetListInCacheInternalAsync()

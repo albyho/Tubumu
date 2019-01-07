@@ -33,8 +33,8 @@ namespace Tubumu.Modules.Admin.Services
     /// </summary>
     public class BulletinService : IBulletinService
     {
-        private readonly IDistributedCache _cache;
         private readonly IBulletinRepository _repository;
+        private readonly IDistributedCache _cache;
         private const string CacheKey = "Bulletin";
 
         /// <summary>

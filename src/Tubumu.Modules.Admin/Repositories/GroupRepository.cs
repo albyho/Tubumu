@@ -22,9 +22,13 @@ namespace Tubumu.Modules.Admin.Repositories
         Task<List<XM.GroupBase>> GetBasePathAsync(Guid groupId);
         Task<List<XM.GroupInfo>> GetInfoPathAsync(Guid groupId);
         Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState);
+
         Task<bool> RemoveAsync(Guid groupId, ModelStateDictionary modelState);
+
         Task<bool> MoveAsync(Guid groupId, MovingTarget movingTarget);
+
         Task<bool> MoveAsync(Guid sourceGroupId, Guid targetGroupId, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
+
         Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
     }
 
@@ -83,10 +87,12 @@ namespace Tubumu.Modules.Admin.Repositories
         {
             return await _tubumuContext.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.GroupId == groupId);
         }
+
         public async Task<XM.Group> GetItemAsync(string name)
         {
             return await _tubumuContext.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
         }
+
         public async Task<List<XM.Group>> GetListAsync(Guid? parentId = null)
         {
             if (parentId.HasValue)
@@ -121,6 +127,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     .ToListAsync();
             }
         }
+
         public async Task<List<XM.GroupBase>> GetBasePathAsync(Guid groupId)
         {
             const string sql = @"WITH CET AS
@@ -145,6 +152,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 IsSystem = m.IsSystem,
             }).ToListAsync();
         }
+
         public async Task<List<XM.GroupInfo>> GetInfoPathAsync(Guid groupId)
         {
             const string sql = @"WITH CET AS
@@ -166,6 +174,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 Name = m.Name,
             }).ToListAsync();
         }
+
         public async Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState)
         {
             string sql;
@@ -507,6 +516,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return true;
         }
+
         public async Task<bool> RemoveAsync(Guid groupId, ModelStateDictionary modelState)
         {
             // 移除无限级分类步骤：
@@ -573,6 +583,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return true;
         }
+
         public async Task<bool> MoveAsync(Guid groupId, MovingTarget movingTarget)
         {
             string sql;
@@ -698,6 +709,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             return true;
         }
+
         public async Task<bool> MoveAsync(Guid sourceGroupId, Guid targetGroupId, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             if (sourceGroupId == targetGroupId)
@@ -720,6 +732,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return await MoveAsync(sourceGroup, targetGroup, movingLocation, isChild, modelState);
         }
+
         public async Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             if (sourceDisplayOrder == targetDisplayOrder)
@@ -741,6 +754,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             return await MoveAsync(sourceGroup, targetGroup, movingLocation, isChild, modelState);
         }
+
         private async Task<bool> MoveAsync(Group sourceGroup, Group targetGroup, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             #region 数据验证: 基本

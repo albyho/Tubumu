@@ -220,10 +220,9 @@ namespace Tubumu.Modules.Admin.Services
 
     public class UserService : IUserService
     {
-        private readonly IDistributedCache _cache;
         private readonly IUserRepository _repository;
+        private readonly IDistributedCache _cache;
         private readonly IGroupService _groupService;
-
         /// <summary>
         /// 用户信息缓存 Key
         /// </summary>
@@ -236,13 +235,13 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="repository"></param>
         /// <param name="groupService"></param>
         public UserService(
-            IDistributedCache cache,
             IUserRepository repository,
+            IDistributedCache cache,
             IGroupService groupService
             )
         {
-            _cache = cache;
             _repository = repository;
+            _cache = cache;
             _groupService = groupService;
         }
 

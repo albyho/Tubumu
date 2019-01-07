@@ -28,14 +28,14 @@ namespace Tubumu.Modules.Admin.Services
 
     public class RoleService : IRoleService
     {
-        private readonly IDistributedCache _cache;
         private readonly IRoleRepository _repository;
+        private readonly IDistributedCache _cache;
         private const string RoleListCacheKey = "RoleList";
 
-        public RoleService(IDistributedCache cache, IRoleRepository repository)
+        public RoleService(IRoleRepository repository, IDistributedCache cache)
         {
-            _cache = cache;
             _repository = repository;
+            _cache = cache;
         }
 
         #region IRoleService Members
