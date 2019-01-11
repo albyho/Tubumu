@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Services;
@@ -72,8 +76,10 @@ namespace Tubumu.Modules.Admin.Controllers
                 return result;
             }
 
-            var jwt = GetJwt(user);
-            result.Token = jwt;
+            var token = _tokenService.GenerateAccessToken(user);
+            var refreshToken = await _tokenService.GenerateRefreshToken(user.UserId);
+            result.Token = token;
+            result.RefreshToken = refreshToken;
             result.Url = _frontendSettings.CoreEnvironment.IsDevelopment ? _frontendSettings.CoreEnvironment.DevelopmentHost + "/modules/index.html" : Url.Action("Index", "View");
             result.Code = 200;
             result.Message = "登录成功";
@@ -89,6 +95,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("Logout")]
+        [AllowAnonymous]
         public async Task<ApiResult> Logout()
         {
             var userId = HttpContext.User.GetUserId();
@@ -108,24 +115,40 @@ namespace Tubumu.Modules.Admin.Controllers
 
         #endregion
 
-        private string GetJwt(UserInfo user)
-        {
-            var groups = from m in user.AllGroups select new Claim(TubumuClaimTypes.Group, m.Name);
-            var roles = from m in user.AllRoles select new Claim(ClaimTypes.Role, m.Name);
-            var permissions = from m in user.AllPermissions select new Claim(TubumuClaimTypes.Permission, m.Name);
-            var claims = (new[] { new Claim(ClaimTypes.Name, user.UserId.ToString()) }).
-                Union(groups).
-                Union(roles).
-                Union(permissions);
-            var token = new JwtSecurityToken(
-                _tokenValidationSettings.ValidIssuer,
-                _tokenValidationSettings.ValidAudience,
-                claims,
-                expires: DateTime.UtcNow.AddDays(30),
-                signingCredentials: SignatureHelper.GenerateSigningCredentials(_tokenValidationSettings.IssuerSigningKey));
+        #region RefreshToken
 
-            var jwt = _tokenHandler.WriteToken(token);
-            return jwt;
+        /// <summary>
+        /// 刷新 Token
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("RefreshToken")]
+        [AllowAnonymous]
+        public async Task<ActionResult<ApiTokenResult>> RefreshToken([FromBody]RefreshTokenInput input)
+        {              
+            var result = new ApiTokenResult();
+            var principal = _tokenService.GetPrincipalFromExpiredToken(input.Token);
+            var userId = principal.GetUserId(); //this is mapped to the Name claim by default
+
+            var storeRefreshToken = await _tokenService.GetRefreshToken(userId);
+            if (storeRefreshToken != input.RefreshToken)
+            {
+                result.Code = 200;
+                result.Message = "刷新 Token 失败";
+                result.Url = _frontendSettings.CoreEnvironment.IsDevelopment ? _frontendSettings.CoreEnvironment.DevelopmentHost + "/modules/login.html" : Url.Action("Login", "View");
+                return result;
+            }
+
+            var newToken = _tokenService.GenerateAccessToken(principal.Claims);
+            var newRefreshToken = await _tokenService.GenerateRefreshToken(userId);
+            result.Token = newToken;
+            result.RefreshToken = newRefreshToken;
+            result.Code = 200;
+            result.Message = "刷新 Token 成功";
+            return result;
         }
+
+        #endregion
     }
 }

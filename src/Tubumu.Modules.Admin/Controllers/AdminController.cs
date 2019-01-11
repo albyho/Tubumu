@@ -8,6 +8,7 @@ using Tubumu.Modules.Admin.Frontend;
 using Tubumu.Modules.Admin.ModuleMenus;
 using Tubumu.Modules.Admin.Services;
 using Tubumu.Modules.Framework.Authorization;
+using Tubumu.Modules.Framework.Services;
 using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
@@ -24,6 +25,7 @@ namespace Tubumu.Modules.Admin.Controllers
     {
         private readonly JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
         private readonly TokenValidationSettings _tokenValidationSettings;
+        private readonly ITokenService _tokenService;
         private readonly FrontendSettings _frontendSettings;
         private const string ValidationCodeKey = "ValidationCode";
         private readonly IUserService _userService;
@@ -41,6 +43,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// 构造函数
         /// </summary>
         /// <param name="tokenValidationSettings"></param>
+        /// <param name="tokenService"></param>
         /// <param name="frontendSettingsOptions"></param>
         /// <param name="userService"></param>
         /// <param name="adminUserService"></param>
@@ -53,6 +56,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="menuProviders"></param>
         public AdminController(
             TokenValidationSettings tokenValidationSettings, 
+            ITokenService tokenService,
             IOptions<FrontendSettings> frontendSettingsOptions,
             IUserService userService,
             IAdminUserService adminUserService,
@@ -65,6 +69,7 @@ namespace Tubumu.Modules.Admin.Controllers
             IEnumerable<IMenuProvider> menuProviders)
         {
             _tokenValidationSettings = tokenValidationSettings;
+            _tokenService = tokenService;
             _frontendSettings = frontendSettingsOptions.Value;
             _userService = userService;
             _adminUserService = adminUserService;

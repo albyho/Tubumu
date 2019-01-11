@@ -55,12 +55,18 @@ namespace Tubumu.Modules.Framework.Models
         /// </summary>
         [JsonProperty(PropertyName = "token", NullValueHandling = NullValueHandling.Ignore)]
         public string Token { get; set; }
+
+        /// <summary>
+        /// RefreshToken
+        /// </summary>
+        [JsonProperty(PropertyName = "refreshToken", NullValueHandling = NullValueHandling.Ignore)]
+        public string RefreshToken { get; set; }
     }
 
     /// <summary>
     /// List ApiResult
     /// </summary>
-    public class ApiListResult<T> : ApiResult where T: class
+    public class ApiListResult<T> : ApiResult where T : class
     {
         /// <summary>
         /// Lists
@@ -72,7 +78,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Page ApiResult
     /// </summary>
-    public class ApiPageResult<T> : ApiResult where T: class
+    public class ApiPageResult<T> : ApiResult where T : class
     {
         /// <summary>
         /// Pages
@@ -96,7 +102,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Item ApiResult
     /// </summary>
-    public class ApiItemResult<T> : ApiResult where T: class
+    public class ApiItemResult<T> : ApiResult where T : class
     {
 
         /// <summary>

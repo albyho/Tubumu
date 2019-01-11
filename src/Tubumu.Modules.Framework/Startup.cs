@@ -28,6 +28,7 @@ using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Mappings;
 using Tubumu.Modules.Framework.Models;
+using Tubumu.Modules.Framework.Services;
 using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
 
@@ -113,6 +114,7 @@ namespace Tubumu.Modules.Framework
             }
             services.AddTransient<IApplicationModelProvider, PermissionAuthorizationApplicationModelProvider>();
 
+            services.AddSingleton<ITokenService, TokenService>();
             var tokenValidationSettings = _configuration.GetSection("TokenValidationSettings").Get<TokenValidationSettings>();
             services.AddSingleton(tokenValidationSettings);
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -126,10 +128,11 @@ namespace Tubumu.Modules.Framework
                         ValidAudience = tokenValidationSettings.ValidAudience,
                         ValidateAudience = true,
 
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenValidationSettings.IssuerSigningKey)),
-                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = SignatureHelper.GenerateSigningKey(tokenValidationSettings.IssuerSigningKey),
+                        ValidateIssuerSigningKey = tokenValidationSettings.ValidateLifetime,
 
                         ValidateLifetime = true,
+                        ClockSkew  = TimeSpan.FromSeconds(tokenValidationSettings.ClockSkewSeconds),
                     };
 
                     // We have to hook the OnMessageReceived event in order to
@@ -154,6 +157,10 @@ namespace Tubumu.Modules.Framework
                         OnAuthenticationFailed = context =>
                         {
                             _logger.LogError($"Authentication Failed(OnAuthenticationFailed): {context.Request.Path} Error: {context.Exception}");
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            {
+                                context.Response.Headers.Add("Token-Expired", "true");
+                            }
                             return Task.CompletedTask;
                         },
                         OnChallenge = context =>
