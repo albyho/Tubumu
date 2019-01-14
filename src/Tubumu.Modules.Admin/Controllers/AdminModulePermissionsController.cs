@@ -20,11 +20,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetModulePermissions")]
-        public async Task<ApiListResult<List<Models.Permission>>> GetModulePermissions()
+        public async Task<ApiListResult<Models.Permission>> GetModulePermissions()
         {
             var permissions = await _permissionService.GetListInCacheAsync();
             ProjectPermissions(permissions);
-            var result = new ApiListResult<List<Models.Permission>>
+            var result = new ApiListResult<Models.Permission>
             {
                 Code = 200,
                 Message = "获取权限列表成功",

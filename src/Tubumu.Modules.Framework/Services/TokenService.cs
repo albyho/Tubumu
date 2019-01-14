@@ -125,6 +125,5 @@ namespace Tubumu.Modules.Framework.Services
 
             return principal;
         }
-
     }
 }

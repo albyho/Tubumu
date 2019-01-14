@@ -101,6 +101,7 @@ namespace Tubumu.Modules.Admin.Controllers
             var userId = HttpContext.User.GetUserId();
             if (userId >= 0)
             {
+                await _tokenService.RevokeRefreshToken(userId);
                 await _userService.SignOutAsync(userId);
             }
             var result = new ApiResult

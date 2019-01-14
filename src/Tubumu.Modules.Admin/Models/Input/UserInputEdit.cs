@@ -16,7 +16,8 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         /// <remarks>添加时为 null；编辑时未非 null</remarks>
         [DisplayName("用户 Id")]
-        public int? UserId { get; set; }
+        [Range(1,Int32.MaxValue,ErrorMessage = "请选择存在的用户")]
+        public int UserId { get; set; }
     }
 
     /// <summary>

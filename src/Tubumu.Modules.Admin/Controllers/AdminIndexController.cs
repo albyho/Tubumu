@@ -107,7 +107,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetMenus")]
-        public ApiListResult<List<ModuleMenu>> GetMenus()
+        public ApiListResult<ModuleMenu> GetMenus()
         {
             var list = new List<ModuleMenu>();
             var menuProviders = _menuProviders.OrderBy(m=>m.Order);
@@ -120,7 +120,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 }
             }
 
-            var result = new ApiListResult<List<ModuleMenu>>
+            var result = new ApiListResult<ModuleMenu>
             {
                 Code = 200,
                 Message = "获取菜单成功",

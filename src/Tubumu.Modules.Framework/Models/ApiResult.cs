@@ -66,13 +66,13 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// List ApiResult
     /// </summary>
-    public class ApiListResult<T> : ApiResult where T : class
+    public class ApiListResult<T> : ApiResult
     {
         /// <summary>
         /// Lists
         /// </summary>
         [JsonProperty(PropertyName = "list", NullValueHandling = NullValueHandling.Ignore)]
-        public T List { get; set; }
+        public IEnumerable<T> List { get; set; }
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ namespace Tubumu.Modules.Framework.Models
         /// Tree
         /// </summary>
         [JsonProperty(PropertyName = "tree")]
-        public List<TreeNode> Tree { get; set; }
+        public IEnumerable<TreeNode> Tree { get; set; }
     }
 
     /// <summary>
@@ -146,7 +146,6 @@ namespace Tubumu.Modules.Framework.Models
         /// 子节点
         /// </summary>
         [JsonProperty(PropertyName = "children", NullValueHandling = NullValueHandling.Ignore)]
-        public List<TreeNode> Children { get; set; }
+        public ICollection<TreeNode> Children { get; set; }
     }
-
 }

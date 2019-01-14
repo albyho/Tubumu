@@ -45,7 +45,7 @@ namespace Tubumu.Modules.Admin
             // Permission
             services.AddScoped<IPermissionProvider, Permissions>();
 
-            // Permission
+            // Menu
             services.AddScoped<IMenuProvider, Menus>();
 
             services.AddHttpClient();
