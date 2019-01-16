@@ -43,10 +43,16 @@ namespace Tubumu.Modules.Admin.Models.Api
         public int DisplayOrder { get; set; }
 
         /// <summary>
+        /// 是否有子节点
+        /// </summary>
+        [JsonProperty(PropertyName = "hasChildren")]
+        public bool HasChildren  { get; set; }
+
+        /// <summary>
         /// 子节点
         /// </summary>
         [JsonProperty(PropertyName = "children", NullValueHandling = NullValueHandling.Ignore)]
-        public List<GroupTreeNode> Children { get; set; }
+        public List<RegionTreeNode> Children { get; set; }
 
         /// <summary>
         /// 首字拼音首字母
@@ -89,5 +95,6 @@ namespace Tubumu.Modules.Admin.Models.Api
         /// </summary>
         [JsonProperty(PropertyName = "regionCode")]
         public string RegionCode { get; set; }
+
     }
 }

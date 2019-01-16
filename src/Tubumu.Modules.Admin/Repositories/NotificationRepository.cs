@@ -72,7 +72,7 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class NotificationRepository : INotificationRepository
     {
-        private readonly TubumuContext _tubumuContext;
+        private readonly TubumuContext _context;
         private readonly Expression<Func<Notification, XM.Notification>> _notificationSelector;
         private readonly Expression<Func<Notification, XM.NotificationUser>> _notificationUserSelector;
 
@@ -82,7 +82,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="tubumuContext"></param>
         public NotificationRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
 
             _notificationSelector = m => new XM.Notification
             {
@@ -153,7 +153,7 @@ namespace Tubumu.Modules.Admin.Repositories
             // 备注：忽略搜索条件的 IsReaded, ToUserId
             // 备注：因为查询所有 ToUserId, 所有不会标记已读未读
 
-            IQueryable<Notification> query = _tubumuContext.Notification;
+            IQueryable<Notification> query = _context.Notification;
             if (criteria.FromUserId.HasValue)
             {
                 query = query.Where(m => m.FromUserId == criteria.FromUserId);
@@ -203,10 +203,10 @@ namespace Tubumu.Modules.Admin.Repositories
             {
                 throw new ArgumentNullException(nameof(criteria.ToUserId), "必须输入 ToUserId");
             }
-            var userCreationDate = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId == criteria.ToUserId.Value).Select(m => m.CreationDate).FirstOrDefaultAsync();
+            var userCreationDate = await _context.User.AsNoTracking().Where(m => m.UserId == criteria.ToUserId.Value).Select(m => m.CreationDate).FirstOrDefaultAsync();
 
             // 备注：查询发送给所有人的以及本人的、未删除的记录
-            var query1 = from n in _tubumuContext.Notification
+            var query1 = from n in _context.Notification
                          where n.CreationDate > userCreationDate && (!n.ToUserId.HasValue || n.ToUserId == criteria.ToUserId.Value)
                          select n;
 
@@ -308,7 +308,7 @@ namespace Tubumu.Modules.Admin.Repositories
             User toUser = null;
             if (notificationInput.FromUserId.HasValue)
             {
-                fromUser = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == notificationInput.FromUserId);
+                fromUser = await _context.User.FirstOrDefaultAsync(m => m.UserId == notificationInput.FromUserId);
                 if (fromUser == null)
                 {
                     modelState.AddModelError("FromUserId", "无法获取通知发布者");
@@ -317,7 +317,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             if (notificationInput.ToUserId.HasValue)
             {
-                toUser = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == notificationInput.ToUserId);
+                toUser = await _context.User.FirstOrDefaultAsync(m => m.UserId == notificationInput.ToUserId);
                 if (toUser == null)
                 {
                     modelState.AddModelError("FromUserId", "无法获取通知接收者");
@@ -327,7 +327,7 @@ namespace Tubumu.Modules.Admin.Repositories
             Notification itemToSave;
             if (notificationInput.NotificationId.HasValue)
             {
-                itemToSave = await _tubumuContext.Notification.FirstOrDefaultAsync(m => m.NotificationId == notificationInput.NotificationId);
+                itemToSave = await _context.Notification.FirstOrDefaultAsync(m => m.NotificationId == notificationInput.NotificationId);
                 if (itemToSave == null)
                 {
                     modelState.AddModelError("FromUserId", "无法获取编辑的记录");
@@ -344,13 +344,13 @@ namespace Tubumu.Modules.Admin.Repositories
                     Url = notificationInput.Url,
                 };
 
-                _tubumuContext.Notification.Add(itemToSave);
+                _context.Notification.Add(itemToSave);
             }
 
             itemToSave.Title = notificationInput.Title;
             itemToSave.Message = notificationInput.Message;
 
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -366,7 +366,7 @@ namespace Tubumu.Modules.Admin.Repositories
             // 需删除 NotificationUser 的记录
 
             var sql = "DELETE [NotificationUser] WHERE NotificationId = @NotificationId; DELETE [Notification] WHERE NotificationId = @NotificationId;";
-            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+            await _context.Database.ExecuteSqlCommandAsync(sql
                 , new SqlParameter("NotificationId", notificationId)
                 );
 
@@ -382,7 +382,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ReadAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
         {
-            var notifications = await _tubumuContext.Notification.AsNoTracking().Where(m => notificationIds.Contains(m.NotificationId)).
+            var notifications = await _context.Notification.AsNoTracking().Where(m => notificationIds.Contains(m.NotificationId)).
                 Select(m => new
                 {
                     m.NotificationId,
@@ -398,7 +398,7 @@ namespace Tubumu.Modules.Admin.Repositories
             // TODO: 批量查询出 NotificationUsers，或以其他方式实现
             foreach (var notification in notifications)
             {
-                var notificationUser = await _tubumuContext.NotificationUser.Where(m => m.NotificationId == notification.NotificationId && m.UserId == userId).FirstOrDefaultAsync();
+                var notificationUser = await _context.NotificationUser.Where(m => m.NotificationId == notification.NotificationId && m.UserId == userId).FirstOrDefaultAsync();
                 if (notificationUser == null)
                 {
                     var nu = new NotificationUser
@@ -407,7 +407,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         NotificationId = notification.NotificationId,
                         ReadTime = DateTime.Now,
                     };
-                    _tubumuContext.NotificationUser.Add(nu);
+                    _context.NotificationUser.Add(nu);
                 }
                 else if (!notificationUser.ReadTime.HasValue)
                 {
@@ -415,7 +415,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 }
 
             }
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -428,7 +428,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> DeleteAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
         {
-            var notifications = await _tubumuContext.Notification.AsNoTracking().Where(m => notificationIds.Contains(m.NotificationId)).
+            var notifications = await _context.Notification.AsNoTracking().Where(m => notificationIds.Contains(m.NotificationId)).
                 Select(m => new
                 {
                     m.NotificationId,
@@ -444,7 +444,7 @@ namespace Tubumu.Modules.Admin.Repositories
             // TODO: 批量查询出 NotificationUsers，或以其他方式实现
             foreach (var notification in notifications)
             {
-                var notificationUser = await _tubumuContext.NotificationUser.Where(m => m.NotificationId == notification.NotificationId && m.UserId == userId).FirstOrDefaultAsync();
+                var notificationUser = await _context.NotificationUser.Where(m => m.NotificationId == notification.NotificationId && m.UserId == userId).FirstOrDefaultAsync();
                 if (notificationUser == null)
                 {
                     var nu = new NotificationUser
@@ -453,7 +453,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         NotificationId = notification.NotificationId,
                         DeleteTime = DateTime.Now,
                     };
-                    _tubumuContext.NotificationUser.Add(nu);
+                    _context.NotificationUser.Add(nu);
                 }
                 else if (!notificationUser.DeleteTime.HasValue)
                 {
@@ -461,7 +461,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 }
             }
 
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -473,9 +473,9 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.NotificationUser> GetNewestAsync(int userId, int? currentNotificationId = null)
         {
-            var userCreationDate = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.CreationDate).FirstOrDefaultAsync();
+            var userCreationDate = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.CreationDate).FirstOrDefaultAsync();
 
-            var query1 = from n in _tubumuContext.Notification.AsNoTracking()
+            var query1 = from n in _context.Notification.AsNoTracking()
                          where n.CreationDate > userCreationDate && (!n.ToUserId.HasValue || n.ToUserId == userId)
                          select n;
 

@@ -90,13 +90,13 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Tree ApiResult
     /// </summary>
-    public class ApiTreeResult : ApiResult
+    public class ApiTreeResult<T> : ApiResult
     {
         /// <summary>
         /// Tree
         /// </summary>
         [JsonProperty(PropertyName = "tree")]
-        public IEnumerable<TreeNode> Tree { get; set; }
+        public IEnumerable<T> Tree { get; set; }
     }
 
     /// <summary>

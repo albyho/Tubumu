@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
 using Tubumu.Modules.Admin.Models;
+using Tubumu.Modules.Admin.Models.Api;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Framework.Extensions;
@@ -37,6 +38,12 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="parentId"></param>
         /// <returns></returns>
         Task<List<Group>> GetListInCacheAsync(Guid? parentId = null);
+
+        /// <summary>
+        /// GetTreeInCacheAsync
+        /// </summary>
+        /// <returns></returns>
+        Task<List<GroupTreeNode>> GetTreeInCacheAsync();
 
         /// <summary>
         /// GetBasePathAsync
@@ -96,7 +103,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="isChild"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
+        Task<bool> MoveByDisplayOrderAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
     }
 
     /// <summary>
@@ -106,7 +113,8 @@ namespace Tubumu.Modules.Admin.Services
     {
         private readonly IGroupRepository _repository;
         private readonly IDistributedCache _cache;
-        private const string GroupListCacheKey = "GroupList";
+        private const string ListCacheKey = "GroupList";
+        private const string TreeCacheKey = "GroupTree";
 
         /// <summary>
         /// 构造函数
@@ -153,6 +161,16 @@ namespace Tubumu.Modules.Admin.Services
         }
 
         /// <summary>
+        /// GetTreeInCacheAsync
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<GroupTreeNode>> GetTreeInCacheAsync()
+        {
+            var tree = await GetTreeInCacheInternalAsync();
+            return tree;
+        }
+
+        /// <summary>
         /// GetBasePathAsync
         /// </summary>
         /// <param name="groupId"></param>
@@ -187,7 +205,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.SaveAsync(groupInput, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(GroupListCacheKey);
+                await _cache.RemoveAsync(ListCacheKey);
             }
             return result;
         }
@@ -203,7 +221,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.RemoveAsync(groupId, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(GroupListCacheKey);
+                await _cache.RemoveAsync(ListCacheKey);
             }
             return result;
         }
@@ -219,7 +237,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveAsync(groupId, movingTarget);
             if (result)
             {
-                await _cache.RemoveAsync(GroupListCacheKey);
+                await _cache.RemoveAsync(ListCacheKey);
             }
             return result;
         }
@@ -238,7 +256,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveAsync(sourceGroupId, targetGroupId, movingLocation, isChild, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(GroupListCacheKey);
+                await _cache.RemoveAsync(ListCacheKey);
             }
             return result;
         }
@@ -252,12 +270,12 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="isChild"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
+        public async Task<bool> MoveByDisplayOrderAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
-            var result = await _repository.MoveAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);
+            var result = await _repository.MoveByDisplayOrderAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(GroupListCacheKey);
+                await _cache.RemoveAsync(ListCacheKey);
             }
             return result;
         }
@@ -393,7 +411,9 @@ namespace Tubumu.Modules.Admin.Services
             }
 
             if (item == null)
-                return null;
+            {
+                throw new NullReferenceException($"不存在 Id 为 {groupId} 的分组");
+            }
 
             list.Add(item);
 
@@ -427,11 +447,11 @@ namespace Tubumu.Modules.Admin.Services
 
         private async Task<List<Group>> GetListInCacheInternalAsync()
         {
-            var groups = await _cache.GetJsonAsync<List<Group>>(GroupListCacheKey);
+            var groups = await _cache.GetJsonAsync<List<Group>>(ListCacheKey);
             if (groups == null)
             {
                 groups = await _repository.GetListAsync();
-                await _cache.SetJsonAsync<List<Group>>(GroupListCacheKey, groups);
+                await _cache.SetJsonAsync<List<Group>>(ListCacheKey, groups);
             }
             return groups;
             /*
@@ -451,6 +471,69 @@ namespace Tubumu.Modules.Admin.Services
 
             return groups;
             */
+        }
+
+        private async Task<List<GroupTreeNode>> GetTreeInCacheInternalAsync()
+        {
+            var tree = await _cache.GetJsonAsync<List<GroupTreeNode>>(TreeCacheKey);
+            if (tree == null)
+            {
+                var list = await GetListInCacheInternalAsync();
+                tree = new List<GroupTreeNode>();
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    if (item.Level == 1)
+                    {
+                        var node = GroupTreeNodeFromGroup(item);
+                        node.ParentIdPath = null;
+                        tree.Add(node);
+                        GroupTreeAddChildren(list, node, i);
+                    }
+                }
+                await _cache.SetJsonAsync<List<GroupTreeNode>>(ListCacheKey, tree);
+            }
+            return tree;
+        }
+
+        private void GroupTreeAddChildren(List<Group> groups, GroupTreeNode node, int index)
+        {
+            // index 参数减少遍历数，前提是数据库中是严格排序的。
+            for (var i = index + 1; i < groups.Count; i++)
+            {
+                var item = groups[i];
+                if (item.ParentId == node.Id)
+                {
+                    if (node.Children == null)
+                    {
+                        node.Children = new List<GroupTreeNode>();
+                    };
+                    var child = GroupTreeNodeFromGroup(item);
+                    // 在父节点的 ParentIdPath 基础上增加 ParentId
+                    child.ParentIdPath = node.ParentIdPath != null ? new List<Guid>(node.ParentIdPath) : new List<Guid>(1);
+                    child.ParentIdPath.Add(node.Id);
+                    node.Children.Add(child);
+                    GroupTreeAddChildren(groups, child, i);
+                }
+            }
+        }
+
+        private GroupTreeNode GroupTreeNodeFromGroup(Group group)
+        {
+            return new GroupTreeNode
+            {
+                Id = group.GroupId,
+                ParentId = group.ParentId,
+                Name = group.Name,
+                Level = group.Level,
+                DisplayOrder = group.DisplayOrder,
+                IsSystem = group.IsSystem,
+                IsContainsUser = group.IsContainsUser,
+                IsDisabled = group.IsDisabled,
+                Roles = group.Roles,
+                AvailableRoles = group.AvailableRoles,
+                Permissions = group.Permissions,
+            };
         }
 
         #endregion

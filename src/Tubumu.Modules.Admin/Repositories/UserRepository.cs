@@ -218,7 +218,7 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class UserRepository : IUserRepository
     {
-        private readonly TubumuContext _tubumuContext;
+        private readonly TubumuContext _context;
         private readonly Expression<Func<User, XM.UserInfo>> _selector;
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="tubumuContext"></param>
         public UserRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
 
             _selector = u => new XM.UserInfo
             {
@@ -362,11 +362,11 @@ namespace Tubumu.Modules.Admin.Repositories
             XM.UserInfo user;
             if (status.HasValue)
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.UserId == userId && m.Status == status.Value);
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.UserId == userId && m.Status == status.Value);
             }
             else
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.UserId == userId);
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.UserId == userId);
             }
             return user;
         }
@@ -382,11 +382,11 @@ namespace Tubumu.Modules.Admin.Repositories
             XM.UserInfo user;
             if (status.HasValue)
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Username == username && m.Status == status.Value);
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Username == username && m.Status == status.Value);
             }
             else
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Username == username);
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Username == username);
             }
 
             return user;
@@ -404,11 +404,11 @@ namespace Tubumu.Modules.Admin.Repositories
             XM.UserInfo user;
             if (status.HasValue)
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == emailIsValid && m.Email == email) && m.Status == status.Value);
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == emailIsValid && m.Email == email) && m.Status == status.Value);
             }
             else
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == emailIsValid && m.Email == email));
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == emailIsValid && m.Email == email));
             }
             return user;
         }
@@ -425,11 +425,11 @@ namespace Tubumu.Modules.Admin.Repositories
             XM.UserInfo user;
             if (status.HasValue)
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == mobileIsValid && m.Mobile == mobile) && m.Status == status.Value);
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == mobileIsValid && m.Mobile == mobile) && m.Status == status.Value);
             }
             else
             {
-                user = await _tubumuContext.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == mobileIsValid && m.Mobile == mobile));
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == mobileIsValid && m.Mobile == mobile));
             }
             return user;
         }
@@ -441,7 +441,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<string> GetHeadUrlAsync(int userId)
         {
-            var head = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.HeadUrl).FirstOrDefaultAsync();
+            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.HeadUrl).FirstOrDefaultAsync();
             return head;
         }
 
@@ -455,7 +455,7 @@ namespace Tubumu.Modules.Admin.Repositories
             if (userIds == null) return new List<XM.UserInfoWarpper>(0);
             userIds = userIds.Distinct();
             var iDs = userIds as int[] ?? userIds.ToArray();
-            var list = await _tubumuContext.User.AsNoTracking().Where(m => iDs.Contains(m.UserId)).Select(m => new XM.UserInfoWarpper
+            var list = await _context.User.AsNoTracking().Where(m => iDs.Contains(m.UserId)).Select(m => new XM.UserInfoWarpper
             {
                 UserId = m.UserId,
                 Username = m.Username,
@@ -473,7 +473,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> IsExistsUsernameAsync(string username)
         {
-            return await _tubumuContext.User.AnyAsync(m => m.Username == username);
+            return await _context.User.AnyAsync(m => m.Username == username);
         }
 
         /// <summary>
@@ -484,7 +484,7 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<bool> IsExistsEmailAsync(string email)
         {
             if (email.IsNullOrWhiteSpace()) return false;
-            return await _tubumuContext.User.AnyAsync(m => m.Email == email);
+            return await _context.User.AnyAsync(m => m.Email == email);
         }
 
         /// <summary>
@@ -497,11 +497,11 @@ namespace Tubumu.Modules.Admin.Repositories
         {
             if (status.HasValue)
             {
-                return await _tubumuContext.User.AnyAsync(m => m.UserId == userId && m.Status == status);
+                return await _context.User.AnyAsync(m => m.UserId == userId && m.Status == status);
             }
             else
             {
-                return await _tubumuContext.User.AnyAsync(m => m.UserId == userId);
+                return await _context.User.AnyAsync(m => m.UserId == userId);
             }
         }
 
@@ -513,7 +513,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
         {
-            return await _tubumuContext.User.AnyAsync(m => m.UserId != userId && m.Username == username);
+            return await _context.User.AnyAsync(m => m.UserId != userId && m.Username == username);
         }
 
         /// <summary>
@@ -525,7 +525,7 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<bool> VerifyExistsEmailAsync(int userId, string email)
         {
             if (email.IsNullOrWhiteSpace()) return false;
-            return await _tubumuContext.User.AnyAsync(m => m.UserId != userId && m.Email == email);
+            return await _context.User.AnyAsync(m => m.UserId != userId && m.Email == email);
         }
 
         /// <summary>
@@ -552,7 +552,7 @@ namespace Tubumu.Modules.Admin.Repositories
             if (userInput is UserInputEdit userInputEdit) //根据用户 Id 编辑
             {
 
-                item = await _tubumuContext.User.AsNoTracking().Where(m => m.UserId != userInputEdit.UserId &&
+                item = await _context.User.AsNoTracking().Where(m => m.UserId != userInputEdit.UserId &&
                 (m.Username == username ||
                 (mobile != null && m.Mobile == userInput.Mobile) ||
                 (email != null && m.Email == userInput.Email))).Select(m => new
@@ -564,7 +564,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             else //添加
             {
-                item = await _tubumuContext.User.AsNoTracking().Where(m => m.Username == username ||
+                item = await _context.User.AsNoTracking().Where(m => m.Username == username ||
                 (mobile != null && m.Mobile == userInput.Mobile) ||
                 (email != null && m.Email == userInput.Email)).Select(m => new
                 {
@@ -663,7 +663,7 @@ namespace Tubumu.Modules.Admin.Repositories
                               }
             };
 
-            IQueryable<User> query = _tubumuContext.User;
+            IQueryable<User> query = _context.User;
             if (!criteria.GroupIds.IsNullOrEmpty())
             {
                 query = query.Where(m => criteria.GroupIds.Contains(m.GroupId));
@@ -723,7 +723,7 @@ namespace Tubumu.Modules.Admin.Repositories
             User userToSave;
             if (userInput is UserInputEdit userInputEdit)
             {
-                userToSave = await _tubumuContext.User.
+                userToSave = await _context.User.
                     Include(m => m.UserGroup).
                     Include(m => m.UserRole).
                     Include(m => m.UserPermission).
@@ -742,13 +742,13 @@ namespace Tubumu.Modules.Admin.Repositories
             else
             {
                 userToSave = new User();
-                _tubumuContext.User.Add(userToSave);
+                _context.User.Add(userToSave);
                 userToSave.Status = XM.UserStatus.Normal; // Fix
                 userToSave.Password = userInput.Password;
                 userToSave.CreationDate = DateTime.Now;
             }
 
-            var group = await _tubumuContext.Group.Include(m => m.GroupAvailableRole).FirstOrDefaultAsync(m => m.GroupId == userInput.GroupId);
+            var group = await _context.Group.Include(m => m.GroupAvailableRole).FirstOrDefaultAsync(m => m.GroupId == userInput.GroupId);
             if (group == null)
             {
                 modelState.AddModelError("GroupId", "分组不存在");
@@ -807,7 +807,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                            select p).ToList();
 
                 //要添加的项
-                List<UserGroup> groupToAdd = await (from p in _tubumuContext.Group
+                List<UserGroup> groupToAdd = await (from p in _context.Group
                                                     where groupIdToAdd.Contains(p.GroupId)
                                                     select new UserGroup
                                                     {
@@ -845,7 +845,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                           select p).ToList();
 
                 //要添加的项
-                List<UserRole> roleToAdd = await (from p in _tubumuContext.Role
+                List<UserRole> roleToAdd = await (from p in _context.Role
                                                   where roleIdToAdd.Contains(p.RoleId)
                                                   select new UserRole
                                                   {
@@ -883,7 +883,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                                 select p).ToList();
 
                 //要添加的项
-                List<UserPermission> permissionToAdd = await (from p in _tubumuContext.Permission
+                List<UserPermission> permissionToAdd = await (from p in _context.Permission
                                                               where permissionIdToAdd.Contains(p.PermissionId)
                                                               select new UserPermission
                                                               {
@@ -895,7 +895,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             #endregion
 
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             //return new[] { userToSave }.Select(_selector.Compile()).First();
             return await GetItemByUserIdAsync(userToSave.UserId);
@@ -910,7 +910,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ChangeUsernameAsync(int userId, string newUsername, ModelStateDictionary modelState)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
             {
                 modelState.AddModelError("UserId", "当前用户不存在");
@@ -922,13 +922,13 @@ namespace Tubumu.Modules.Admin.Repositories
                 modelState.AddModelError("UserId", "目标用户名和当前用户名相同");
                 return false;
             }
-            if (_tubumuContext.User.Any(m => m.UserId != userId && m.Username == newUsername))
+            if (_context.User.Any(m => m.UserId != userId && m.Username == newUsername))
             {
                 modelState.AddModelError("UserId", "用户名[{0}]已经被使用".FormatWith(newUsername));
                 return false;
             }
             user.Username = newUsername;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -941,11 +941,11 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ChangeDisplayNameAsync(int userId, string displayName)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
                 return false;
             user.DisplayName = displayName;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -958,11 +958,11 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ChangeLogoAsync(int userId, string logoUrl)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
                 return false;
             user.LogoUrl = logoUrl;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -976,7 +976,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ChangePasswordAsync(int userId, string password, ModelStateDictionary modelState)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
             {
                 modelState.AddModelError("Error", "用户不存在");
@@ -984,7 +984,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
 
             user.Password = password;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -997,7 +997,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<int> ChangePasswordAsync(string username, string password, ModelStateDictionary modelState)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.Username == username);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.Username == username);
             if (user == null)
             {
                 modelState.AddModelError("Error", "用户不存在");
@@ -1005,7 +1005,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
 
             user.Password = password;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return user.UserId;
         }
 
@@ -1017,14 +1017,14 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
                 return false;
 
             user.DisplayName = userChangeProfileInput.DisplayName;
             user.HeadUrl = userChangeProfileInput.HeadUrl;
             user.LogoUrl = userChangeProfileInput.LogoUrl;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
 
@@ -1039,7 +1039,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<int> ResetPasswordByAccountAsync(string account, string password, ModelStateDictionary modelState)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.Username == account || (m.MobileIsValid && m.Mobile == account) || (m.EmailIsValid && m.Email == account));
+            var user = await _context.User.FirstOrDefaultAsync(m => m.Username == account || (m.MobileIsValid && m.Mobile == account) || (m.EmailIsValid && m.Email == account));
             if (user == null)
             {
                 modelState.AddModelError("Mobile", "重置密码失败:用户不存在");
@@ -1047,7 +1047,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
 
             user.Password = password;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return user.UserId;
         }
 
@@ -1059,12 +1059,12 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ChangeHeadAsync(int userId, string headUrl)
         {
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
                 return false;
 
             user.HeadUrl = headUrl;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -1077,10 +1077,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState)
         {
-            User user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            User user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
                 return false;
-            using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+            using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 try
                 {
@@ -1090,10 +1090,10 @@ namespace Tubumu.Modules.Admin.Repositories
                                        "DELETE UserRole WHERE UserId = @UserId;" +
                                        "DELETE UserPermission WHERE UserId = @UserId;"
                         ;
-                    await _tubumuContext.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("UserId", userId));
+                    await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("UserId", userId));
 
-                    _tubumuContext.User.Remove(user);
-                    await _tubumuContext.SaveChangesAsync();
+                    _context.User.Remove(user);
+                    await _context.SaveChangesAsync();
 
                     dbContextTransaction.Commit();
                 }
@@ -1117,10 +1117,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status)
         {
-            User user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            User user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null) return false;
             user.Status = status;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 

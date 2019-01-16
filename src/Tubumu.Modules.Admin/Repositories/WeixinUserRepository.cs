@@ -149,7 +149,7 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class WeixinUserRepository : IWeixinUserRepository
     {
-        private readonly TubumuContext _tubumuContext;
+        private readonly TubumuContext _context;
         private readonly Expression<Func<User, XM.UserInfo>> _selector;
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="tubumuContext"></param>
         public WeixinUserRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
 
             _selector = u => new XM.UserInfo
             {
@@ -290,7 +290,7 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<XM.UserInfo> GetItemByWeixinMobileEndOpenIdAsync(string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
-            XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinMobileEndOpenId == openId).Select(_selector).FirstOrDefaultAsync();
+            XM.UserInfo user = await _context.User.AsNoTracking().Where(m => m.WeixinMobileEndOpenId == openId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -302,7 +302,7 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<XM.UserInfo> GetItemByWeixinAppOpenIdAsync(string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
-            XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinAppOpenId == openId).Select(_selector).FirstOrDefaultAsync();
+            XM.UserInfo user = await _context.User.AsNoTracking().Where(m => m.WeixinAppOpenId == openId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -314,7 +314,7 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<XM.UserInfo> GetItemByWeixinWebOpenIdAsync(string openId)
         {
             if (openId.IsNullOrWhiteSpace()) return null;
-            XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinWebOpenId == openId).Select(_selector).FirstOrDefaultAsync();
+            XM.UserInfo user = await _context.User.AsNoTracking().Where(m => m.WeixinWebOpenId == openId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -326,7 +326,7 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<XM.UserInfo> GetItemByWeixinUnionIdAsync(string unionId)
         {
             if (unionId.IsNullOrWhiteSpace()) return null;
-            XM.UserInfo user = await _tubumuContext.User.AsNoTracking().Where(m => m.WeixinUnionId == unionId).Select(_selector).FirstOrDefaultAsync();
+            XM.UserInfo user = await _context.User.AsNoTracking().Where(m => m.WeixinUnionId == unionId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -353,8 +353,8 @@ namespace Tubumu.Modules.Admin.Repositories
                     Password = openId,
                 };
 
-                _tubumuContext.User.Add(newUser);
-                await _tubumuContext.SaveChangesAsync();
+                _context.User.Add(newUser);
+                await _context.SaveChangesAsync();
                 user = await GetItemByWeixinMobileEndOpenIdAsync(openId);
             }
 
@@ -384,8 +384,8 @@ namespace Tubumu.Modules.Admin.Repositories
                     Password = openId,
                 };
 
-                _tubumuContext.User.Add(newUser);
-                await _tubumuContext.SaveChangesAsync();
+                _context.User.Add(newUser);
+                await _context.SaveChangesAsync();
                 user = await GetItemByWeixinAppOpenIdAsync(openId);
 
             }
@@ -416,8 +416,8 @@ namespace Tubumu.Modules.Admin.Repositories
                     Password = openId,
                 };
 
-                _tubumuContext.User.Add(newUser);
-                await _tubumuContext.SaveChangesAsync();
+                _context.User.Add(newUser);
+                await _context.SaveChangesAsync();
                 user = await GetItemByWeixinWebOpenIdAsync(openId);
             }
 
@@ -447,8 +447,8 @@ namespace Tubumu.Modules.Admin.Repositories
                     Password = unionId,
                 };
 
-                _tubumuContext.User.Add(newUser);
-                await _tubumuContext.SaveChangesAsync();
+                _context.User.Add(newUser);
+                await _context.SaveChangesAsync();
                 user = await GetItemByWeixinUnionIdAsync(unionId);
             }
             return user;
@@ -469,7 +469,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
             // 微信已经被使用
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.WeixinMobileEndOpenId == openId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.WeixinMobileEndOpenId == openId);
             if (user != null)
             {
                 if (user.UserId != userId)
@@ -486,14 +486,14 @@ namespace Tubumu.Modules.Admin.Repositories
             }
 
             // 本人已经绑定
-            user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
             {
                 modelState.AddModelError("UserId", "用户不存在");
                 return false;
             }
             user.WeixinMobileEndOpenId = openId;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -504,11 +504,11 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> CleanWeixinMobileEndOpenIdAsync(int userId)
         {
-            var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var item = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (item == null) return false;
             // 不判断本人是否已经绑定
             item.WeixinMobileEndOpenId = null;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -527,7 +527,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
             // 微信已经被使用
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.WeixinAppOpenId == openId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.WeixinAppOpenId == openId);
             if (user != null)
             {
                 if (user.UserId == userId)
@@ -544,14 +544,14 @@ namespace Tubumu.Modules.Admin.Repositories
             }
 
             // 本人已经绑定
-            user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
             {
                 modelState.AddModelError("UserId", "用户不存在");
                 return false;
             }
             user.WeixinAppOpenId = openId;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -562,11 +562,11 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> CleanWeixinAppOpenIdAsync(int userId)
         {
-            var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var item = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (item == null) return false;
             // 不判断本人是否已经绑定
             item.WeixinAppOpenId = null;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -585,7 +585,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
             // 微信已经被使用
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.WeixinAppOpenId == openId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.WeixinAppOpenId == openId);
             if (user != null)
             {
                 if (user.UserId == userId)
@@ -602,14 +602,14 @@ namespace Tubumu.Modules.Admin.Repositories
             }
 
             // 本人已经绑定
-            user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
             {
                 modelState.AddModelError("UserId", "用户不存在");
                 return false;
             }
             user.WeixinWebOpenId = openId;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -620,11 +620,11 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> CleanWeixinWebOpenIdAsync(int userId)
         {
-            var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var item = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (item == null) return false;
             // 不判断本人是否已经绑定
             item.WeixinWebOpenId = null;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -643,7 +643,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
             // 微信已经被使用
-            var user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.WeixinUnionId == unionId);
+            var user = await _context.User.FirstOrDefaultAsync(m => m.WeixinUnionId == unionId);
             if (user != null)
             {
                 if (user.UserId == userId)
@@ -660,14 +660,14 @@ namespace Tubumu.Modules.Admin.Repositories
             }
 
             // 本人已经绑定
-            user = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
             {
                 modelState.AddModelError("UserId", "用户不存在");
                 return false;
             }
             user.WeixinUnionId = unionId;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -678,11 +678,11 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> CleanWeixinUnionIdAsync(int userId)
         {
-            var item = await _tubumuContext.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            var item = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (item == null) return false;
             // 不判断本人是否已经绑定
             item.WeixinUnionId = null;
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 

@@ -101,7 +101,7 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class RoleRepository : IRoleRepository
     {
-        private readonly TubumuContext _tubumuContext;
+        private readonly TubumuContext _context;
         private readonly Expression<Func<Role, XM.Role>> _selector;
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="tubumuContext"></param>
         public RoleRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
 
             _selector = r => new XM.Role
             {
@@ -138,7 +138,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Role> GetItemAsync(Guid roleId)
         {
-            return await _tubumuContext.Role.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.RoleId == roleId);
+            return await _context.Role.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.RoleId == roleId);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Role> GetItemAsync(string name)
         {
-            return await _tubumuContext.Role.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
+            return await _context.Role.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<List<XM.RoleBase>> GetBaseListAsync()
         {
-            return await (from r in _tubumuContext.Role.AsNoTracking()
+            return await (from r in _context.Role.AsNoTracking()
                           orderby r.DisplayOrder
                           select new XM.RoleBase
                           {
@@ -174,7 +174,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<List<XM.Role>> GetListAsync()
         {
-            return await _tubumuContext.Role.AsNoTracking().OrderBy(m => m.DisplayOrder).Select(_selector).AsNoTracking().ToListAsync();
+            return await _context.Role.AsNoTracking().OrderBy(m => m.DisplayOrder).Select(_selector).AsNoTracking().ToListAsync();
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace Tubumu.Modules.Admin.Repositories
             Role roleToSave;
             if (roleInput.RoleId.HasValue)
             {
-                roleToSave = await _tubumuContext.Role.
+                roleToSave = await _context.Role.
                     Include(m=>m.RolePermission).
                     FirstOrDefaultAsync(m => m.RoleId == roleInput.RoleId.Value);
                 if (roleToSave == null)
@@ -204,8 +204,8 @@ namespace Tubumu.Modules.Admin.Repositories
                     RoleId = Guid.NewGuid(),
                     IsSystem = false
                 };
-                _tubumuContext.Role.Add(roleToSave);
-                int maxDisplayOrder = await _tubumuContext.Role.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
+                _context.Role.Add(roleToSave);
+                int maxDisplayOrder = await _context.Role.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
                 roleToSave.DisplayOrder = maxDisplayOrder + 1;
             }
             roleToSave.Name = roleInput.Name;
@@ -236,7 +236,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                                 select p).ToList();
 
                 // 要添加的项
-                List<RolePermission> permissionToAdd = await (from p in _tubumuContext.Permission
+                List<RolePermission> permissionToAdd = await (from p in _context.Permission
                                                           where permissionIdToAdd.Contains(p.PermissionId)
                                                           select new RolePermission
                                                           {
@@ -248,7 +248,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             #endregion
 
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             var role = (new [] { roleToSave }).Select(_selector.Compile()).First();
 
@@ -263,25 +263,25 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> RemoveAsync(Guid roleId, ModelStateDictionary modelState)
         {
-            var roleToRemove = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == roleId);
+            var roleToRemove = await _context.Role.FirstOrDefaultAsync(m => m.RoleId == roleId);
             if (roleToRemove == null || roleToRemove.IsSystem)
             {
                 modelState.AddModelError("RoleId", "记录不存在");
                 return false;
             }
 
-            using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+            using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 var sql = "Update Role Set DisplayOrder=DisplayOrder-1 Where DisplayOrder>@DisplayOrder";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", roleToRemove.DisplayOrder));
+                await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", roleToRemove.DisplayOrder));
 
                 // Delete GroupAvailableRole Where RoleId=@RoleId
                 sql = "Delete RolePermission Where RoleId=@RoleId; Delete GroupRole Where RoleId=@RoleId; UPDATE [User] SET RoleId = null WHERE RoleId=@RoleId;";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("RoleId", roleId));
+                await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("RoleId", roleId));
 
-                _tubumuContext.Role.Remove(roleToRemove);
+                _context.Role.Remove(roleToRemove);
 
-                await _tubumuContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 dbContextTransaction.Commit();
             }
 
@@ -296,7 +296,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> SaveNameAsync(RoleNameInput saveRoleNameInput, ModelStateDictionary modelState)
         {
-            var roleToRemove = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == saveRoleNameInput.RoleId);
+            var roleToRemove = await _context.Role.FirstOrDefaultAsync(m => m.RoleId == saveRoleNameInput.RoleId);
             if (roleToRemove == null || roleToRemove.IsSystem)
             {
                 modelState.AddModelError("RoleId", "记录不存在");
@@ -306,7 +306,7 @@ namespace Tubumu.Modules.Admin.Repositories
             if (saveRoleNameInput.Name != roleToRemove.Name)
             {
                 roleToRemove.Name = saveRoleNameInput.Name;
-                await _tubumuContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
 
             return true;
@@ -320,7 +320,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> MoveAsync(Guid roleId, MovingTarget target)
         {
-            var roleToMove = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == roleId);
+            var roleToMove = await _context.Role.FirstOrDefaultAsync(m => m.RoleId == roleId);
 
             // 保证DisplayOrder为 1 的“系统管理员”不被移动
             if (roleToMove == null || roleToMove.DisplayOrder == 1) return false;
@@ -330,24 +330,24 @@ namespace Tubumu.Modules.Admin.Repositories
             {
                 if (roleToMove.DisplayOrder < 3) return false;
 
-                var targetRole = await _tubumuContext.Role.OrderByDescending(m => m.DisplayOrder).FirstOrDefaultAsync(m => m.DisplayOrder < roleToMove.DisplayOrder);
+                var targetRole = await _context.Role.OrderByDescending(m => m.DisplayOrder).FirstOrDefaultAsync(m => m.DisplayOrder < roleToMove.DisplayOrder);
                 // 某种原因导致当前项之前已经没有项了
                 if (targetRole == null) return false;
 
                 roleToMove.DisplayOrder--;
                 targetRole.DisplayOrder++;
-                await _tubumuContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
             }
             else if (MovingTarget.Down == target)
             {
-                var targetRole = await _tubumuContext.Role.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m => m.DisplayOrder > roleToMove.DisplayOrder);
+                var targetRole = await _context.Role.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m => m.DisplayOrder > roleToMove.DisplayOrder);
                 // 某种原因导致当前项之后已经没有项了
                 if (targetRole == null) return false;
 
                 roleToMove.DisplayOrder++;
                 targetRole.DisplayOrder--;
-                await _tubumuContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             return true;
         }
@@ -366,13 +366,13 @@ namespace Tubumu.Modules.Admin.Repositories
                 modelState.AddModelError("SourceDisplayOrder", "源DisplayOrder和目标DisplayOrder不能相同");
                 return false;
             }
-            var sourceRole = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.DisplayOrder == sourceDisplayOrder);
+            var sourceRole = await _context.Role.FirstOrDefaultAsync(m => m.DisplayOrder == sourceDisplayOrder);
             if (sourceRole == null)
             {
                 modelState.AddModelError("SourceDisplayOrder", "源记录不存在");
                 return false;
             }
-            var targetRole = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.DisplayOrder == targetDisplayOrder);
+            var targetRole = await _context.Role.FirstOrDefaultAsync(m => m.DisplayOrder == targetDisplayOrder);
             if (targetRole == null)
             {
                 modelState.AddModelError("TargetDisplayOrder", "目标记录不存在");
@@ -395,13 +395,13 @@ namespace Tubumu.Modules.Admin.Repositories
                 modelState.AddModelError("SourceGroupId", "源Id和目标Id不能相同");
                 return false;
             }
-            var sourceRole = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == sourceRoleId);
+            var sourceRole = await _context.Role.FirstOrDefaultAsync(m => m.RoleId == sourceRoleId);
             if (sourceRole == null)
             {
                 modelState.AddModelError("SourceGroupId", "源记录不存在");
                 return false;
             }
-            var targetRole = await _tubumuContext.Role.FirstOrDefaultAsync(m => m.RoleId == targetRoleId);
+            var targetRole = await _context.Role.FirstOrDefaultAsync(m => m.RoleId == targetRoleId);
             if (targetRole == null)
             {
                 modelState.AddModelError("TargetGroupId", "目标记录不存在");
@@ -440,7 +440,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
 
-            using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+            using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 string sql;
                 if (sourceRole.DisplayOrder > targetRole.DisplayOrder)
@@ -454,13 +454,13 @@ namespace Tubumu.Modules.Admin.Repositories
                     sql = "Update Role Set DisplayOrder = DisplayOrder - 1 Where DisplayOrder <= @TargetDisplayOrder And DisplayOrder > @SourceDisplayOrder;";
                 }
 
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("SourceDisplayOrder", sourceRole.DisplayOrder),
                     new SqlParameter("TargetDisplayOrder", targetRole.DisplayOrder));
 
                 sourceRole.DisplayOrder = targetRole.DisplayOrder;
 
-                await _tubumuContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
                 dbContextTransaction.Commit();
             }
 

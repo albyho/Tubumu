@@ -17,10 +17,15 @@ namespace Tubumu.Modules.Admin.Repositories
     public interface IGroupRepository
     {
         Task<XM.Group> GetItemAsync(Guid groupId);
+
         Task<XM.Group> GetItemAsync(string name);
+
         Task<List<XM.Group>> GetListAsync(Guid? parentId = null);
+
         Task<List<XM.GroupBase>> GetBasePathAsync(Guid groupId);
+
         Task<List<XM.GroupInfo>> GetInfoPathAsync(Guid groupId);
+
         Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState);
 
         Task<bool> RemoveAsync(Guid groupId, ModelStateDictionary modelState);
@@ -29,18 +34,17 @@ namespace Tubumu.Modules.Admin.Repositories
 
         Task<bool> MoveAsync(Guid sourceGroupId, Guid targetGroupId, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
 
-        Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
+        Task<bool> MoveByDisplayOrderAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
     }
 
     public class GroupRepository : IGroupRepository
     {
+        private readonly TubumuContext _context;
         private readonly Expression<Func<Group, XM.Group>> _selector;
-
-        private readonly TubumuContext _tubumuContext;
 
         public GroupRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
 
             _selector = ug => new XM.Group
             {
@@ -85,32 +89,32 @@ namespace Tubumu.Modules.Admin.Repositories
 
         public async Task<XM.Group> GetItemAsync(Guid groupId)
         {
-            return await _tubumuContext.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.GroupId == groupId);
+            return await _context.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.GroupId == groupId);
         }
 
         public async Task<XM.Group> GetItemAsync(string name)
         {
-            return await _tubumuContext.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
+            return await _context.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
         }
 
         public async Task<List<XM.Group>> GetListAsync(Guid? parentId = null)
         {
             if (parentId.HasValue)
             {
-                var parent = await _tubumuContext.Group.AsNoTracking().FirstOrDefaultAsync(m => m.GroupId == parentId.Value);
+                var parent = await _context.Group.AsNoTracking().FirstOrDefaultAsync(m => m.GroupId == parentId.Value);
                 if (parent == null)
                     return new List<XM.Group>();
                 else
                 {
                     int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent.DisplayOrder, parent.Level);
                     if (displayOrderOfNextParentOrNextBrother != 0)
-                        return await _tubumuContext.Group.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
+                        return await _context.Group.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                             .OrderBy(m => m.DisplayOrder)
                             .Select(_selector)
                             .AsNoTracking()
                             .ToListAsync();
                     else
-                        return await _tubumuContext.Group.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder)
+                        return await _context.Group.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder)
                             .OrderBy(m => m.DisplayOrder)
                             .Select(_selector)
                             .AsNoTracking()
@@ -119,7 +123,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             else
             {
-                return await _tubumuContext.Group
+                return await _context.Group
                     .AsNoTracking()
                     .OrderBy(m => m.DisplayOrder)
                     .Select(_selector)
@@ -143,7 +147,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     SELECT GroupId,Name,DisplayOrder,ParentId,IsContainsUser,IsSystem 
                     FROM CET ORDER BY DisplayOrder";
 
-            return await _tubumuContext.Group.FromSql(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupBase
+            return await _context.Group.FromSql(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupBase
             {
                 GroupId = m.GroupId,
                 Name = m.Name,
@@ -168,7 +172,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     SELECT GroupId,Name,DisplayOrder,ParentId
                     FROM CET ORDER BY DisplayOrder";
 
-            return await _tubumuContext.Group.FromSql(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupInfo
+            return await _context.Group.FromSql(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupInfo
             {
                 GroupId = m.GroupId,
                 Name = m.Name,
@@ -189,7 +193,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     return false;
                 }
 
-                groupToSave = await _tubumuContext.Group.
+                groupToSave = await _context.Group.
                     Include(m => m.GroupAvailableRole).
                     Include(m => m.GroupRole).
                     Include(m => m.GroupPermission).
@@ -202,14 +206,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
                 if (groupToSave.IsSystem)
                 {
-                    modelState.AddModelError("GroupId", "当前分组是系统分组，不允许编辑");
+                    modelState.AddModelError("GroupId", "当前节点是系统节点，不允许编辑");
                     return false;
                 }
             }
 
             if (!groupInput.ParentId.IsNullOrEmpty())
             {
-                parent = await _tubumuContext.Group.AsNoTracking().FirstOrDefaultAsync(m => m.GroupId == groupInput.ParentId.Value);
+                parent = await _context.Group.AsNoTracking().FirstOrDefaultAsync(m => m.GroupId == groupInput.ParentId.Value);
                 if (parent == null)
                 {
                     modelState.AddModelError("GroupId", "尝试添加或编辑至不存在的父节点上");
@@ -233,7 +237,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     ParentId = groupInput.ParentId,
                     IsSystem = false,
                 };
-                _tubumuContext.Group.Add(groupToSave);
+                _context.Group.Add(groupToSave);
                 if (parent == null)
                 {
                     // 如果添加的是新的顶级节点,直接添加到末尾，不会影响其他节点
@@ -253,7 +257,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                     //父节点树之后的所有节点的DisplayOrder加1
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder + 1 Where DisplayOrder > @DisplayOrder";
-                    await _tubumuContext.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
+                    await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
                 }
 
                 #endregion
@@ -284,7 +288,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         //当前节点树之后已无任何节点
                         //将当前节点树的所有节点的Level都进行提升
                         sql = "Update [Group] Set Level = Level - @Level Where DisplayOrder>=@DisplayOrder";
-                        await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlCommandAsync(sql
                             , new SqlParameter("Level", xLevel)
                             , new SqlParameter("DisplayOrder", groupToSave.DisplayOrder)
                             );
@@ -293,11 +297,11 @@ namespace Tubumu.Modules.Admin.Repositories
                     {
                         //当前节点树之后还有节点，应该将这些节点的向前面排，并且将当前节点树的所有节点往后排
                         //当前节点树之后的节点数量
-                        int nextItemCount = await _tubumuContext.Group.CountAsync(m => m.DisplayOrder >= displayOrderOfNextParentOrNextBrother);
+                        int nextItemCount = await _context.Group.CountAsync(m => m.DisplayOrder >= displayOrderOfNextParentOrNextBrother);
 
                         sql = "Update [Group] Set DisplayOrder = DisplayOrder - @CTIC Where DisplayOrder>=@DOONPONB";
 
-                        await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlCommandAsync(sql
                             , new SqlParameter("CTIC", currentTreeItemCount)
                             , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                             );
@@ -306,7 +310,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         foreach (var id in currTreeIds)
                             sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
 
-                        await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlCommandAsync(sql
                             , new SqlParameter("Level", xLevel)
                             , new SqlParameter("NextItemCount", nextItemCount)
                             );
@@ -322,7 +326,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     #region 从顶级节点移至另一节点下，或从当前父节点下移至另一节点下（成为目标节点的最有一个子节点）
 
                     //目标父节点
-                    var newParent = await _tubumuContext.Group.AsNoTracking().FirstOrDefaultAsync(m => m.GroupId == groupInput.ParentId.Value);
+                    var newParent = await _context.Group.AsNoTracking().FirstOrDefaultAsync(m => m.GroupId == groupInput.ParentId.Value);
 
                     int xDisplayOrder = groupToSave.DisplayOrder - newParent.DisplayOrder;
                     int xLevel = groupToSave.Level - newParent.Level;
@@ -337,7 +341,7 @@ namespace Tubumu.Modules.Admin.Repositories
                             foreach (var id in currTreeIds)
                                 sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
 
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("Level", xLevel - 1)
                                 );
                         }
@@ -345,7 +349,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         {
                             //新的父节点和本节点之间的节点往下移动，DisplayOrder增加
                             sql = "Update [Group] Set DisplayOrder=DisplayOrder+@CurTreeCount Where DisplayOrder>@TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("CurTreeCount", currentTreeItemCount)
                                 , new SqlParameter("TDisplayOrder", newParent.DisplayOrder)
                                 , new SqlParameter("CDisplayOrder", groupToSave.DisplayOrder)
@@ -354,7 +358,7 @@ namespace Tubumu.Modules.Admin.Repositories
                             sql = "Update [Group] Set DisplayOrder = DisplayOrder-@XCount,Level = Level - @Level Where 1<>1 ";
                             foreach (var id in currTreeIds)
                                 sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("XCount", xDisplayOrder - 1)//也就是新节点和本节点之间的节点的数量
                                 , new SqlParameter("Level", xLevel - 1)
                                 );
@@ -374,7 +378,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                         // 更新本节点树至新的父节点（包括新的父节点）之间的节点的DisplayOrder
                         sql = "Update [Group] Set DisplayOrder=DisplayOrder-@CurTreeCount Where DisplayOrder>=@DOONPONB And DisplayOrder<=@TDisplayOrder";
-                        await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("CurTreeCount", currentTreeItemCount)
                             , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                             , new SqlParameter("TDisplayOrder", newParent.DisplayOrder)
@@ -385,7 +389,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         sql = "Update [Group] Set DisplayOrder = DisplayOrder+ @XCount,Level = Level - @Level Where 1<>1 ";
                         foreach (var id in currTreeIds)
                             sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
-                        await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("XCount", nextItemCount)
                             , new SqlParameter("Level", xLevel - 1)
                             );
@@ -425,7 +429,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                           select p).ToList();
 
                 // 要添加的项
-                List<GroupRole> roleToAdd = await (from p in _tubumuContext.Role
+                List<GroupRole> roleToAdd = await (from p in _context.Role
                                                    where roleIdToAdd.Contains(p.RoleId)
                                                    select new GroupRole
                                                    {
@@ -461,7 +465,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                           select p).ToList();
 
                 // 要添加的项
-                List<GroupAvailableRole> roleToAdd = await (from p in _tubumuContext.Role
+                List<GroupAvailableRole> roleToAdd = await (from p in _context.Role
                                                             where roleIdToAdd.Contains(p.RoleId)
                                                             select new GroupAvailableRole
                                                             {
@@ -500,7 +504,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                                 select p).ToList();
 
                 // 要添加的项
-                List<GroupPermission> permissionToAdd = await (from p in _tubumuContext.Permission
+                List<GroupPermission> permissionToAdd = await (from p in _context.Permission
                                                                where permissionIdToAdd.Contains(p.PermissionId)
                                                                select new GroupPermission
                                                                {
@@ -512,7 +516,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             #endregion
 
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }
@@ -522,7 +526,7 @@ namespace Tubumu.Modules.Admin.Repositories
             // 移除无限级分类步骤：
 
             // 1、获取预删节点信息
-            Group groupToRemove = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
+            Group groupToRemove = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             // 当然，如果无法获取节点，属于无效操作；另外，超级管理员组和等待分配组不允许被删除
             if (groupToRemove == null)
             {
@@ -531,51 +535,50 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             if (groupToRemove.IsSystem)
             {
-                modelState.AddModelError("GroupId", "当前分组是系统分组，不允许删除");
+                modelState.AddModelError("GroupId", "当前节点是系统节点，不允许删除");
                 return false;
             }
 
             // 2、节点包含子节点不允许删除
-            if (await _tubumuContext.Group.AnyAsync(m => m.ParentId == groupId))
+            if (await _context.Group.AnyAsync(m => m.ParentId == groupId))
             {
-                modelState.AddModelError("GroupId", "当前分组存在子分组，不允许删除");
+                modelState.AddModelError("GroupId", "当前节点存在子节点，不允许删除");
                 return false;
             }
 
-            // 4、更新用户表
-            using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+            // 3、更新用户表
+            using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
-                // 注：这里硬编码的分组是“待分配组”
+                // 注：这里硬编码的节点是“待分配组”
                 Guid targetGroupId = new Guid("11111111-1111-1111-1111-111111111111");
-                if (targetGroupId == Guid.Empty) return false;
 
                 var sql = "Update [User] Set GroupId=@TGroupId Where GroupId=@GroupId";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("GroupId", groupId)
                     , new SqlParameter("TGroupId", targetGroupId)
                     );
 
-                // 4、更新DisplayOrder大于预删节点DisplayOrder的节点
+                // 1、更新DisplayOrder大于预删节点DisplayOrder的节点
                 sql = "Update [Group] Set DisplayOrder=DisplayOrder-1 Where DisplayOrder>@DisplayOrder";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("DisplayOrder", groupToRemove.DisplayOrder)
                     );
 
-                // 5、删除关联节点
+                // 2、删除关联节点
                 sql = "Delete [UserGroup] Where GroupId=@GroupId";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("GroupId", groupId)
                 );
 
-                // 6、删除关联节点
+                // 3、删除关联节点
                 sql = "Delete [GroupRole] Where GroupId=@GroupId";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("GroupId", groupId)
                 );
 
-                // 7、删除节点
-                _tubumuContext.Group.Remove(groupToRemove);
-                await _tubumuContext.SaveChangesAsync();
+                // 4、删除节点
+                _context.Group.Remove(groupToRemove);
+                await _context.SaveChangesAsync();
 
                 dbContextTransaction.Commit();
             }
@@ -588,7 +591,7 @@ namespace Tubumu.Modules.Admin.Repositories
         {
             string sql;
 
-            Group groupToMove = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
+            Group groupToMove = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             // 保证DisplayOrder为 1 的“系统管理组”和“等待分配组”不被移动
             if (groupToMove == null || groupToMove.DisplayOrder <= 2) return false;
 
@@ -598,11 +601,11 @@ namespace Tubumu.Modules.Admin.Repositories
             int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(groupToMove.DisplayOrder, groupToMove.Level);
             if (displayOrderOfNextParentOrNextBrother == 0)
             {
-                currTreeIds = await _tubumuContext.Group.Where(m => m.DisplayOrder >= groupToMove.DisplayOrder).Select(m => m.GroupId).ToListAsync();
+                currTreeIds = await _context.Group.Where(m => m.DisplayOrder >= groupToMove.DisplayOrder).Select(m => m.GroupId).ToListAsync();
             }
             else
             {
-                currTreeIds = await _tubumuContext.Group
+                currTreeIds = await _context.Group
                     .Where(m => m.DisplayOrder >= groupToMove.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                     .Select(m => m.GroupId)
                     .ToListAsync();
@@ -614,32 +617,32 @@ namespace Tubumu.Modules.Admin.Repositories
 
             if (MovingTarget.Up == movingTarget)
             {
-                // 如果是处于两个系统分组之下的第一个节点，不允许上移
+                // 如果是处于两个系统节点之下的第一个节点，不允许上移
                 if (groupToMove.DisplayOrder == 3) return false;
 
                 #region 获取上一个兄弟节点
 
                 Group targetGroup;
                 if (groupToMove.ParentId.HasValue)
-                    targetGroup = await _tubumuContext.Group.OrderByDescending(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
+                    targetGroup = await _context.Group.OrderByDescending(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == groupToMove.ParentId && m.DisplayOrder < groupToMove.DisplayOrder);
                 else
-                    targetGroup = await _tubumuContext.Group.OrderByDescending(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
+                    targetGroup = await _context.Group.OrderByDescending(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == null && m.DisplayOrder < groupToMove.DisplayOrder);
                 #endregion
 
                 if (targetGroup == null) return false;
 
-                using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+                using (var dbContextTransaction = _context.Database.BeginTransaction())
                 {
                     // 获取兄弟节点树的节点数
-                    int targetTreeCount = await _tubumuContext.Group.CountAsync(m =>
+                    int targetTreeCount = await _context.Group.CountAsync(m =>
                     m.DisplayOrder >= targetGroup.DisplayOrder
                     && m.DisplayOrder < groupToMove.DisplayOrder);
 
                     // 更新兄弟节点树的DisplayOrder
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder + @CurTreeCount Where DisplayOrder >= @TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                    await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("CurTreeCount", curTreeCount)
                         , new SqlParameter("TDisplayOrder", targetGroup.DisplayOrder)
                         , new SqlParameter("CDisplayOrder", groupToMove.DisplayOrder)
@@ -648,7 +651,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder - @TargetTreeCount Where 1 <> 1 ";
                     foreach (var id in currTreeIds)
                         sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
-                    await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("TargetTreeCount", targetTreeCount)
                         );
 
@@ -661,10 +664,10 @@ namespace Tubumu.Modules.Admin.Repositories
 
                 Group targetGroup;
                 if (groupToMove.ParentId.HasValue)
-                    targetGroup = await _tubumuContext.Group.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
+                    targetGroup = await _context.Group.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == groupToMove.ParentId && m.DisplayOrder > groupToMove.DisplayOrder);
                 else
-                    targetGroup = await _tubumuContext.Group.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
+                    targetGroup = await _context.Group.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == null && m.DisplayOrder > groupToMove.DisplayOrder);
 
                 #endregion
@@ -677,19 +680,19 @@ namespace Tubumu.Modules.Admin.Repositories
                 int displayOrderOfNextParentOrNextBrotherOfTarget = await GetDisplayOrderOfNextParentOrNextBrotherAsync(targetGroup.DisplayOrder, targetGroup.Level);
                 int targetTreeCount;
                 if (displayOrderOfNextParentOrNextBrotherOfTarget == 0)
-                    targetTreeCount = await _tubumuContext.Group.CountAsync(m => m.DisplayOrder >= targetGroup.DisplayOrder);
+                    targetTreeCount = await _context.Group.CountAsync(m => m.DisplayOrder >= targetGroup.DisplayOrder);
                 else
-                    targetTreeCount = await _tubumuContext.Group
+                    targetTreeCount = await _context.Group
                         .CountAsync(m => m.DisplayOrder >= targetGroup.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrotherOfTarget);
 
                 #endregion
 
-                using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+                using (var dbContextTransaction = _context.Database.BeginTransaction())
                 {
                     // 更新兄弟节点树的DisplayOrder
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder - @CurTreeCount Where DisplayOrder >= @DisplayOrder And DisplayOrder < @TDisplayOrder";
 
-                    await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("CurTreeCount", curTreeCount)
                         , new SqlParameter("DisplayOrder", targetGroup.DisplayOrder)
                         , new SqlParameter("TDisplayOrder", targetGroup.DisplayOrder + targetTreeCount)
@@ -699,7 +702,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     foreach (var id in currTreeIds)
                         sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
 
-                    await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("TargetTreeCount", targetTreeCount)
                         );
 
@@ -717,13 +720,13 @@ namespace Tubumu.Modules.Admin.Repositories
                 modelState.AddModelError("SourceGroupId", "源节点Id和目标节点Id不能相同");
                 return false;
             }
-            var sourceGroup = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == sourceGroupId);
+            var sourceGroup = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == sourceGroupId);
             if (sourceGroup == null)
             {
                 modelState.AddModelError("SourceGroupId", "源节点不存在");
                 return false;
             }
-            var targetGroup = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == targetGroupId);
+            var targetGroup = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == targetGroupId);
             if (targetGroup == null)
             {
                 modelState.AddModelError("TargetGroupId", "目标节点不存在");
@@ -733,20 +736,20 @@ namespace Tubumu.Modules.Admin.Repositories
             return await MoveAsync(sourceGroup, targetGroup, movingLocation, isChild, modelState);
         }
 
-        public async Task<bool> MoveAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
+        public async Task<bool> MoveByDisplayOrderAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             if (sourceDisplayOrder == targetDisplayOrder)
             {
                 modelState.AddModelError("SourceDisplayOrder", "源节点的DisplayOrder和目标节点的DisplayOrder不能相同");
                 return false;
             }
-            var sourceGroup = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.DisplayOrder == sourceDisplayOrder);
+            var sourceGroup = await _context.Group.FirstOrDefaultAsync(m => m.DisplayOrder == sourceDisplayOrder);
             if (sourceGroup == null)
             {
                 modelState.AddModelError("SourceDisplayOrder", "源节点不存在");
                 return false;
             }
-            var targetGroup = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.DisplayOrder == targetDisplayOrder);
+            var targetGroup = await _context.Group.FirstOrDefaultAsync(m => m.DisplayOrder == targetDisplayOrder);
             if (targetGroup == null)
             {
                 modelState.AddModelError("TargetDisplayOrder", "目标节点不存在");
@@ -764,25 +767,25 @@ namespace Tubumu.Modules.Admin.Repositories
                 modelState.AddModelError("SourceGroupId", "源DisplayOrder和目标DisplayOrder不能相同".FormatWith(sourceGroup.Name, targetGroup.Name));
                 return false;
             }
-            // 不允许移动两个系统分组
+            // 不允许移动两个系统节点
             if (sourceGroup.DisplayOrder <= 2)
             {
                 modelState.AddModelError("SourceGroupId", "不允许移动两个系统节点");
                 return false;
             }
-            // 不允许移动到两个系统分组之前
+            // 不允许移动到两个系统节点之前
             if (movingLocation == MovingLocation.Above && targetGroup.DisplayOrder <= 2)
             {
                 modelState.AddModelError("SourceGroupId", "不允许移动到两个系统节点之前");
                 return false;
             }
-            // 不允许移动到两个系统分组之间
+            // 不允许移动到两个系统节点之间
             if (movingLocation == MovingLocation.Under && targetGroup.DisplayOrder == 1)
             {
                 modelState.AddModelError("SourceGroupId", "不允许移动到两个系统节点之间");
                 return false;
             }
-            // 不允许移动到分组前面而作为子节点
+            // 不允许移动到节点前面而作为子节点
             if (movingLocation == MovingLocation.Above && isChild.HasValue && isChild.Value)
             {
                 modelState.AddModelError("SourceGroupId", "不允许移动到节点前面而作为子节点");
@@ -897,10 +900,10 @@ namespace Tubumu.Modules.Admin.Repositories
 
             #region 保存
 
-            using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+            using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 var sql = "Update [Group] Set DisplayOrder = DisplayOrder + @MoveTargetXDisplayOrder Where DisplayOrder >= @MoveTargetDisplayOrderMin And DisplayOrder <= @MoveTargetDisplayOrderMax";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlCommandAsync(sql
                     , new SqlParameter("MoveTargetXDisplayOrder", moveTargetXDisplayOrder)
                     , new SqlParameter("MoveTargetDisplayOrderMin", moveTargetDisplayOrderMin)
                     , new SqlParameter("MoveTargetDisplayOrderMax", moveTargetDisplayOrderMax)
@@ -913,7 +916,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 });
 
                 sourceGroup.ParentId = sourceNewParentId;
-                await _tubumuContext.SaveChangesAsync();
+                await _context.SaveChangesAsync();
 
                 dbContextTransaction.Commit();
             }
@@ -929,7 +932,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
         private async Task<List<Guid>> GetTreeIdListAsync(Guid groupId, bool isIncludeSelf)
         {
-            var group = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
+            var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             if (group == null)
                 return new List<Guid>(0);
 
@@ -948,14 +951,14 @@ namespace Tubumu.Modules.Admin.Repositories
             {
                 //说明当前节点是最后一个节点,直接获取
                 list = await
-                    _tubumuContext.Group.Where(m => m.DisplayOrder > group.DisplayOrder)
+                    _context.Group.Where(m => m.DisplayOrder > group.DisplayOrder)
                         .Select(m => m.GroupId)
                         .ToListAsync();
             }
             else
             {
                 list = await
-                    _tubumuContext.Group.Where(m => m.DisplayOrder > group.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
+                    _context.Group.Where(m => m.DisplayOrder > group.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                         .Select(m => m.GroupId)
                         .ToListAsync();
             }
@@ -969,7 +972,7 @@ namespace Tubumu.Modules.Admin.Repositories
         }
         private async Task<List<Group>> GetTreeAsync(Guid groupId, bool isIncludeSelf)
         {
-            var group = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
+            var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             if (group == null)
                 return new List<Group>(0);
 
@@ -985,11 +988,11 @@ namespace Tubumu.Modules.Admin.Repositories
         {
             List<Group> list;
             if (displayOrderOfNextParentOrNextBrother != 0)
-                list = await _tubumuContext.Group.Where(m => m.DisplayOrder > group.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
+                list = await _context.Group.Where(m => m.DisplayOrder > group.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                     .OrderBy(m => m.DisplayOrder)
                     .ToListAsync();
             else
-                list = await _tubumuContext.Group.Where(m => m.DisplayOrder > group.DisplayOrder)
+                list = await _context.Group.Where(m => m.DisplayOrder > group.DisplayOrder)
                     .OrderBy(m => m.DisplayOrder)
                     .ToListAsync();
 
@@ -1002,7 +1005,7 @@ namespace Tubumu.Modules.Admin.Repositories
         }
         private async Task<int> GetTreeNodeCountAsync(Guid groupId, bool isIncludeSelf)
         {
-            var group = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
+            var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             if (group == null)
                 return 0;
 
@@ -1020,7 +1023,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             else
             {
-                count = await _tubumuContext.Group.Where(m => m.DisplayOrder > group.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother).
+                count = await _context.Group.Where(m => m.DisplayOrder > group.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother).
                     OrderByDescending(m => m.DisplayOrder).Select(m => m.DisplayOrder).FirstOrDefaultAsync();
             }
 
@@ -1033,7 +1036,7 @@ namespace Tubumu.Modules.Admin.Repositories
         }
         private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(Guid groupId)
         {
-            var group = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
+            var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             if (group == null)
                 return 0;
 
@@ -1045,18 +1048,18 @@ namespace Tubumu.Modules.Admin.Repositories
         }
         private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(int displayOrder, int level)
         {
-            return await _tubumuContext.Group.Where(m => m.Level <= level && m.DisplayOrder > displayOrder)
+            return await _context.Group.Where(m => m.Level <= level && m.DisplayOrder > displayOrder)
                 .OrderBy(m => m.DisplayOrder)
                 .Select(m => m.DisplayOrder)
                 .FirstOrDefaultAsync();
         }
         private async Task<int> GetMaxDisplayOrderAsync()
         {
-            return await _tubumuContext.Group.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
+            return await _context.Group.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
         }
         private async Task<int> GetMaxDisplayOrderInTreeAsync(Guid groupId)
         {
-            var group = await _tubumuContext.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
+            var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             if (group == null)
                 throw new NullReferenceException("节点不存在");
 
@@ -1070,7 +1073,7 @@ namespace Tubumu.Modules.Admin.Repositories
             int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(group);
 
             if (displayOrderOfNextParentOrNextBrother == 0)
-                maxDisplayOrder = await _tubumuContext.Group.Where(m => m.DisplayOrder > group.DisplayOrder || m.GroupId == group.GroupId).MaxAsync(m => m.DisplayOrder);
+                maxDisplayOrder = await _context.Group.Where(m => m.DisplayOrder > group.DisplayOrder || m.GroupId == group.GroupId).MaxAsync(m => m.DisplayOrder);
             else
                 maxDisplayOrder = displayOrderOfNextParentOrNextBrother - 1;
 
@@ -1078,6 +1081,5 @@ namespace Tubumu.Modules.Admin.Repositories
         }
 
         #endregion
-
     }
 }

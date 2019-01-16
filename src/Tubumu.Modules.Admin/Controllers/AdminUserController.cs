@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Api;
@@ -121,7 +122,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetGroups")]
-        [PermissionAuthorize(Permissions = "分组管理")]
+        [AllowAnonymous]
         public async Task<ApiListResult<Group>> GetGroups()
         {
             var groups = await _groupService.GetListInCacheAsync();
@@ -141,23 +142,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetGroupTree")]
-        [PermissionAuthorize(Permissions = "分组管理")]
-        public async Task<GroupTreeResult> GetGroupTree()
+        [AllowAnonymous]
+        public async Task<ApiTreeResult<GroupTreeNode>> GetGroupTree()
         {
-            var groups = await _groupService.GetListInCacheAsync();
-            var tree = new List<GroupTreeNode>();
-            for (var i = 0; i < groups.Count; i++)
-            {
-                var item = groups[i];
-                if (item.Level == 1)
-                {
-                    var node = GroupTreeNodeFromGroup(item);
-                    node.ParentIdPath = null;
-                    tree.Add(node);
-                    GroupTreeAddChildren(groups, node, i);
-                }
-            }
-            var result = new GroupTreeResult
+            var tree = await _groupService.GetTreeInCacheAsync();
+            var result = new ApiTreeResult<GroupTreeNode>
             {
                 Code = 200,
                 Message = "获取分组树成功",
@@ -467,7 +456,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetPermissionTree")]
-        public async Task<ApiTreeResult> GetPermissionTree()
+        public async Task<ApiTreeResult<TreeNode>> GetPermissionTree()
         {
             var permissions = await _permissionService.GetListInCacheAsync();
             var tree = new List<TreeNode>();
@@ -485,7 +474,7 @@ namespace Tubumu.Modules.Admin.Controllers
                     PermissionTreeAddChildren(permissions, node, i);
                 }
             }
-            var result = new ApiTreeResult
+            var result = new ApiTreeResult<TreeNode>
             {
                 Code = 200,
                 Message = "获取权限树成功",
@@ -575,45 +564,6 @@ namespace Tubumu.Modules.Admin.Controllers
                 if (p.Level > 1)
                     p.Name = s.Repeat(p.Level - 1) + "┗ " + p.Name;
             }
-        }
-
-        private void GroupTreeAddChildren(List<Group> groups, GroupTreeNode node, int index)
-        {
-            for (var i = index + 1; i < groups.Count; i++)
-            {
-                var item = groups[i];
-                if (item.ParentId == node.Id)
-                {
-                    if (node.Children == null)
-                    {
-                        node.Children = new List<GroupTreeNode>();
-                    };
-                    var child = GroupTreeNodeFromGroup(item);
-                    // 在父节点的 ParentIdPath 基础上增加 ParentId
-                    child.ParentIdPath = node.ParentIdPath != null ? new List<Guid>(node.ParentIdPath) : new List<Guid>(1);
-                    child.ParentIdPath.Add(node.Id);
-                    node.Children.Add(child);
-                    GroupTreeAddChildren(groups, child, i);
-                }
-            }
-        }
-
-        private GroupTreeNode GroupTreeNodeFromGroup(Group group)
-        {
-            return new GroupTreeNode
-            {
-                Id = group.GroupId,
-                ParentId = group.ParentId,
-                Name = group.Name,
-                Level = group.Level,
-                DisplayOrder = group.DisplayOrder,
-                IsSystem = group.IsSystem,
-                IsContainsUser = group.IsContainsUser,
-                IsDisabled = group.IsDisabled,
-                Roles = group.Roles,
-                AvailableRoles = group.AvailableRoles,
-                Permissions = group.Permissions,
-            };
         }
 
         #endregion

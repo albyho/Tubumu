@@ -22,13 +22,14 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        Task<List<XM.RegionInfoBase>> GetRegionInfoBaseListAsync(int? parentId);
+        Task<List<XM.RegionInfo>> GetRegionInfoListAsync();
 
         /// <summary>
         /// GetRegionInfoBaseListAsync
         /// </summary>
+        /// <param name="parentId"></param>
         /// <returns></returns>
-        Task<List<XM.RegionInfoBase>> GetRegionInfoBaseListAsync();
+        Task<List<XM.RegionInfo>> GetRegionInfoListAsync(int? parentId);
     }
 
     /// <summary>
@@ -36,7 +37,7 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class RegionRepository : IRegionRepository
     {
-        private readonly TubumuContext _tubumuContext;
+        private readonly TubumuContext _context;
 
         /// <summary>
         /// 构造函数
@@ -44,7 +45,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="tubumuContext"></param>
         public RegionRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
         }
 
         /// <summary>
@@ -52,26 +53,26 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="parentId"></param>
         /// <returns></returns>
-        public async Task<List<XM.RegionInfoBase>> GetRegionInfoBaseListAsync(int? parentId)
+        public async Task<List<XM.RegionInfo>> GetRegionInfoListAsync()
         {
-            var list = await _tubumuContext.Region.AsNoTracking().
-                Where(m => m.ParentId == parentId).
-                OrderBy(m => m.DisplayOrder).
-                ProjectTo<XM.RegionInfoBase>().
-                ToListAsync();
+             var list = await _context.Region.AsNoTracking().
+                 OrderBy(m => m.DisplayOrder).
+                 ProjectTo<XM.RegionInfo>().
+                 ToListAsync();
             return list;
         }
 
         /// <summary>
         /// GetRegionInfoBaseListAsync
         /// </summary>
+        /// <param name="parentId"></param>
         /// <returns></returns>
-        public async Task<List<XM.RegionInfoBase>> GetRegionInfoBaseListAsync()
+        public async Task<List<XM.RegionInfo>> GetRegionInfoListAsync(int? parentId)
         {
-            var list = await _tubumuContext.Region.AsNoTracking().
-                OrderBy(m => m.RegionId).
-                ThenBy(m => m.DisplayOrder).
-                ProjectTo<XM.RegionInfoBase>().
+            var list = await _context.Region.AsNoTracking().
+                Where(m => m.ParentId == parentId).
+                OrderBy(m => m.DisplayOrder).
+                ProjectTo<XM.RegionInfo>().
                 ToListAsync();
             return list;
         }

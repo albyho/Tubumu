@@ -32,7 +32,7 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class PermissionRepository : IPermissionRepository
     {
-        private readonly TubumuContext _tubumuContext;
+        private readonly TubumuContext _context;
 
         /// <summary>
         /// PermissionRepository
@@ -40,7 +40,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="tubumuContext"></param>
         public PermissionRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Permission> GetItemAsync(Guid permissionId)
         {
-            var item = await _tubumuContext.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.PermissionId == permissionId);
+            var item = await _context.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.PermissionId == permissionId);
             return item.MapTo<XM.Permission>();
         }
 
@@ -61,7 +61,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Permission> GetItemAsync(string name)
         {
-            var item = await _tubumuContext.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.Name == name);
+            var item = await _context.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.Name == name);
             return item.MapTo<XM.Permission>();
         }
 
@@ -90,20 +90,20 @@ namespace Tubumu.Modules.Admin.Repositories
 
             if (parentId.HasValue)
             {
-                var parent = await _tubumuContext.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.PermissionId == parentId.Value);
+                var parent = await _context.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.PermissionId == parentId.Value);
                 if (parent == null)
                     return new List<XM.Permission>();
                 else
                 {
                     int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent.DisplayOrder, parent.Level);
                     if (displayOrderOfNextParentOrNextBrother != 0)
-                        return await _tubumuContext.Permission.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
+                        return await _context.Permission.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                             .OrderBy(m => m.DisplayOrder)
                             .Select(selector)
                             .AsNoTracking()
                             .ToListAsync();
                     else
-                        return await _tubumuContext.Permission.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder)
+                        return await _context.Permission.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder)
                             .OrderBy(m => m.DisplayOrder)
                             .Select(selector)
                             .AsNoTracking()
@@ -112,7 +112,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             else
             {
-                return await _tubumuContext.Permission.AsNoTracking()
+                return await _context.Permission.AsNoTracking()
                     .OrderBy(m => m.DisplayOrder)
                     .Select(selector)
                     .ToListAsync();
@@ -131,7 +131,7 @@ namespace Tubumu.Modules.Admin.Repositories
             Permission permissionToSave = null;
             if (!permissionInput.PermissionId.IsNullOrEmpty())
             {
-                permissionToSave = await _tubumuContext.Permission.FirstOrDefaultAsync(m => m.PermissionId == permissionInput.PermissionId.Value);
+                permissionToSave = await _context.Permission.FirstOrDefaultAsync(m => m.PermissionId == permissionInput.PermissionId.Value);
 
                 if (permissionInput.PermissionId == permissionInput.ParentId)
                 {
@@ -152,7 +152,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     ModuleName = permissionInput.ModuleName,
                     Name = permissionInput.Name,
                 };
-                _tubumuContext.Permission.Add(permissionToSave);
+                _context.Permission.Add(permissionToSave);
                 //如果添加的是新的顶级节点,直接添加到末尾，不会影响其他节点
                 if (permissionInput.ParentId.IsNullOrEmpty())
                 {
@@ -170,7 +170,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                     //父节点树之后的所有节点的DisplayOrder加1
                     sql = "Update Permission Set DisplayOrder=DisplayOrder+1 Where DisplayOrder > @DisplayOrder";
-                    await _tubumuContext.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
+                    await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
                 }
                 #endregion
             }
@@ -194,11 +194,11 @@ namespace Tubumu.Modules.Admin.Repositories
                     if (displayOrderOfNextParentOrNextBrother == 0)
                     {
                         //说明当前节点是最后一个节点,直接获取
-                        currTreeIds = await _tubumuContext.Permission.Where(m => m.DisplayOrder >= permissionToSave.DisplayOrder).Select(m => m.PermissionId).ToListAsync();
+                        currTreeIds = await _context.Permission.Where(m => m.DisplayOrder >= permissionToSave.DisplayOrder).Select(m => m.PermissionId).ToListAsync();
                     }
                     else
                     {
-                        currTreeIds = await _tubumuContext.Permission
+                        currTreeIds = await _context.Permission
                             .Where(m => m.DisplayOrder >= permissionToSave.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                             .Select(m => m.PermissionId).ToListAsync();
 
@@ -220,7 +220,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         {
                             //将当前节点树的所有节点的Level都进行提升
                             sql = "Update Permission Set Level = Level - @Level Where DisplayOrder>=@DisplayOrder";
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("Level", xLevel)
                                 , new SqlParameter("DisplayOrder", permissionToSave.DisplayOrder)
                                 );
@@ -228,11 +228,11 @@ namespace Tubumu.Modules.Admin.Repositories
                         else//当前节点树之后还有节点，应该将这些节点的向前面排，并且将当前节点树的所有节点往后排
                         {
                             //当前节点树之后的节点数量
-                            int nextItemCount = await _tubumuContext.Permission.CountAsync(m => m.DisplayOrder >= displayOrderOfNextParentOrNextBrother);
+                            int nextItemCount = await _context.Permission.CountAsync(m => m.DisplayOrder >= displayOrderOfNextParentOrNextBrother);
 
                             sql = "Update Permission Set DisplayOrder = DisplayOrder - @CTIC Where DisplayOrder>=@DOONPONB";
 
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("CTIC", currentTreeItemCount)
                                 , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                                 );
@@ -241,7 +241,7 @@ namespace Tubumu.Modules.Admin.Repositories
                             foreach (var id in currTreeIds)
                                 sql += " Or PermissionId = '{0}'".FormatWith(id.ToString());
 
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("Level", xLevel)
                                 , new SqlParameter("NextItemCount", nextItemCount)
                                 );
@@ -255,7 +255,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         #region 从顶级节点移至另一节点下，或从当前父节点下移至另一节点下
 
                         //目标父节点
-                        var tarParent = await _tubumuContext.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.PermissionId == permissionInput.ParentId.Value);
+                        var tarParent = await _context.Permission.AsNoTracking().FirstOrDefaultAsync(m => m.PermissionId == permissionInput.ParentId.Value);
 
                         int xDisplayOrder = permissionToSave.DisplayOrder - tarParent.DisplayOrder;
                         int xLevel = permissionToSave.Level - tarParent.Level;
@@ -270,7 +270,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                 foreach (var id in currTreeIds)
                                     sql += " Or PermissionId = '{0}'".FormatWith(id.ToString());
 
-                                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                                await _context.Database.ExecuteSqlCommandAsync(sql
                                     , new SqlParameter("Level", xLevel - 1)
                                     );
                             }
@@ -278,7 +278,7 @@ namespace Tubumu.Modules.Admin.Repositories
                             {
                                 //新的父节点和本节点之间的节点往下移动，DisplayOrder增加
                                 sql = "Update Permission Set DisplayOrder=DisplayOrder+@CurTreeCount Where DisplayOrder>@TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                                await _context.Database.ExecuteSqlCommandAsync(sql
                                     , new SqlParameter("CurTreeCount", currentTreeItemCount)
                                     , new SqlParameter("TDisplayOrder", tarParent.DisplayOrder)
                                     , new SqlParameter("CDisplayOrder", permissionToSave.DisplayOrder)
@@ -287,7 +287,7 @@ namespace Tubumu.Modules.Admin.Repositories
                                 sql = "Update Permission Set DisplayOrder = DisplayOrder-@XCount,Level = Level - @Level Where 1<>1 ";
                                 foreach (var id in currTreeIds)
                                     sql += " Or PermissionId = '{0}'".FormatWith(id.ToString());
-                                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                                await _context.Database.ExecuteSqlCommandAsync(sql
                                     , new SqlParameter("XCount", xDisplayOrder - 1)//也就是新节点和本节点之间的节点的数量
                                     , new SqlParameter("Level", xLevel - 1)
                                     );
@@ -304,7 +304,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                             // 更新本节点树至新的父节点（包括新的父节点）之间的节点的DisplayOrder
                             sql = "Update Permission Set DisplayOrder=DisplayOrder-@CurTreeCount Where DisplayOrder>=@DOONPONB And DisplayOrder<=@TDisplayOrder";
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("CurTreeCount", currentTreeItemCount)
                                 , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                                 , new SqlParameter("TDisplayOrder", tarParent.DisplayOrder)
@@ -315,7 +315,7 @@ namespace Tubumu.Modules.Admin.Repositories
                             sql = "Update Permission Set DisplayOrder = DisplayOrder+ @XCount,Level = Level - @Level Where 1<>1 ";
                             foreach (var id in currTreeIds)
                                 sql += " Or PermissionId = '{0}'".FormatWith(id.ToString());
-                            await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("XCount", nextItemCount)
                                 , new SqlParameter("Level", xLevel - 1)
                                 );
@@ -327,7 +327,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     }
                 }
             }
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -341,36 +341,36 @@ namespace Tubumu.Modules.Admin.Repositories
             //移除无限级分类步骤：
 
             //1、获取预删节点信息
-            var permissionToRemove = await _tubumuContext.Permission.FirstOrDefaultAsync(m => m.PermissionId == permissionId);
+            var permissionToRemove = await _context.Permission.FirstOrDefaultAsync(m => m.PermissionId == permissionId);
 
             //当然，如果无法获取节点，属于无效操作
             if (permissionToRemove == null) return false;
 
             //2、节点包含子节点不允许删除
-            if (await _tubumuContext.Permission.AnyAsync(m => m.ParentId == permissionId))
+            if (await _context.Permission.AnyAsync(m => m.ParentId == permissionId))
                 return false;
 
-            using (var dbContextTransaction = _tubumuContext.Database.BeginTransaction())
+            using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 //3、更新DisplayOrder大于预删节点DisplayOrder的节点
                 string sql = "Update Permission Set DisplayOrder=DisplayOrder-1 Where DisplayOrder>@DisplayOrder";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("DisplayOrder", permissionToRemove.DisplayOrder)
                 );
 
                 //4、删除关联节点
                 sql = "Delete RolePermission Where PermissionId=@PermissionId";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("PermissionId", permissionId)
                 );
                 sql = "Delete UserPermission Where PermissionId=@PermissionId";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlCommandAsync(sql,
                     new SqlParameter("PermissionId", permissionId)
                 );
 
                 //5、删除节点
-                _tubumuContext.Permission.Remove(permissionToRemove);
-                await _tubumuContext.SaveChangesAsync();
+                _context.Permission.Remove(permissionToRemove);
+                await _context.SaveChangesAsync();
 
                 dbContextTransaction.Commit();
             }
@@ -388,7 +388,7 @@ namespace Tubumu.Modules.Admin.Repositories
         {
             string sql;
 
-            var permissionToMove = await _tubumuContext.Permission.FirstOrDefaultAsync(m => m.PermissionId == permissionId);
+            var permissionToMove = await _context.Permission.FirstOrDefaultAsync(m => m.PermissionId == permissionId);
             if (permissionToMove == null) return false;
 
             #region 获取当前节点树
@@ -398,12 +398,12 @@ namespace Tubumu.Modules.Admin.Repositories
             if (displayOrderOfNextParentOrNextBrother == 0)
             {
                 // 无兄弟节点
-                currTreeIds = await _tubumuContext.Permission.Where(m => m.DisplayOrder >= permissionToMove.DisplayOrder).Select(m => m.PermissionId).ToListAsync();
+                currTreeIds = await _context.Permission.Where(m => m.DisplayOrder >= permissionToMove.DisplayOrder).Select(m => m.PermissionId).ToListAsync();
             }
             else
             {
                 // 有兄弟节点
-                currTreeIds = await _tubumuContext.Permission
+                currTreeIds = await _context.Permission
                     .Where(m => m.DisplayOrder >= permissionToMove.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                     .Select(m => m.PermissionId)
                     .ToListAsync();
@@ -420,12 +420,12 @@ namespace Tubumu.Modules.Admin.Repositories
 
                 Permission targetPermission;
                 if (permissionToMove.ParentId.HasValue)
-                    targetPermission = await _tubumuContext.Permission
+                    targetPermission = await _context.Permission
                         .OrderByDescending(m => m.DisplayOrder)
                         .FirstOrDefaultAsync(m =>
                     m.ParentId == permissionToMove.ParentId && m.DisplayOrder < permissionToMove.DisplayOrder);
                 else
-                    targetPermission = await _tubumuContext.Permission
+                    targetPermission = await _context.Permission
                         .OrderByDescending(m => m.DisplayOrder)
                         .FirstOrDefaultAsync(m =>
                     m.ParentId == null && m.DisplayOrder < permissionToMove.DisplayOrder);
@@ -434,13 +434,13 @@ namespace Tubumu.Modules.Admin.Repositories
                 if (targetPermission == null) return false;
 
                 //获取兄弟节点树的节点数
-                int targetTreeCount = await _tubumuContext.Permission.CountAsync(m =>
+                int targetTreeCount = await _context.Permission.CountAsync(m =>
                     m.DisplayOrder >= targetPermission.DisplayOrder
                     && m.DisplayOrder < permissionToMove.DisplayOrder);
 
                 //更新兄弟节点树的DisplayOrder
                 sql = "Update Permission Set DisplayOrder = DisplayOrder+@CurTreeCount Where DisplayOrder>=@TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlCommandAsync(sql
                     , new SqlParameter("CurTreeCount", curTreeCount)
                     , new SqlParameter("TDisplayOrder", targetPermission.DisplayOrder)
                     , new SqlParameter("CDisplayOrder", permissionToMove.DisplayOrder)
@@ -449,7 +449,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 sql = "Update Permission Set DisplayOrder = DisplayOrder-@TargetTreeCount Where 1<>1 ";
                 foreach (var id in currTreeIds)
                     sql += " Or PermissionId = '{0}'".FormatWith(id.ToString());
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlCommandAsync(sql
                     , new SqlParameter("TargetTreeCount", targetTreeCount)
                     );
 
@@ -459,10 +459,10 @@ namespace Tubumu.Modules.Admin.Repositories
                 #region 获取下一个兄弟节点
                 Permission nextBrotherPermission;
                 if (permissionToMove.ParentId.HasValue)
-                    nextBrotherPermission = await _tubumuContext.Permission.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
+                    nextBrotherPermission = await _context.Permission.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == permissionToMove.ParentId && m.DisplayOrder > permissionToMove.DisplayOrder);
                 else
-                    nextBrotherPermission = await _tubumuContext.Permission.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
+                    nextBrotherPermission = await _context.Permission.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == null && m.DisplayOrder > permissionToMove.DisplayOrder);
                 #endregion
 
@@ -472,15 +472,15 @@ namespace Tubumu.Modules.Admin.Repositories
                 int displayOrderOfNextParentOrNextBrotherOfBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(nextBrotherPermission.DisplayOrder, nextBrotherPermission.Level);
                 int nextBrotherTreeCount;
                 if (displayOrderOfNextParentOrNextBrotherOfBrother == 0)
-                    nextBrotherTreeCount = await _tubumuContext.Permission.CountAsync(m => m.DisplayOrder >= nextBrotherPermission.DisplayOrder);
+                    nextBrotherTreeCount = await _context.Permission.CountAsync(m => m.DisplayOrder >= nextBrotherPermission.DisplayOrder);
                 else
-                    nextBrotherTreeCount = await _tubumuContext.Permission.CountAsync(m => m.DisplayOrder >= nextBrotherPermission.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrotherOfBrother);
+                    nextBrotherTreeCount = await _context.Permission.CountAsync(m => m.DisplayOrder >= nextBrotherPermission.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrotherOfBrother);
                 #endregion
 
                 //更新兄弟节点树的DisplayOrder
                 sql = "Update Permission Set DisplayOrder = DisplayOrder-@CurTreeCount Where DisplayOrder>=@DisplayOrder And DisplayOrder<@TDisplayOrder";
 
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlCommandAsync(sql
                     , new SqlParameter("CurTreeCount", curTreeCount)
                     , new SqlParameter("DisplayOrder", nextBrotherPermission.DisplayOrder)
                     , new SqlParameter("TDisplayOrder", nextBrotherPermission.DisplayOrder + nextBrotherTreeCount)
@@ -490,7 +490,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 foreach (var id in currTreeIds)
                     sql += " Or PermissionId = '{0}'".FormatWith(id.ToString());
 
-                await _tubumuContext.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlCommandAsync(sql
                     , new SqlParameter("NextBrotherTreeCount", nextBrotherTreeCount)
                     );
 
@@ -502,7 +502,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
         private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(int displayOrder, int permissionLevel)
         {
-            return await _tubumuContext.Permission.Where(m => m.Level <= permissionLevel && m.DisplayOrder > displayOrder)
+            return await _context.Permission.Where(m => m.Level <= permissionLevel && m.DisplayOrder > displayOrder)
                 .OrderBy(m => m.DisplayOrder)
                 .Select(m => m.DisplayOrder)
                 .FirstOrDefaultAsync();
@@ -510,13 +510,13 @@ namespace Tubumu.Modules.Admin.Repositories
 
         private async Task<int> GetMaxDisplayOrderAsync()
         {
-            return await _tubumuContext.Permission.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
+            return await _context.Permission.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
         }
 
         private async Task<int> GetMaxDisplayOrderInParentTreeAsync(Guid parentId)
         {
             int maxDisplayOrder;
-            var parent = await _tubumuContext.Permission.FirstOrDefaultAsync(m => m.PermissionId == parentId);
+            var parent = await _context.Permission.FirstOrDefaultAsync(m => m.PermissionId == parentId);
             if (parent == null)
                 throw new NullReferenceException("或许尝试将节点加到不存在的父节点之上");
 
@@ -524,7 +524,7 @@ namespace Tubumu.Modules.Admin.Repositories
             int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent.DisplayOrder, parent.Level);
 
             if (displayOrderOfNextParentOrNextBrother == 0)
-                maxDisplayOrder = await _tubumuContext.Permission.Where(m => m.DisplayOrder > parent.DisplayOrder || m.PermissionId == parent.PermissionId).MaxAsync(m => m.DisplayOrder);
+                maxDisplayOrder = await _context.Permission.Where(m => m.DisplayOrder > parent.DisplayOrder || m.PermissionId == parent.PermissionId).MaxAsync(m => m.DisplayOrder);
             else
                 maxDisplayOrder = displayOrderOfNextParentOrNextBrother - 1;
 
@@ -534,7 +534,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
         private async Task<int> GetLevelAsync(Guid pessmissionId)
         {
-            return await _tubumuContext.Permission.Where(m => m.PermissionId == pessmissionId).Select(m => m.Level).FirstOrDefaultAsync();
+            return await _context.Permission.Where(m => m.PermissionId == pessmissionId).Select(m => m.Level).FirstOrDefaultAsync();
         }
 
         #endregion

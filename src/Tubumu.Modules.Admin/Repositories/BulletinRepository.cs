@@ -34,7 +34,7 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public class BulletinRepository : IBulletinRepository
     {
-        private readonly TubumuContext _tubumuContext;
+        private readonly TubumuContext _context;
 
         /// <summary>
         /// 构造函数
@@ -42,7 +42,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="tubumuContext"></param>
         public BulletinRepository(TubumuContext tubumuContext)
         {
-            _tubumuContext = tubumuContext;
+            _context = tubumuContext;
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Bulletin> GetItemAsync()
         {
-            var item = await _tubumuContext.Bulletin.AsNoTracking().FirstOrDefaultAsync();
+            var item = await _context.Bulletin.AsNoTracking().FirstOrDefaultAsync();
             return item.MapTo<XM.Bulletin>();
         }
 
@@ -63,11 +63,11 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> SaveAsync(BulletinInput bulletin, ModelStateDictionary modelState)
         {
-            var dbBulletin = await _tubumuContext.Bulletin.FirstOrDefaultAsync();
+            var dbBulletin = await _context.Bulletin.FirstOrDefaultAsync();
             if (dbBulletin == null) return false;
 
             dbBulletin.UpdateFrom(bulletin);
-            await _tubumuContext.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return true;
         }

@@ -21,6 +21,7 @@ namespace Tubumu.Modules.Admin.Entities
         public string ZipCode { get; set; }
         public string RegionCode { get; set; }
         public int DisplayOrder { get; set; }
+        public bool HasChildren { get; set; }
 
         public virtual Region Parent { get; set; }
         public virtual ICollection<Region> InverseParent { get; set; }
