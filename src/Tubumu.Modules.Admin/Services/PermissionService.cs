@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
 using Tubumu.Modules.Admin.Models;
+using Tubumu.Modules.Admin.Models.Api;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Framework.Extensions;
@@ -18,6 +19,8 @@ namespace Tubumu.Modules.Admin.Services
         Task<Permission> GetItemAsync(Guid permissionId);
         Task<Permission> GetItemAsync(string name);
         Task<List<Permission>> GetListInCacheAsync();
+        Task<List<PermissionTreeNode>> GetTreeInCacheAsync();
+        Task<PermissionTreeNode> GetSubTreeInCacheAsync(Guid permissionId);
         Task<bool> SaveAsync(PermissionInput permissionInput, ModelStateDictionary modelState);
         Task<bool> SaveAsync(IEnumerable<PermissionInput> permissions, ModelStateDictionary modelState);
         Task<bool> RemoveAsync(Guid permissionId);
@@ -29,7 +32,8 @@ namespace Tubumu.Modules.Admin.Services
     {
         private readonly IPermissionRepository _repository;
         private readonly IDistributedCache _cache;
-        private const string PermissionListCacheKey = "PermissionList";
+        private const string ListCacheKey = "PermissionList";
+        private const string TreeCacheKey = "PermissionTree";
 
         public PermissionService(IPermissionRepository repository, IDistributedCache cache)
         {
@@ -64,15 +68,27 @@ namespace Tubumu.Modules.Admin.Services
         {
             var permissions = await GetListInCacheInternalAsync();
             return permissions;
-            //return ClonePermissions(permissions);
+        }
+
+        public async Task<List<PermissionTreeNode>> GetTreeInCacheAsync()
+        {
+            var tree = await GetTreeInCacheInternalAsync();
+            return tree;
+        }
+
+        public async Task<PermissionTreeNode> GetSubTreeInCacheAsync(Guid permissionId)
+        {
+            var list = await GetTreeInCacheInternalAsync();
+            var node = FindPermissionTreeNode(list, permissionId);
+            return node;
         }
 
         public async Task<bool> SaveAsync(PermissionInput permissionInput, ModelStateDictionary modelState)
         {
-            bool result = await _repository.SaveAsync(permissionInput);
+            bool result = await _repository.SaveAsync(permissionInput, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(PermissionListCacheKey);
+                await RemoveCache();
             }
             else
             {
@@ -84,15 +100,14 @@ namespace Tubumu.Modules.Admin.Services
 
         public async Task<bool> SaveAsync(IEnumerable<PermissionInput> permissions, ModelStateDictionary modelState)
         {
-            foreach (var per in permissions)
+            foreach (var item in permissions)
             {
-                if (!await _repository.SaveAsync(per))
+                if (!await _repository.SaveAsync(item, modelState))
                 {
-                    throw new InvalidOperationException("{0} 模块的 {1} 权限添加失败".FormatWith(per.Name));
+                    throw new InvalidOperationException("{0} 权限添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
                 }
             }
-
-            await _cache.RemoveAsync(PermissionListCacheKey);
+            await RemoveCache();
             return true;
         }
 
@@ -101,7 +116,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.RemoveAsync(permissionId);
             if (result)
             {
-                await _cache.RemoveAsync(PermissionListCacheKey);
+                await RemoveCache();
             }
             return result;
         }
@@ -123,7 +138,7 @@ namespace Tubumu.Modules.Admin.Services
 
             if (result)
             {
-                await _cache.RemoveAsync(PermissionListCacheKey);
+                await RemoveCache();
             }
             return result;
         }
@@ -133,7 +148,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveAsync(permissionId, target);
             if (result)
             {
-                await _cache.RemoveAsync(PermissionListCacheKey);
+                await _cache.RemoveAsync(ListCacheKey);
             }
             return result;
         }
@@ -142,46 +157,15 @@ namespace Tubumu.Modules.Admin.Services
 
         #region Private Methods
 
-        private List<Permission> ClonePermissions(IEnumerable<Permission> source)
+        private async Task<List<Permission>> GetListInCacheInternalAsync()
         {
-            if (source.IsNullOrEmpty())
+            var list = await _cache.GetJsonAsync<List<Permission>>(ListCacheKey);
+            if (list == null)
             {
-                return new List<Permission>(0);
+                list = await _repository.GetListAsync();
+                await _cache.SetJsonAsync<List<Permission>>(ListCacheKey, list);
             }
-
-            if (!(source.DeepClone() is IEnumerable<Permission> clone))
-            {
-                return new List<Permission>(0);
-            }
-
-            return clone.ToList();
-
-            //List<Permission> permissions = new List<Permission>();
-            //foreach (var item in source)
-            //{
-            //    permissions.Add(new Permission
-            //    {
-            //        ParentId = item.ParentId,
-            //        ModuleName = item.ModuleName,
-            //        PermissionId = item.PermissionId,
-            //        Name = item.Name,
-            //        Level = item.Level,
-            //        DisplayOrder = item.DisplayOrder
-            //    });
-            //}
-            //return permissions;
-
-        }
-
-        public async Task<List<Permission>> GetListInCacheInternalAsync()
-        {
-            var permissions = await _cache.GetJsonAsync<List<Permission>>(PermissionListCacheKey);
-            if (permissions == null)
-            {
-                permissions = await _repository.GetListAsync();
-                await _cache.SetJsonAsync<List<Permission>>(PermissionListCacheKey, permissions);
-            }
-            return permissions;
+            return list;
 
             /*
             if (!_cache.TryGetValue(PermissionListCacheKey, out List<Permission> permissions))
@@ -202,6 +186,88 @@ namespace Tubumu.Modules.Admin.Services
             */
         }
 
+        private async Task<List<PermissionTreeNode>> GetTreeInCacheInternalAsync()
+        {
+            var tree = await _cache.GetJsonAsync<List<PermissionTreeNode>>(TreeCacheKey);
+            if (tree == null)
+            {
+                var list = await GetListInCacheInternalAsync();
+                tree = new List<PermissionTreeNode>();
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    if (item.Level == 1)
+                    {
+                        var node = PermissionTreeNodeFromPermisssion(item);
+                        node.ParentIdPath = null;
+                        tree.Add(node);
+                        PermisssionTreeAddChildren(list, node, i);
+                    }
+                }
+                await _cache.SetJsonAsync<List<PermissionTreeNode>>(TreeCacheKey, tree);
+            }
+            return tree;
+        }
+
+        private PermissionTreeNode FindPermissionTreeNode(List<PermissionTreeNode> list, Guid permissionId)
+        {
+            PermissionTreeNode result = null; 
+            foreach(var node in list)
+            {
+                if(node.Id == permissionId)
+                {
+                    result = node;
+                }
+                else
+                {
+                    result = FindPermissionTreeNode(node.Children,permissionId);
+                }
+                if(result != null)
+                {
+                    break;
+                }
+            }
+            return result;
+        }
+
+        private void PermisssionTreeAddChildren(List<Permission> permissions, PermissionTreeNode node, int index)
+        {
+            for (var i = index + 1; i < permissions.Count; i++)
+            {
+                var item = permissions[i];
+                if (item.ParentId == node.Id)
+                {
+                    if (node.Children == null)
+                    {
+                        node.Children = new List<PermissionTreeNode>();
+                    };
+                    var child = PermissionTreeNodeFromPermisssion(item);
+                    // 在父节点的 ParentIdPath 基础上增加 ParentId
+                    child.ParentIdPath = node.ParentIdPath != null ? new List<Guid>(node.ParentIdPath) : new List<Guid>(1);
+                    child.ParentIdPath.Add(node.Id);
+                    node.Children.Add(child);
+                    PermisssionTreeAddChildren(permissions, child, i);
+                }
+            }
+        }
+
+        private PermissionTreeNode PermissionTreeNodeFromPermisssion(Permission permission)
+        {
+            return new PermissionTreeNode
+            {
+                Id = permission.PermissionId,
+                ParentId = permission.ParentId,
+                Name = permission.Name,
+                Level = permission.Level,
+                DisplayOrder = permission.DisplayOrder,
+            };
+        }
+
+        private async Task RemoveCache()
+        {
+            await _cache.RemoveAsync(ListCacheKey);
+            await _cache.RemoveAsync(TreeCacheKey);
+        }
 
         #endregion
     }

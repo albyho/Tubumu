@@ -42,8 +42,8 @@ namespace Tubumu.Modules.Admin
         /// <param name="services"></param>
         public override void ConfigureServices(IServiceCollection services)
         {
-            // Permission
-            services.AddScoped<IPermissionProvider, Permissions>();
+            // MetaData
+            services.AddScoped<IModuleMetaDataProvider, MetaData>();
 
             // Menu
             services.AddScoped<IMenuProvider, Menus>();

@@ -5,6 +5,9 @@ using Tubumu.Modules.Framework.Authorization;
 
 namespace Tubumu.Modules.Admin
 {
+    /// <summary>
+    /// Menus
+    /// </summary>
     public class Menus : IMenuProvider
     {
         public int Order => -1000;
@@ -59,7 +62,7 @@ namespace Tubumu.Modules.Admin
                              Type = ModuleMenuType.Group,
                              Title ="模块管理",
                              Children = new List<ModuleMenu> {
-                                new ModuleMenu{ Title="权限列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "权限列表", Name = "modulepermissions" }, Validator = u => u.HasPermission("权限列表")},
+                                new ModuleMenu{ Title="模块元数据", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "模块元数据", Name = "modulemetadatas" }, Validator = u => u.HasPermission("模块元数据")},
                              }
                          },
                     },

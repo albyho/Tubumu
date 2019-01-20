@@ -42,10 +42,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="tubumuContext"></param>
-        public RegionRepository(TubumuContext tubumuContext)
+        /// <param name="context"></param>
+        public RegionRepository(TubumuContext context)
         {
-            _context = tubumuContext;
+            _context = context;
         }
 
         /// <summary>

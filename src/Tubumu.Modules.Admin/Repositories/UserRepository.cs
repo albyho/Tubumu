@@ -224,10 +224,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="tubumuContext"></param>
-        public UserRepository(TubumuContext tubumuContext)
+        /// <param name="context"></param>
+        public UserRepository(TubumuContext context)
         {
-            _context = tubumuContext;
+            _context = context;
 
             _selector = u => new XM.UserInfo
             {
@@ -782,6 +782,7 @@ namespace Tubumu.Modules.Admin.Repositories
             userToSave.IsTester = userInput.IsTester;
 
             #region 分组
+
             //移除项
             if (!userToSave.UserGroup.IsNullOrEmpty())
             {
@@ -820,6 +821,7 @@ namespace Tubumu.Modules.Admin.Repositories
             #endregion
 
             #region 用户角色
+
             //移除项
             if (!userToSave.UserRole.IsNullOrEmpty())
             {
@@ -855,9 +857,11 @@ namespace Tubumu.Modules.Admin.Repositories
                     userToSave.UserRole.Add(item);
 
             }
+
             #endregion
 
             #region 用户权限
+
             //移除项
             if (!userToSave.UserPermission.IsNullOrEmpty())
             {
@@ -893,6 +897,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     userToSave.UserPermission.Add(item);
 
             }
+
             #endregion
 
             await _context.SaveChangesAsync();

@@ -177,11 +177,29 @@ namespace Tubumu.Modules.Admin.Controllers
             return html;
         }
 
+        /// <summary>
+        /// ViewInput
+        /// </summary>
         public class ViewInput
         {
+            /// <summary>
+            /// 是否是核心模块的视图
+            /// </summary>
             public bool IsCore { get; set; } // IsCore：让核心模块的前端和项目模块的前端能分开开发
+
+            /// <summary>
+            /// 标题
+            /// </summary>
             public string Title { get; set; }
+
+            /// <summary>
+            /// 名称
+            /// </summary>
             public string Name { get; set; }
+
+            /// <summary>
+            /// 使用的组件
+            /// </summary>
             public string Components { get; set; } // 以半角逗号或分号分隔
         }
     }

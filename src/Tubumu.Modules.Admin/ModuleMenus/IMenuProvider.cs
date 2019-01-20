@@ -8,6 +8,7 @@ namespace Tubumu.Modules.Admin.ModuleMenus
     public interface IMenuProvider
     {
         int Order { get; }
+
         IEnumerable<ModuleMenu> GetModuleMenus();
     }
 }

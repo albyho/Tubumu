@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Modules.Admin.Entities;
 using Tubumu.Modules.Admin.Models.Input;
@@ -22,7 +23,7 @@ namespace Tubumu.Modules.Admin.Repositories
         Task<XM.Permission> GetItemAsync(Guid permissionId);
         Task<XM.Permission> GetItemAsync(string name);
         Task<List<XM.Permission>> GetListAsync(Guid? parentId = null);
-        Task<bool> SaveAsync(PermissionInput permissionInput);
+        Task<bool> SaveAsync(PermissionInput permissionInput, ModelStateDictionary modelState);
         Task<bool> RemoveAsync(Guid permissionId);
         Task<bool> MoveAsync(Guid permissionId, MovingTarget target);
     }
@@ -37,10 +38,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// PermissionRepository
         /// </summary>
-        /// <param name="tubumuContext"></param>
-        public PermissionRepository(TubumuContext tubumuContext)
+        /// <param name="context"></param>
+        public PermissionRepository(TubumuContext context)
         {
-            _context = tubumuContext;
+            _context = context;
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="permissionInput"></param>
         /// <returns></returns>
-        public async Task<bool> SaveAsync(PermissionInput permissionInput)
+        public async Task<bool> SaveAsync(PermissionInput permissionInput, ModelStateDictionary modelState)
         {
             string sql;
 
@@ -135,7 +136,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                 if (permissionInput.PermissionId == permissionInput.ParentId)
                 {
-                    // modelState.AddModelError("PermissionId", "尝试将自身作为父节点");
+                    modelState.AddModelError("PermissionId", "尝试将自身作为父节点");
                     return false;
                 }
             }
@@ -300,7 +301,10 @@ namespace Tubumu.Modules.Admin.Repositories
                             #region 从上往下移
                             // 本节点树下已经不存在任何节点了，当然无法向下移
                             if (displayOrderOfNextParentOrNextBrother == 0)
+                            {
+                                modelState.AddModelError("PermissionId", "节点已处于最后位置，无法下移");
                                 return false;
+                            }
 
                             // 更新本节点树至新的父节点（包括新的父节点）之间的节点的DisplayOrder
                             sql = "Update Permission Set DisplayOrder=DisplayOrder-@CurTreeCount Where DisplayOrder>=@DOONPONB And DisplayOrder<=@TDisplayOrder";

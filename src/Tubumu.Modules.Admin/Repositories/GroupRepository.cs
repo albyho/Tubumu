@@ -42,9 +42,9 @@ namespace Tubumu.Modules.Admin.Repositories
         private readonly TubumuContext _context;
         private readonly Expression<Func<Group, XM.Group>> _selector;
 
-        public GroupRepository(TubumuContext tubumuContext)
+        public GroupRepository(TubumuContext context)
         {
-            _context = tubumuContext;
+            _context = context;
 
             _selector = ug => new XM.Group
             {
@@ -182,33 +182,12 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState)
         {
             string sql;
-
             Group groupToSave = null;
             Group parent = null;
-            if (!groupInput.GroupId.IsNullOrEmpty())
+            if (groupInput.GroupId == groupInput.ParentId)
             {
-                if (groupInput.GroupId == groupInput.ParentId)
-                {
-                    modelState.AddModelError("GroupId", "尝试将自身作为父节点");
-                    return false;
-                }
-
-                groupToSave = await _context.Group.
-                    Include(m => m.GroupAvailableRole).
-                    Include(m => m.GroupRole).
-                    Include(m => m.GroupPermission).
-                    FirstOrDefaultAsync(m => m.GroupId == groupInput.GroupId.Value);
-                if (groupToSave == null)
-                {
-                    modelState.AddModelError("GroupId", "尝试编辑不存在的记录");
-                    return false;
-                }
-
-                if (groupToSave.IsSystem)
-                {
-                    modelState.AddModelError("GroupId", "当前节点是系统节点，不允许编辑");
-                    return false;
-                }
+                modelState.AddModelError("GroupId", "尝试将自身作为父节点");
+                return false;
             }
 
             if (!groupInput.ParentId.IsNullOrEmpty())
@@ -224,6 +203,15 @@ namespace Tubumu.Modules.Admin.Repositories
                     modelState.AddModelError("GroupId", "不允许将节点添加至系统节点上");
                     return false;
                 }
+            }
+
+            if (!groupInput.GroupId.IsNullOrEmpty())
+            {
+                groupToSave = await _context.Group.
+                    Include(m => m.GroupAvailableRole).
+                    Include(m => m.GroupRole).
+                    Include(m => m.GroupPermission).
+                    FirstOrDefaultAsync(m => m.GroupId == groupInput.GroupId.Value);
             }
 
             // 添加操作
@@ -334,6 +322,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     if (xDisplayOrder > 0) //从下往上移
                     {
                         #region 从下往上移
+
                         //特例处理，当前节点要移至的父节点就是上一个节点，只需要改变当前树Level
                         if (xDisplayOrder == 1)
                         {
@@ -364,11 +353,13 @@ namespace Tubumu.Modules.Admin.Repositories
                                 );
 
                         }
+
                         #endregion
                     }
                     else//从上往下移
                     {
                         #region 从上往下移
+
                         // 本节点树下已经不存在任何节点了，当然无法向下移
                         if (displayOrderOfNextParentOrNextBrother == 0)
                         {
@@ -406,6 +397,7 @@ namespace Tubumu.Modules.Admin.Repositories
             groupToSave.IsDisabled = groupInput.IsDisabled;
 
             #region 角色
+
             // 移除项
             if (!groupToSave.GroupRole.IsNullOrEmpty())
             {
@@ -439,9 +431,11 @@ namespace Tubumu.Modules.Admin.Repositories
                     groupToSave.GroupRole.Add(item);
 
             }
+
             #endregion
 
             #region 限制角色
+
             // 移除项
             if (!groupToSave.GroupAvailableRole.IsNullOrEmpty())
             {
@@ -476,9 +470,11 @@ namespace Tubumu.Modules.Admin.Repositories
                     groupToSave.GroupAvailableRole.Add(item);
 
             }
+
             #endregion
 
             #region 权限
+
             // 移除项
             if (!groupToSave.GroupPermission.IsNullOrEmpty())
             {
@@ -514,10 +510,10 @@ namespace Tubumu.Modules.Admin.Repositories
                     groupToSave.GroupPermission.Add(item);
 
             }
+
             #endregion
 
             await _context.SaveChangesAsync();
-
             return true;
         }
 

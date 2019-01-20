@@ -104,10 +104,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="tubumuContext"></param>
-        public MobileUserRepository(TubumuContext tubumuContext)
+        /// <param name="context"></param>
+        public MobileUserRepository(TubumuContext context)
         {
-            _context = tubumuContext;
+            _context = context;
 
             _selector = u => new XM.UserInfo
             {

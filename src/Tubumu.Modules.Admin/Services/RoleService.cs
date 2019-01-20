@@ -18,7 +18,8 @@ namespace Tubumu.Modules.Admin.Services
         Task<Role> GetItemAsync(string name);
         Task<List<RoleBase>> GetBaseListInCacheAsync();
         Task<List<Role>> GetListInCacheAsync();
-        Task<Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState);
+        Task<bool> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState);
+        Task<bool> SaveAsync(IEnumerable<RoleInput> roleInputs, ModelStateDictionary modelState);
         Task<bool> RemoveAsync(Guid roleId, ModelStateDictionary modelState);
         Task<bool> EditNameAsync(RoleNameInput roleEditNameInput, ModelStateDictionary modelState);
         Task<bool> MoveAsync(Guid roleId, MovingTarget target);
@@ -69,11 +70,15 @@ namespace Tubumu.Modules.Admin.Services
             return roles;
         }
 
-        public async Task<Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState)
+        public async Task<bool> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState)
         {
-            if (!await ValidateExistsAsync(roleInput, modelState)) return null;
+            if (!await ValidateExistsAsync(roleInput, modelState))
+            {
+                modelState.AddModelError("Name", $"{roleInput.Name} 已经被使用");
+                return false;
+            }
             var result = await _repository.SaveAsync(roleInput, modelState);
-            if (result == null)
+            if (!result)
             {
                 modelState.AddModelError("Name", "添加或编辑时保存失败");
             }
@@ -81,9 +86,27 @@ namespace Tubumu.Modules.Admin.Services
             {
                 await _cache.RemoveAsync(RoleListCacheKey);
             }
-
             return result;
         }
+
+        public async Task<bool> SaveAsync(IEnumerable<RoleInput> roles, ModelStateDictionary modelState)
+        {
+            foreach (var item in roles)
+            {
+                if (!await ValidateExistsAsync(item, modelState))
+                {
+                    // 已经存在
+                    continue;
+                }
+                if (!await _repository.SaveAsync(item, modelState))
+                {
+                    throw new InvalidOperationException("{0} 角色添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
+                }
+            }
+            await _cache.RemoveAsync(RoleListCacheKey);
+            return true;
+        }
+
 
         public async Task<bool> RemoveAsync(Guid roleId, ModelStateDictionary modelState)
         {

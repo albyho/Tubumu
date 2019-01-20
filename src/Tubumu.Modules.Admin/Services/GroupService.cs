@@ -68,6 +68,14 @@ namespace Tubumu.Modules.Admin.Services
         Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState);
 
         /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="groupInputs"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> SaveAsync(IEnumerable<GroupInput> groupInputs, ModelStateDictionary modelState);
+
+        /// <summary>
         /// RemoveAsync
         /// </summary>
         /// <param name="groupId"></param>
@@ -200,14 +208,43 @@ namespace Tubumu.Modules.Admin.Services
         /// <returns></returns>
         public async Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState)
         {
-            if (!await ValidateExistsAsync(groupInput, modelState)) return false;
-
+            if (!await ValidateExistsAsync(groupInput, modelState))
+            {
+                modelState.AddModelError("Name", $"{groupInput.Name} 已经被使用");
+                return false;
+            }
             var result = await _repository.SaveAsync(groupInput, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(ListCacheKey);
+                await RemoveCache();
             }
             return result;
+        }
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="groups"></param>
+        /// <param name="groupInputs"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> SaveAsync(IEnumerable<GroupInput> groups, ModelStateDictionary modelState)
+        {
+            foreach (var item in groups)
+            {
+                if (!await ValidateExistsAsync(item, modelState))
+                {
+                    // 已经存在
+                    continue;
+                }
+
+                if (!await _repository.SaveAsync(item, modelState))
+                {
+                    throw new InvalidOperationException("{0} 分组添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
+                }
+            }
+            await RemoveCache();
+            return true;
         }
 
         /// <summary>
@@ -221,7 +258,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.RemoveAsync(groupId, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(ListCacheKey);
+                await RemoveCache();
             }
             return result;
         }
@@ -237,7 +274,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveAsync(groupId, movingTarget);
             if (result)
             {
-                await _cache.RemoveAsync(ListCacheKey);
+                await RemoveCache();
             }
             return result;
         }
@@ -256,7 +293,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveAsync(sourceGroupId, targetGroupId, movingLocation, isChild, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(ListCacheKey);
+                await RemoveCache();
             }
             return result;
         }
@@ -275,7 +312,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveByDisplayOrderAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(ListCacheKey);
+                await RemoveCache();
             }
             return result;
         }
@@ -491,7 +528,7 @@ namespace Tubumu.Modules.Admin.Services
                         GroupTreeAddChildren(list, node, i);
                     }
                 }
-                await _cache.SetJsonAsync<List<GroupTreeNode>>(ListCacheKey, tree);
+                await _cache.SetJsonAsync<List<GroupTreeNode>>(TreeCacheKey, tree);
             }
             return tree;
         }
@@ -534,6 +571,12 @@ namespace Tubumu.Modules.Admin.Services
                 AvailableRoles = group.AvailableRoles,
                 Permissions = group.Permissions,
             };
+        }
+
+        private async Task RemoveCache()
+        {
+            await _cache.RemoveAsync(ListCacheKey);
+            await _cache.RemoveAsync(TreeCacheKey);
         }
 
         #endregion

@@ -51,7 +51,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="roleInput"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<XM.Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState);
+        Task<bool> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState);
 
         /// <summary>
         /// RemoveAsync
@@ -107,10 +107,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="tubumuContext"></param>
-        public RoleRepository(TubumuContext tubumuContext)
+        /// <param name="context"></param>
+        public RoleRepository(TubumuContext context)
         {
-            _context = tubumuContext;
+            _context = context;
 
             _selector = r => new XM.Role
             {
@@ -183,21 +183,16 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <param name="roleInput"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<XM.Role> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState)
+        public async Task<bool> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState)
         {
-            Role roleToSave;
+            Role roleToSave = null;
             if (roleInput.RoleId.HasValue)
             {
                 roleToSave = await _context.Role.
                     Include(m=>m.RolePermission).
                     FirstOrDefaultAsync(m => m.RoleId == roleInput.RoleId.Value);
-                if (roleToSave == null)
-                {
-                    modelState.AddModelError("RoleId", "尝试编辑不存在的记录");
-                    return null;
-                }
             }
-            else
+            if (roleToSave == null)
             {
                 roleToSave = new Role
                 {
@@ -249,10 +244,7 @@ namespace Tubumu.Modules.Admin.Repositories
             #endregion
 
             await _context.SaveChangesAsync();
-
-            var role = (new [] { roleToSave }).Select(_selector.Compile()).First();
-
-            return role;
+            return true;
         }
 
         /// <summary>

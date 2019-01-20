@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tubumu.Modules.Framework.Authorization;
 
 namespace Tubumu.Modules.Admin
 {
-    public class Permissions : IPermissionProvider
+    public class MetaData : IModuleMetaDataProvider
     {
+        public int Order => -1000;
+
         public IEnumerable<Permission> GetModulePermissions()
         {
             const string moduleName = "Tubumu.Modules.Admin";
@@ -21,9 +24,7 @@ namespace Tubumu.Modules.Admin
               ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{486B3B3B-C020-4E96-B3A1-A746B9400692}"), ParentId = new Guid("{10B03A60-6E59-4cc7-8AB5-2CEC1F0695AE}"), Name="通知管理"}
 
               ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{39587146-885C-414c-98A7-9B157C83C374}"), Name="模块管理"}
-              ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{973F3E67-8918-49B3-AF79-9993778305C2}"), ParentId = new Guid("{39587146-885C-414c-98A7-9B157C83C374}"), Name="权限列表"}
-              ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{DB49EA0F-B5AD-44c9-B41C-DB6540C52CC5}"), ParentId = new Guid("{39587146-885C-414c-98A7-9B157C83C374}"), Name="提取权限"}
-              ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{9A1BAAFF-2246-4d1f-B3A2-52C47EF83DAF}"), ParentId = new Guid("{39587146-885C-414c-98A7-9B157C83C374}"), Name="清理权限"}
+              ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{973F3E67-8918-49B3-AF79-9993778305C2}"), ParentId = new Guid("{39587146-885C-414c-98A7-9B157C83C374}"), Name="模块元数据"}
 
               ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{418D9725-3C83-4119-A76C-221E2371944C}"), Name="组织架构管理"}
               ,new Permission{ ModuleName = moduleName, PermissionId = new Guid("{C834D9A6-AF92-4c4a-AB01-2277DB8A47A4}"), ParentId = new Guid("{418D9725-3C83-4119-A76C-221E2371944C}"), Name="用户管理"}
@@ -36,6 +37,30 @@ namespace Tubumu.Modules.Admin
             };
 
             return permissions;
+        }
+
+        public IEnumerable<Role> GetModuleRoles()
+        {
+            var roles = new List<Role>
+            {
+                new Role { RoleId = new Guid("10c0b1fd-f284-4a7d-bbe0-38a671e2bd34"), Name ="系统管理员", PermissionIds = GetModulePermissions().Select(m=>m.PermissionId).ToArray() },
+                new Role { RoleId = new Guid("10c0b1fd-f284-4a7d-bbe0-38a671e2bd35"), Name ="系统管理员1" },
+            };
+            return roles;
+        }
+
+        public IEnumerable<Group> GetModuleGroups()
+        {
+            var groups = new List<Group>
+            {
+                new Group { GroupId = new Guid("11111111-1111-1111-1111-111111111111"), Name = "等待分配组", IsContainsUser = true },
+                new Group { GroupId = new Guid("d33b7d65-297b-4633-9971-a491c525db5e"), Name = "系统管理组", IsContainsUser = true, RoleIds = new Guid[]
+                {
+                    new Guid("10c0b1fd-f284-4a7d-bbe0-38a671e2bd34"), // 角色：系统管理员
+                }},
+                new Group { GroupId = new Guid("d33b7d65-297b-4633-9971-a491c525db5f"), Name = "系统管理组1", IsContainsUser = true },
+            };
+            return groups;
         }
     }
 }

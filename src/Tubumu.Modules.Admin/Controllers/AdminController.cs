@@ -35,7 +35,7 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly IGroupService _groupService;
         private readonly IRoleService _roleService;
         private readonly IBulletinService _bulletinService;
-        private readonly IEnumerable<IPermissionProvider> _permissionProviders;
+        private readonly IEnumerable<IModuleMetaDataProvider> _moduleMetaDataProviders;
         private readonly IEnumerable<IMenuProvider> _menuProviders;
 
         // /Api/Admin/{action}
@@ -52,7 +52,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="groupService"></param>
         /// <param name="roleService"></param>
         /// <param name="bulletinService"></param>
-        /// <param name="permissionProviders"></param>
+        /// <param name="moduleMetaDataProviders"></param>
         /// <param name="menuProviders"></param>
         public AdminController(
             TokenValidationSettings tokenValidationSettings, 
@@ -65,7 +65,7 @@ namespace Tubumu.Modules.Admin.Controllers
             IGroupService groupService,
             IRoleService roleService,
             IBulletinService bulletinService,
-            IEnumerable<IPermissionProvider> permissionProviders,
+            IEnumerable<IModuleMetaDataProvider> moduleMetaDataProviders,
             IEnumerable<IMenuProvider> menuProviders)
         {
             _tokenValidationSettings = tokenValidationSettings;
@@ -78,7 +78,7 @@ namespace Tubumu.Modules.Admin.Controllers
             _groupService = groupService;
             _roleService = roleService;
             _bulletinService = bulletinService;
-            _permissionProviders = permissionProviders;
+            _moduleMetaDataProviders = moduleMetaDataProviders;
             _menuProviders = menuProviders;
         }
     }

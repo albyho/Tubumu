@@ -27,7 +27,7 @@ namespace Tubumu.Modules.Admin.Services
 
         Task<List<RegionTreeNode>> GetRegiontParentTreeAsync(int regionId);
 
-        Task<List<RegionTreeNode>> GetRegiontTreeNodeListAsync(int? parentId);
+        Task<List<RegionTreeNode>> GetRegiontTreeChildNodeListAsync(int? parentId);
     }
 
     public class RegionService : IRegionService
@@ -92,7 +92,7 @@ namespace Tubumu.Modules.Admin.Services
             return tree;
         }
 
-        public async Task<List<RegionTreeNode>> GetRegiontTreeNodeListAsync(int? parentId)
+        public async Task<List<RegionTreeNode>> GetRegiontTreeChildNodeListAsync(int? parentId)
         {
             // 从 List 缓存中获取，效率更高
             var list = await GetListInCacheInternalAsync();

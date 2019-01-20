@@ -26,7 +26,7 @@ namespace Tubumu.Modules.Admin.Controllers
         {
             var result = new ApiItemResult<Profile>();
             var userInfo = await _userService.GetItemByUserIdAsync(HttpContext.User.GetUserId(), UserStatus.Normal);
-            if(userInfo == null)
+            if (userInfo == null)
             {
                 result.Code = 400;
                 result.Message = "获取用户失败: 获取用户信息失败";
@@ -87,7 +87,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 result.Code = 400;
                 result.Message = "修改资料失败: 获取用户信息失败";
             }
-           
+
             if (!await _adminUserService.ChangePasswordAsync(HttpContext.User.GetUserId(), input, ModelState))
             {
                 result.Code = 400;
@@ -110,7 +110,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public ApiListResult<ModuleMenu> GetMenus()
         {
             var list = new List<ModuleMenu>();
-            var menuProviders = _menuProviders.OrderBy(m=>m.Order);
+            var menuProviders = _menuProviders.OrderBy(m => m.Order);
             foreach (var menuProvider in menuProviders)
             {
                 var items = menuProvider.GetModuleMenus();

@@ -155,10 +155,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="tubumuContext"></param>
-        public WeixinUserRepository(TubumuContext tubumuContext)
+        /// <param name="context"></param>
+        public WeixinUserRepository(TubumuContext context)
         {
-            _context = tubumuContext;
+            _context = context;
 
             _selector = u => new XM.UserInfo
             {

@@ -125,16 +125,16 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取区域信息列表
+        /// 获取区域树节点下的子节点信息列表
         /// </summary>
         /// <param name="parentIdInput"></param>
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiListResult<RegionTreeNode>> GetRegiontTreeNodeList(ParentIdNullableInput parentIdInput)
+        public async Task<ApiListResult<RegionTreeNode>> GetRegiontTreeChildNodeList(ParentIdNullableInput parentIdInput)
         {
             var returnResult = new ApiListResult<RegionTreeNode>();
-            var list = await _regionService.GetRegiontTreeNodeListAsync(parentIdInput.ParentId);
+            var list = await _regionService.GetRegiontTreeChildNodeListAsync(parentIdInput.ParentId);
             returnResult.List = list;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";

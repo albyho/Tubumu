@@ -12,6 +12,7 @@ using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 using Group = Tubumu.Modules.Admin.Models.Group;
 using Permission = Tubumu.Modules.Admin.Models.Permission;
+using Role = Tubumu.Modules.Admin.Models.Role;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -26,9 +27,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        [HttpPost("GetUsers")]
+        [HttpPost("GetUserPage")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiPageResult<UserInfo>> GetUsers([FromBody]UserSearchCriteria criteria)
+        public async Task<ApiPageResult<UserInfo>> GetUserPage([FromBody]UserSearchCriteria criteria)
         {
             var result = new ApiPageResult<UserInfo>();
             var page = await _userService.GetPageAsync(criteria);
@@ -121,9 +122,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// 获取分组列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetGroups")]
+        [HttpGet("GetGroupList")]
         [AllowAnonymous]
-        public async Task<ApiListResult<Group>> GetGroups()
+        public async Task<ApiListResult<Group>> GetGroupList()
         {
             var groups = await _groupService.GetListInCacheAsync();
             ProjectGroups(groups);
@@ -173,6 +174,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 result.Message = "添加分组失败：无需提供参数 GroupId";
                 return result;
             }
+            groupInput.GroupId = Guid.NewGuid();
             if (!await _groupService.SaveAsync(groupInput, ModelState))
             {
                 result.Code = 400;
@@ -272,8 +274,8 @@ namespace Tubumu.Modules.Admin.Controllers
         /// 获取角色列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetRoles")]
-        public async Task<ApiListResult<Role>> GetRoles()
+        [HttpGet("GetRoleList")]
+        public async Task<ApiListResult<Role>> GetRoleList()
         {
             var roles = await _roleService.GetListInCacheAsync();
             var result = new ApiListResult<Role>
@@ -290,8 +292,8 @@ namespace Tubumu.Modules.Admin.Controllers
         /// 获取角色列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetRoleBases")]
-        public async Task<ApiListResult<RoleBase>> GetRoleBases()
+        [HttpGet("GetRoleBaseList")]
+        public async Task<ApiListResult<RoleBase>> GetRoleBaseList()
         {
             var roles = await _roleService.GetBaseListInCacheAsync();
             var result = new ApiListResult<RoleBase>
@@ -329,6 +331,41 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
+        /// 添加角色
+        /// </summary>
+        /// <param name="roleInput"></param>
+        /// <returns></returns>
+        [HttpPost("AddRole")]
+        [PermissionAuthorize(Permissions = "角色管理")]
+        public async Task<ApiItemResult<Role>> AddRole([FromBody]RoleInput roleInput)
+        {
+            var result = new ApiItemResult<Role>();
+            if (roleInput.RoleId.HasValue)
+            {
+                // Guid.Empty 也不允许
+                result.Code = 400;
+                result.Message = "添加角色失败：无需提供参数 RoleId";
+                return result;
+            }
+
+            roleInput.RoleId = Guid.NewGuid();
+            if (!await _roleService.SaveAsync(roleInput, ModelState))
+            {
+                result.Code = 400;
+                result.Message = "添加角色失败：" + ModelState.FirstErrorMessage();
+                return result;
+            }
+
+            // 角色名称不能重复
+            var role = await _roleService.GetItemAsync(roleInput.Name);
+
+            result.Code = 200;
+            result.Message = "添加角色成功";
+            result.Item = role;
+            return result;
+        }
+
+        /// <summary>
         /// 编辑角色
         /// </summary>
         /// <param name="roleInput"></param>
@@ -352,47 +389,18 @@ namespace Tubumu.Modules.Admin.Controllers
                 return result;
             }
 
-            var role = await _roleService.SaveAsync(roleInput, ModelState);
-            if (role == null)
+            if (!await _roleService.SaveAsync(roleInput, ModelState))
             {
                 result.Code = 400;
                 result.Message = "编辑角色失败：" + ModelState.FirstErrorMessage();
                 return result;
             }
 
+            // 角色名称不能重复
+            var role = await _roleService.GetItemAsync(roleInput.Name);
+
             result.Code = 200;
             result.Message = "编辑角色成功";
-            result.Item = role;
-            return result;
-        }
-
-        /// <summary>
-        /// 添加角色
-        /// </summary>
-        /// <param name="roleInput"></param>
-        /// <returns></returns>
-        [HttpPost("AddRole")]
-        [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiItemResult<Role>> AddRole([FromBody]RoleInput roleInput)
-        {
-            var result = new ApiItemResult<Role>();
-            if (roleInput.RoleId.HasValue)
-            {
-                // Guid.Empty 也不允许
-                result.Code = 400;
-                result.Message = "添加角色失败：无需提供参数 RoleId";
-                return result;
-            }
-            var role = await _roleService.SaveAsync(roleInput, ModelState);
-            if (role == null)
-            {
-                result.Code = 400;
-                result.Message = "添加角色失败：" + ModelState.FirstErrorMessage();
-                return result;
-            }
-
-            result.Code = 200;
-            result.Message = "添加角色成功";
             result.Item = role;
             return result;
         }
@@ -456,25 +464,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetPermissionTree")]
-        public async Task<ApiTreeResult<TreeNode>> GetPermissionTree()
+        public async Task<ApiTreeResult<PermissionTreeNode>> GetPermissionTree()
         {
-            var permissions = await _permissionService.GetListInCacheAsync();
-            var tree = new List<TreeNode>();
-            for (var i = 0; i < permissions.Count; i++)
-            {
-                var item = permissions[i];
-                if (item.Level == 1)
-                {
-                    var node = new TreeNode
-                    {
-                        Id = item.PermissionId,
-                        Name = item.Name
-                    };
-                    tree.Add(node);
-                    PermissionTreeAddChildren(permissions, node, i);
-                }
-            }
-            var result = new ApiTreeResult<TreeNode>
+            var tree = await _permissionService.GetTreeInCacheAsync();
+            var result = new ApiTreeResult<PermissionTreeNode>
             {
                 Code = 200,
                 Message = "获取权限树成功",
@@ -492,8 +485,8 @@ namespace Tubumu.Modules.Admin.Controllers
         /// 获取用户状态
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetUserStatus")]
-        public ApiListResult<KeyValuePair<UserStatus, string>> GetUserStatus()
+        [HttpGet("GetUserStatuList")]
+        public ApiListResult<KeyValuePair<UserStatus, string>> GetUserStatuList()
         {
             var list = typeof(UserStatus).GetEnumDictionary<UserStatus>();
             var result = new ApiListResult<KeyValuePair<UserStatus, string>>
@@ -525,28 +518,6 @@ namespace Tubumu.Modules.Admin.Controllers
             {
                 if (p.Level > 1)
                     p.Name = s.Repeat(p.Level - 1) + "┗ " + p.Name;
-            }
-        }
-
-        private void PermissionTreeAddChildren(List<Permission> permissions, TreeNode node, int index)
-        {
-            for (var i = index + 1; i < permissions.Count; i++)
-            {
-                var item = permissions[i];
-                if (item.ParentId == node.Id)
-                {
-                    if (node.Children == null)
-                    {
-                        node.Children = new List<TreeNode>();
-                    };
-                    var child = new TreeNode
-                    {
-                        Id = item.PermissionId,
-                        Name = item.Name
-                    };
-                    node.Children.Add(child);
-                    PermissionTreeAddChildren(permissions, child, i);
-                }
             }
         }
 
