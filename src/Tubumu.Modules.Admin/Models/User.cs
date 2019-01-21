@@ -257,6 +257,11 @@ namespace Tubumu.Modules.Admin.Models
         public RoleInfo Role { get; set; }
 
         /// <summary>
+        /// 用户拥有的特定权限
+        /// </summary>
+        public IEnumerable<PermissionBase> Permissions { get; set; }
+
+        /// <summary>
         /// DisplayName 并包含 RealName 的名称
         /// </summary>
         public string FullDisplayName
@@ -341,7 +346,6 @@ namespace Tubumu.Modules.Admin.Models
             Roles = new HashSet<RoleInfo>();
             GroupRoles = new HashSet<RoleInfo>();
             GroupsRoles = new HashSet<RoleInfo>();
-            Permissions = new HashSet<PermissionBase>();
             GroupPermissions = new HashSet<PermissionBase>();
             GroupsPermissions = new HashSet<PermissionBase>();
             GroupRolesPermissions = new HashSet<PermissionBase>();
@@ -374,11 +378,6 @@ namespace Tubumu.Modules.Admin.Models
         /// 用户主要分组所拥有的角色
         /// </summary>
         public IEnumerable<RoleInfo> GroupsRoles { get; set; }
-
-        /// <summary>
-        /// 用户拥有的特定权限
-        /// </summary>
-        public IEnumerable<PermissionBase> Permissions { get; set; }
 
         /// <summary>
         /// 用户主要分组所拥有的权限

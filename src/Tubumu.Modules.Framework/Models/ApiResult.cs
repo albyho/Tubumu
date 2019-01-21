@@ -69,7 +69,7 @@ namespace Tubumu.Modules.Framework.Models
     public class ApiListResult<T> : ApiResult
     {
         /// <summary>
-        /// Lists
+        /// List
         /// </summary>
         [JsonProperty(PropertyName = "list", NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<T> List { get; set; }
@@ -81,7 +81,7 @@ namespace Tubumu.Modules.Framework.Models
     public class ApiPageResult<T> : ApiResult where T : class
     {
         /// <summary>
-        /// Pages
+        /// Page
         /// </summary>
         [JsonProperty(PropertyName = "page", NullValueHandling = NullValueHandling.Ignore)]
         public Page<T> Page { get; set; }

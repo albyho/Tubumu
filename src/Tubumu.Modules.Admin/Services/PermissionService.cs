@@ -211,18 +211,18 @@ namespace Tubumu.Modules.Admin.Services
 
         private PermissionTreeNode FindPermissionTreeNode(List<PermissionTreeNode> list, Guid permissionId)
         {
-            PermissionTreeNode result = null; 
-            foreach(var node in list)
+            PermissionTreeNode result = null;
+            foreach (var node in list)
             {
-                if(node.Id == permissionId)
+                if (node.Id == permissionId)
                 {
                     result = node;
                 }
-                else
+                else if (!node.Children.IsNullOrEmpty())
                 {
-                    result = FindPermissionTreeNode(node.Children,permissionId);
+                    result = FindPermissionTreeNode(node.Children, permissionId);
                 }
-                if(result != null)
+                if (result != null)
                 {
                     break;
                 }
