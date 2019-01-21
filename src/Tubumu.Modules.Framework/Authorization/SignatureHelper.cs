@@ -3,8 +3,16 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Tubumu.Modules.Framework.Authorization
 {
+    /// <summary>
+    /// 签名帮助类
+    /// </summary>
     public static class SignatureHelper
     {
+        /// <summary>
+        /// 生成签名凭据
+        /// </summary>
+        /// <param name="secretKey"></param>
+        /// <returns></returns>
         public static SigningCredentials GenerateSigningCredentials(string secretKey)
         {
             var signingKey = GenerateSigningKey(secretKey);
@@ -13,6 +21,11 @@ namespace Tubumu.Modules.Framework.Authorization
             return signingCredentials;
         }
 
+        /// <summary>
+        /// 生成签名 Key
+        /// </summary>
+        /// <param name="secretKey"></param>
+        /// <returns></returns>
         public static SymmetricSecurityKey GenerateSigningKey(string secretKey)
         {
             var keyByteArray = Encoding.UTF8.GetBytes(secretKey);
