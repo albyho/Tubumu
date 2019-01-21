@@ -34,5 +34,4 @@ namespace Tubumu.Modules.Framework.Swagger
             }
         }
     }
-
 }

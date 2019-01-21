@@ -8,5 +8,4 @@
         Date,
         Currency, /*Decimal*/
     }
-
 }

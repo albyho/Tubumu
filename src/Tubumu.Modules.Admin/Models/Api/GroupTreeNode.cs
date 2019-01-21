@@ -79,7 +79,7 @@ namespace Tubumu.Modules.Admin.Models.Api
         public IEnumerable<RoleBase> Roles { get; set; }
 
         /// <summary>
-        /// 分组可用的角色(该分组的用户的直接角色只能使用 AvailableRoles)
+        /// 分组可用的角色(该分组的用户的主要角色s只能使用 AvailableRoles)
         /// </summary>
         [JsonProperty(PropertyName = "availableRoles", NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<RoleBase> AvailableRoles { get; set; }

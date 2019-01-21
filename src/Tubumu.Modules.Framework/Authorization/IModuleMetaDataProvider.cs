@@ -2,6 +2,9 @@
 
 namespace Tubumu.Modules.Framework.Authorization
 {
+    /// <summary>
+    /// 模块元数据提供器
+    /// </summary>
     public interface IModuleMetaDataProvider
     {
         int Order { get; }

@@ -400,7 +400,7 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<PermissionBase> GroupsRolesPermissions { get; set; }
 
         /// <summary>
-        /// 用户的直接角色所拥有的权限
+        /// 用户的主要角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> RolePermissions { get; set; }
 

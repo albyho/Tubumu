@@ -63,7 +63,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         public Guid[] RoleIds { get; set; }
 
         /// <summary>
-        /// 分组可用的角色(该分组的用户的直接角色只能使用 AvailableRoles)
+        /// 分组可用的角色(该分组的用户的主要角色只能使用 AvailableRoles)
         /// </summary>
         public Guid[] AvailableRoleIds { get; set; }
 

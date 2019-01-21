@@ -10,8 +10,15 @@ namespace Tubumu.Modules.Admin
     /// </summary>
     public class Menus : IMenuProvider
     {
+        /// <summary>
+        /// 顺序
+        /// </summary>
         public int Order => -1000;
 
+        /// <summary>
+        /// 获取模块菜单
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<ModuleMenu> GetModuleMenus()
         {
             return new List<ModuleMenu>

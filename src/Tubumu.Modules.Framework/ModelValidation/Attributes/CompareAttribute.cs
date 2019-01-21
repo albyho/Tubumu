@@ -4,7 +4,6 @@ using System.Globalization;
 
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
-
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     public class CompareAttribute : ValidationAttribute
     {

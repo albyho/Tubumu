@@ -14,12 +14,10 @@ using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Hubs
 {
-    // 错误码：
-    // 200 连接通知成功
-    // 201 新消息(可带url参数)
-    // 202 清除新消息标记
-    // 400 连接通知失败等错误
-
+    /// <summary>
+    /// ApiResult: Notification
+    /// </summary>
+    /// <remarks>错误码：200 连接通知成功 201 新消息(可带url参数) 202 清除新消息标记 400 连接通知失败等错误</remarks>
     public class ApiResultNotification : ApiResult
     {
         [JsonProperty(PropertyName = "title", NullValueHandling = NullValueHandling.Ignore)]

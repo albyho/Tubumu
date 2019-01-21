@@ -213,6 +213,5 @@ namespace Tubumu.Modules.Framework.Extensions.Object
                 return binaryFormatter.Deserialize(memoryStream) as T;
             }
         }
-
     }
 }

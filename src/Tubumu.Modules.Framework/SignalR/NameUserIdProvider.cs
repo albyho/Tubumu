@@ -10,5 +10,4 @@ namespace Tubumu.Modules.Framework.SignalR
             return connection.User?.FindFirst(ClaimTypes.Name)?.Value;
         }
     }
-
 }

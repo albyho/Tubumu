@@ -89,6 +89,5 @@ namespace Tubumu.Modules.Framework.Extensions
             else
                 return enumValue.ToString();
         }
-
     }
 }

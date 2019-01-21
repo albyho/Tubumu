@@ -12,8 +12,8 @@ namespace Tubumu.Modules.Framework.Extensions.Ip
         /// <returns></returns>
         public static int ToInt32(this IPAddress ip)
         {
-            int x = 3;
-            int v = 0;
+            var x = 3;
+            var v = 0;
             var bytes = ip.GetAddressBytes();
             for (var i = 0; i < bytes.Length; i++)
             {
@@ -74,6 +74,7 @@ namespace Tubumu.Modules.Framework.Extensions.Ip
         }
 
         private static readonly Regex IpRegex = new Regex(@"^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$", RegexOptions.Compiled);
+
         /// <summary>
         /// 是否ip格式
         /// </summary>

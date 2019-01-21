@@ -81,6 +81,5 @@ namespace Tubumu.Modules.Framework.Json
 
             serializer.Serialize(writer, value);
         }
-
     }
 }

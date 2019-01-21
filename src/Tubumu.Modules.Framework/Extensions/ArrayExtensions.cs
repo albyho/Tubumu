@@ -29,6 +29,7 @@ namespace Tubumu.Modules.Framework.Extensions
             Array.Copy(sourceArray, result, length);
             return result;
         }
+
         private static void ValidParamters<T>(T[] sourceArray, long length)
         {
             if(sourceArray == null)
@@ -41,6 +42,5 @@ namespace Tubumu.Modules.Framework.Extensions
             if (sourceArray.Length < length)
                 throw new ArgumentOutOfRangeException(nameof(length), "length 不能大于 sourceArray 中的元素数");
         }
-
     }
 }
