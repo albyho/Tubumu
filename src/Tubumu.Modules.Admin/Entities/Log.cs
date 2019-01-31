@@ -10,6 +10,6 @@ namespace Tubumu.Modules.Admin.Entities
         public int TypeId { get; set; }
         public string Description { get; set; }
         public string Ip { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationTime { get; set; }
     }
 }

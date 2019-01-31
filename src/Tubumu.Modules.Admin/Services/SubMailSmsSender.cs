@@ -37,7 +37,7 @@ namespace Tubumu.Modules.Admin.Services
             {
                 var response = await client.PostAsync(requestUri, httpContent);
                 var responseText = await response.Content.ReadAsStringAsync();
-                // TODO: 检查短信发送结果
+                // TODO: (alby)检查短信发送结果
                 return true;
             }
             catch (Exception)

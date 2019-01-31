@@ -121,9 +121,6 @@ namespace Tubumu.Modules.Admin.Models
         /// 手机号是否已经验证
         /// </summary>
         public bool MobileIsValid { get; set; }
-
-        // public IEnumerable<string> Permissions { get; set; }
-        // TODO: Group Role, etc.
     }
 
     /// <summary>
@@ -203,7 +200,7 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationTime { get; set; }
 
         /// <summary>
         /// HeadUrl
@@ -251,7 +248,7 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<GroupInfo> Groups { get; set; }
 
         /// <summary>
-        /// 拥有角色
+        /// 主要角色
         /// </summary>
         [JsonConverter(typeof(Framework.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
         public RoleInfo Role { get; set; }
@@ -433,7 +430,7 @@ namespace Tubumu.Modules.Admin.Models
         {
             get
             {
-                if(Role != null && Role.RoleId != Guid.Empty)
+                if (Role != null && Role.RoleId != Guid.Empty)
                 {
                     yield return Role;
                 }

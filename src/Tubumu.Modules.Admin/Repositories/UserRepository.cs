@@ -118,7 +118,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        Task<Page<XM.UserInfo>> GetPageAsync(XM.UserSearchCriteria criteria);
+        Task<Page<XM.UserInfo>> GetPageAsync(XM.UserPageSearchCriteria criteria);
 
         /// <summary>
         /// SaveAsync
@@ -246,7 +246,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 WeixinAppOpenId = u.WeixinAppOpenId,
                 WeixinWebOpenId = u.WeixinWebOpenId,
                 WeixinUnionId = u.WeixinUnionId,
-                CreationDate = u.CreationDate,
+                CreationTime = u.CreationTime,
                 Description = u.Description,
                 Status = u.Status,
                 HeadUrl = u.HeadUrl,
@@ -613,7 +613,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        public async Task<Page<XM.UserInfo>> GetPageAsync(XM.UserSearchCriteria criteria)
+        public async Task<Page<XM.UserInfo>> GetPageAsync(XM.UserPageSearchCriteria criteria)
         {
             // 精简数据
             Expression<Func<User, XM.UserInfo>> selector = u => new XM.UserInfo
@@ -627,7 +627,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 EmailIsValid = u.EmailIsValid,
                 Mobile = u.Mobile,
                 MobileIsValid = u.MobileIsValid,
-                CreationDate = u.CreationDate,
+                CreationTime = u.CreationTime,
                 Description = u.Description,
                 Status = u.Status,
                 IsDeveloper = u.IsDeveloper,
@@ -686,15 +686,15 @@ namespace Tubumu.Modules.Admin.Repositories
                 }
             }
 
-            if (criteria.CreationDateBegin.HasValue)
+            if (criteria.CreationTimeBegin.HasValue)
             {
-                var begin = criteria.CreationDateBegin.Value.Date;
-                query = query.Where(m => m.CreationDate >= begin);
+                var begin = criteria.CreationTimeBegin.Value.Date;
+                query = query.Where(m => m.CreationTime >= begin);
             }
-            if (criteria.CreationDateEnd.HasValue)
+            if (criteria.CreationTimeEnd.HasValue)
             {
-                var end = criteria.CreationDateEnd.Value.Date.AddDays(1);
-                query = query.Where(m => m.CreationDate < end);
+                var end = criteria.CreationTimeEnd.Value.Date.AddDays(1);
+                query = query.Where(m => m.CreationTime < end);
             }
 
             IOrderedQueryable<User> orderedQuery;
@@ -745,7 +745,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 _context.User.Add(userToSave);
                 userToSave.Status = XM.UserStatus.Normal; // Fix
                 userToSave.Password = userInput.Password;
-                userToSave.CreationDate = DateTime.Now;
+                userToSave.CreationTime = DateTime.Now;
             }
 
             var group = await _context.Group.Include(m => m.GroupAvailableRole).FirstOrDefaultAsync(m => m.GroupId == userInput.GroupId);

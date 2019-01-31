@@ -37,13 +37,20 @@ namespace Tubumu.Modules.Framework.Models
         /// </summary>
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
+    }
 
+    /// <summary>
+    /// ApiUrlResult
+    /// </summary>
+    public class ApiUrlResult : ApiResult
+    {
         /// <summary>
         /// Url
         /// </summary>
         [JsonProperty(PropertyName = "url", NullValueHandling = NullValueHandling.Ignore)]
         public string Url { get; set; }
     }
+
 
     /// <summary>
     /// Token ApiResult
@@ -61,6 +68,18 @@ namespace Tubumu.Modules.Framework.Models
         /// </summary>
         [JsonProperty(PropertyName = "refreshToken", NullValueHandling = NullValueHandling.Ignore)]
         public string RefreshToken { get; set; }
+    }
+
+    /// <summary>
+    /// Token ApiResult
+    /// </summary>
+    public class ApiTokenUrlResult : ApiTokenResult
+    {
+        /// <summary>
+        /// Url
+        /// </summary>
+        [JsonProperty(PropertyName = "url", NullValueHandling = NullValueHandling.Ignore)]
+        public string Url { get; set; }
     }
 
     /// <summary>

@@ -18,7 +18,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="criteria"></param>
         /// <returns></returns>
         [HttpPost("GetNotifications")]
-        public async Task<ApiPageResult<NotificationUser>> GetNotifications([FromBody]NotificationSearchCriteria criteria)
+        public async Task<ApiPageResult<NotificationUser>> GetNotifications([FromBody]NotificationPageSearchCriteria criteria)
         {
             criteria.ToUserId = HttpContext.User.GetUserId();
             var page = await _notificationService.GetPageAsync(criteria);
@@ -62,7 +62,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> DeleteNotifications([FromBody]NotificationIdListInput notificationIdListInput)
         {
             var result = new ApiResult();
-            if (!ModelState.IsValid || !await _notificationService.DeleteAsync(HttpContext.User.GetUserId(), notificationIdListInput.NotificationIds, ModelState))
+            if (!await _notificationService.DeleteAsync(HttpContext.User.GetUserId(), notificationIdListInput.NotificationIds, ModelState))
             {
                 result.Code = 400;
                 result.Message = "删除失败：" + ModelState.FirstErrorMessage();

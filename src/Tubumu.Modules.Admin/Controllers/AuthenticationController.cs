@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Frontend;
@@ -19,6 +20,7 @@ using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.Swagger;
 using Senparc.Weixin.Open;
+using Tubumu.Modules.Framework.Services;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -36,6 +38,7 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly AuthenticationSettings _authenticationSettings;
         private readonly TokenValidationSettings _tokenValidationSettings;
         private readonly IUserService _userService;
+        private readonly ITokenService _tokenService;
         private readonly IMobileUserService _mobileUserService;
         private readonly IWeixinUserService _weixinUserService;
 
@@ -51,6 +54,7 @@ namespace Tubumu.Modules.Admin.Controllers
             IOptions<AuthenticationSettings> authenticationSettingsOptions,
             TokenValidationSettings tokenValidationSettings,
             IUserService userService,
+            ITokenService tokenService,
             IMobileUserService mobileUserService,
             IWeixinUserService weixinUserService
             )
@@ -58,8 +62,36 @@ namespace Tubumu.Modules.Admin.Controllers
             _authenticationSettings = authenticationSettingsOptions.Value;
             _tokenValidationSettings = tokenValidationSettings;
             _userService = userService;
+            _tokenService = tokenService;
             _mobileUserService = mobileUserService;
             _weixinUserService = weixinUserService;
+        }
+
+        /// <summary>
+        /// 账号(用户名、手机号或邮箱) + 登录
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ApiTokenResult> Login(AccountPasswordLoginInput input)
+        {
+            var result = new ApiTokenResult();
+            var userInfo = await _userService.GetNormalUserAsync(input.Account, input.Password);
+            if (userInfo == null)
+            {
+                result.Code = 400;
+                result.Message = "账号或密码错误，或用户状态不允许登录";
+                return result;
+            }
+
+            var token = _tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
+            result.Token = token;
+            result.RefreshToken = refreshToken;
+            result.Code = 200;
+            result.Message = "登录成功";
+            return result;
         }
 
         /// <summary>
@@ -93,7 +125,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResult> MobilePassswordRegister(MobilePassswordValidationCodeRegisterInput input)
+        public async Task<ApiTokenResult> MobilePassswordRegister(MobilePassswordValidationCodeRegisterInput input)
         {
             var returnResult = new ApiTokenResult();
             var verifyMobileValidationCodeInput = new VerifyMobileValidationCodeInput
@@ -124,8 +156,10 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var jwt = GetJwt(userInfo);
-            returnResult.Token = jwt;
+            var token = _tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
+            returnResult.Token = token;
+            returnResult.RefreshToken = refreshToken;
             returnResult.Code = 200;
             returnResult.Message = "注册成功";
             return returnResult;
@@ -138,7 +172,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResult> MobilePasswordLogin(MobilePasswordLoginInput input)
+        public async Task<ApiTokenResult> MobilePasswordLogin(MobilePasswordLoginInput input)
         {
             var returnResult = new ApiTokenResult();
             var userInfo = await _userService.GetNormalUserAsync(input.Mobile, input.Password);
@@ -149,8 +183,10 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var jwt = GetJwt(userInfo);
-            returnResult.Token = jwt;
+            var token = _tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
+            returnResult.Token = token;
+            returnResult.RefreshToken = refreshToken;
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -198,7 +234,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResult> MobileLogin(MobileValidationCodeLoginInput input)
+        public async Task<ApiTokenResult> MobileLogin(MobileValidationCodeLoginInput input)
         {
             var returnResult = new ApiTokenResult();
             var verifyMobileValidationCodeInput = new VerifyMobileValidationCodeInput
@@ -232,8 +268,10 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var jwt = GetJwt(userInfo);
-            returnResult.Token = jwt;
+            var token = _tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
+            returnResult.Token = token;
+            returnResult.RefreshToken = refreshToken;
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -246,11 +284,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResult> WeixinAppLogin(WeixinAppLoginInput input)
+        public async Task<ApiTokenResult> WeixinAppLogin(WeixinAppLoginInput input)
         {
             var returnResult = new ApiTokenResult();
             var openId = await _weixinUserService.GetWeixinAppOpenIdAsync(input.Code);
-            if(openId == null)
+            if (openId == null)
             {
                 returnResult.Code = 400;
                 returnResult.Message = "异常：获取微信 OpenId 失败";
@@ -273,8 +311,10 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var jwt = GetJwt(userInfo);
-            returnResult.Token = jwt;
+            var token = _tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
+            returnResult.Token = token;
+            returnResult.RefreshToken = refreshToken;
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -287,11 +327,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResult> WeixinMobileEndLogin(WeixinMobileEndLoginInput input)
+        public async Task<ApiTokenResult> WeixinMobileEndLogin(WeixinMobileEndLoginInput input)
         {
             var returnResult = new ApiTokenResult();
             var openId = await _weixinUserService.GetWeixinMobileEndOpenIdAsync(input.Code);
-            if(openId == null)
+            if (openId == null)
             {
                 returnResult.Code = 400;
                 returnResult.Message = "异常：获取微信 OpenId 失败";
@@ -314,8 +354,10 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var jwt = GetJwt(userInfo);
-            returnResult.Token = jwt;
+            var token = _tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
+            returnResult.Token = token;
+            returnResult.RefreshToken = refreshToken;
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -328,11 +370,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResult> WeixinWebLogin(WeixinWebLoginInput input)
+        public async Task<ApiTokenResult> WeixinWebLogin(WeixinWebLoginInput input)
         {
             var returnResult = new ApiTokenResult();
             var openId = await _weixinUserService.GetWeixinWebOpenIdAsync(input.Code);
-            if(openId == null)
+            if (openId == null)
             {
                 returnResult.Code = 400;
                 returnResult.Message = "异常：获取微信 OpenId 失败";
@@ -355,8 +397,10 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var jwt = GetJwt(userInfo);
-            returnResult.Token = jwt;
+            var token = _tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
+            returnResult.Token = token;
+            returnResult.RefreshToken = refreshToken;
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -387,7 +431,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 input.Mobile,
                 true,
                 ModelState);
-            if(!bindResult)
+            if (!bindResult)
             {
                 returnResult.Code = 400;
                 returnResult.Message = ModelState.FirstErrorMessage();
@@ -407,16 +451,16 @@ namespace Tubumu.Modules.Admin.Controllers
         [HttpPost]
         public async Task<ApiResult> BindWeixinMobileEnd(WeixinMobileEndLoginInput input)
         {
-            var returnResult = new ApiTokenResult();
+            var returnResult = new ApiResult();
             var openId = await _weixinUserService.GetWeixinAppOpenIdAsync(input.Code);
-            if(openId == null)
+            if (openId == null)
             {
                 returnResult.Code = 400;
                 returnResult.Message = "异常：获取微信 OpenId 失败";
                 return returnResult;
             }
             var bindResult = await _weixinUserService.UpdateWeixinMobileEndOpenIdAsync(HttpContext.User.GetUserId(), openId, ModelState);
-            if(!bindResult)
+            if (!bindResult)
             {
                 returnResult.Code = 400;
                 returnResult.Message = ModelState.FirstErrorMessage();
@@ -458,26 +502,6 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         #region Private Methods
-
-        private string GetJwt(UserInfo user)
-        {
-            var groups = from m in user.AllGroups select new Claim(TubumuClaimTypes.Group, m.Name);
-            var roles = from m in user.AllRoles select new Claim(ClaimTypes.Role, m.Name);
-            var permissions = from m in user.AllPermissions select new Claim(TubumuClaimTypes.Permission, m.Name);
-            var claims = (new[] { new Claim(ClaimTypes.Name, user.UserId.ToString()) }).
-                Union(groups).
-                Union(roles).
-                Union(permissions);
-            var token = new JwtSecurityToken(
-                _tokenValidationSettings.ValidIssuer,
-                _tokenValidationSettings.ValidAudience,
-                claims,
-                expires: DateTime.UtcNow.AddDays(30),
-                signingCredentials: SignatureHelper.GenerateSigningCredentials(_tokenValidationSettings.IssuerSigningKey));
-
-            var jwt = _tokenHandler.WriteToken(token);
-            return jwt;
-        }
 
         #endregion
     }

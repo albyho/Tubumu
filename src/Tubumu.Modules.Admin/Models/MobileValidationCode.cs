@@ -56,7 +56,7 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 创建时间
         /// </summary>
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationTime { get; set; }
 
         /// <summary>
         /// 过期时间

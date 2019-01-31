@@ -34,8 +34,8 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 创建时间
         /// </summary>
-        [JsonProperty(PropertyName = "creationDate")]
-        public DateTime CreationDate { get; set; }
+        [JsonProperty(PropertyName = "creationTime")]
+        public DateTime CreationTime { get; set; }
 
         /// <summary>
         /// 标题
@@ -152,11 +152,12 @@ namespace Tubumu.Modules.Admin.Models
     /// <summary>
     /// 通知搜索条件
     /// </summary>
-    public class NotificationSearchCriteria
+    public class NotificationPageSearchCriteria
     {
         /// <summary>
         /// 分页信息
         /// </summary>
+        [Required(ErrorMessage = "请输入分页信息")]
         public PagingInfo PagingInfo { get; set; }
 
         /// <summary>
@@ -182,11 +183,11 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 创建时间开始
         /// </summary>
-        public DateTime? CreationDateBegin { get; set; }
+        public DateTime? CreationTimeBegin { get; set; }
 
         /// <summary>
         /// 创建时间结束
         /// </summary>
-        public DateTime? CreationDateEnd { get; set; }
+        public DateTime? CreationTimeEnd { get; set; }
     }
 }

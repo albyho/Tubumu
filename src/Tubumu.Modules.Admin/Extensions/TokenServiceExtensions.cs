@@ -14,7 +14,7 @@ namespace Tubumu.Modules.Admin.Services
     /// </summary>
     public static class TokenServiceExtensions
     {
-        public static string GenerateAccessToken(this ITokenService tokenService,  UserInfo user)
+        public static string GenerateAccessToken(this ITokenService tokenService, UserInfo user)
         {
             var groups = from m in user.AllGroups select new Claim(TubumuClaimTypes.Group, m.Name);
             var roles = from m in user.AllRoles select new Claim(ClaimTypes.Role, m.Name);
@@ -25,6 +25,5 @@ namespace Tubumu.Modules.Admin.Services
                 Union(permissions);
             return tokenService.GenerateAccessToken(claims);
         }
-
     }
 }

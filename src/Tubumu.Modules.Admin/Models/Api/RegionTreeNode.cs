@@ -46,7 +46,7 @@ namespace Tubumu.Modules.Admin.Models.Api
         /// 是否有子节点
         /// </summary>
         [JsonProperty(PropertyName = "hasChildren")]
-        public bool HasChildren  { get; set; }
+        public bool HasChildren { get; set; }
 
         /// <summary>
         /// 子节点

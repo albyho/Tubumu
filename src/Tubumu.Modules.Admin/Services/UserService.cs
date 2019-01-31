@@ -114,7 +114,7 @@ namespace Tubumu.Modules.Admin.Services
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        Task<Page<UserInfo>> GetPageAsync(UserSearchCriteria criteria);
+        Task<Page<UserInfo>> GetPageAsync(UserPageSearchCriteria criteria);
 
         /// <summary>
         /// 保存用户信息
@@ -408,7 +408,7 @@ namespace Tubumu.Modules.Admin.Services
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        public async Task<Page<UserInfo>> GetPageAsync(UserSearchCriteria criteria)
+        public async Task<Page<UserInfo>> GetPageAsync(UserPageSearchCriteria criteria)
         {
             await GengerateGroupIdsAsync(criteria);
             return await _repository.GetPageAsync(criteria);
@@ -703,7 +703,7 @@ namespace Tubumu.Modules.Admin.Services
             await _cache.RemoveAsync(cacheKey);
         }
 
-        private async Task GengerateGroupIdsAsync(UserSearchCriteria criteria)
+        private async Task GengerateGroupIdsAsync(UserPageSearchCriteria criteria)
         {
             if (!criteria.GroupIds.IsNullOrEmpty())
             {

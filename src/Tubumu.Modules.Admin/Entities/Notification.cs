@@ -13,7 +13,7 @@ namespace Tubumu.Modules.Admin.Entities
         public int NotificationId { get; set; }
         public int? FromUserId { get; set; }
         public int? ToUserId { get; set; }
-        public DateTime CreationDate { get; set; }
+        public DateTime CreationTime { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
         public string Url { get; set; }

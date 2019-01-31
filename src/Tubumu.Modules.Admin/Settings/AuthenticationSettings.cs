@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Admin.Settings
     public class AuthenticationSettings
     {
         public Guid RegisterDefaultGroupId { get; set; }
-        public UserStatus RegisterDefaultStatus {get;set;}
+        public UserStatus RegisterDefaultStatus { get; set; }
 
         public AuthenticationSettings()
         {

@@ -29,7 +29,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetUserPage")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiPageResult<UserInfo>> GetUserPage([FromBody]UserSearchCriteria criteria)
+        public async Task<ApiPageResult<UserInfo>> GetUserPage([FromBody]UserPageSearchCriteria criteria)
         {
             var result = new ApiPageResult<UserInfo>();
             var page = await _userService.GetPageAsync(criteria);
@@ -73,13 +73,6 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> EditUser([FromBody]UserInputEdit userInput)
         {
             var result = new ApiResult();
-            if (!ModelState.IsValid)
-            {
-                result.Code = 400;
-                result.Message = "编辑用户失败：" + ModelState.FirstErrorMessage();
-                return result;
-            }
-
             if (await _userService.SaveAsync(userInput, ModelState) == null)
             {
                 result.Code = 400;
@@ -375,13 +368,6 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiItemResult<Role>> EditRole([FromBody]RoleInput roleInput)
         {
             var result = new ApiItemResult<Role>();
-            if (!ModelState.IsValid)
-            {
-                result.Code = 400;
-                result.Message = "编辑角色失败：" + ModelState.FirstErrorMessage();
-                return result;
-            }
-
             if (roleInput.RoleId.IsNullOrEmpty())
             {
                 result.Code = 400;

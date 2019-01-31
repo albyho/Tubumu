@@ -21,8 +21,10 @@ namespace Tubumu.Modules.Admin.Models.Input
 
         /// <summary>
         /// 内容
+        /// <remark>短信内容请保持在 70 个字符以内</remark>
         /// </summary>
         [Required(ErrorMessage = "请输入内容")]
+        [StringLength(70, ErrorMessage = "短信内容请保持在 70 个字符以内")]
         public string Content {get;set;}
     }
 }

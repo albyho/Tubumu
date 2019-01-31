@@ -48,9 +48,9 @@ namespace Tubumu.Modules.Admin.Controllers
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public async Task<ActionResult<ApiTokenResult>> Login([FromBody]AccountPasswordValidationCodeLoginInput input)
+        public async Task<ActionResult<ApiTokenUrlResult>> Login([FromBody]AccountPasswordValidationCodeLoginInput input)
         {
-            var result = new ApiTokenResult();
+            var result = new ApiTokenUrlResult();
             var validationCode = HttpContext.Session.GetString(ValidationCodeKey);
             if (validationCode == null)
             {
@@ -96,7 +96,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("Logout")]
         [AllowAnonymous]
-        public async Task<ApiResult> Logout()
+        public async Task<ApiUrlResult> Logout()
         {
             var userId = HttpContext.User.GetUserId();
             if (userId >= 0)
@@ -104,7 +104,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 await _tokenService.RevokeRefreshToken(userId);
                 await _userService.SignOutAsync(userId);
             }
-            var result = new ApiResult
+            var result = new ApiUrlResult
             {
                 Code = 200,
                 Message = "注销成功",
@@ -126,9 +126,9 @@ namespace Tubumu.Modules.Admin.Controllers
         [HttpPost]
         [Route("RefreshToken")]
         [AllowAnonymous]
-        public async Task<ActionResult<ApiTokenResult>> RefreshToken([FromBody]RefreshTokenInput input)
-        {              
-            var result = new ApiTokenResult();
+        public async Task<ActionResult<ApiTokenUrlResult>> RefreshToken([FromBody]RefreshTokenInput input)
+        {
+            var result = new ApiTokenUrlResult();
             var principal = _tokenService.GetPrincipalFromExpiredToken(input.Token);
             var userId = principal.GetUserId(); //this is mapped to the Name claim by default
 

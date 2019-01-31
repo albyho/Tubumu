@@ -9,11 +9,12 @@ namespace Tubumu.Modules.Admin.Models
     /// <summary>
     /// 用户搜索条件
     /// </summary>
-    public class UserSearchCriteria
+    public class UserPageSearchCriteria
     {
         /// <summary>
         /// 分页信息
         /// </summary>
+        [Required(ErrorMessage = "请输入分页信息")]
         public PagingInfo PagingInfo { get; set; }
 
         /// <summary>
@@ -29,12 +30,12 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 创建开始时间
         /// </summary>
-        public DateTime? CreationDateBegin { get; set; }
+        public DateTime? CreationTimeBegin { get; set; }
 
         /// <summary>
         /// 创建结束时间
         /// </summary>
-        public DateTime? CreationDateEnd { get; set; }
+        public DateTime? CreationTimeEnd { get; set; }
 
         /// <summary>
         /// 关键字

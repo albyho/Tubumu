@@ -25,6 +25,6 @@ namespace Tubumu.Modules.Admin.Settings
         /// <summary>
         /// 最大验证次数
         /// </summary>
-        public int MaxVerifyTimes {get;set;}
+        public int MaxVerifyTimes { get; set; }
     }
 }

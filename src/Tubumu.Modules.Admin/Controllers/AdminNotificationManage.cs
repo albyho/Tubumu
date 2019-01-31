@@ -19,7 +19,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetNotificationsForManager")]
         [PermissionAuthorize(Permissions = "通知管理")]
-        public async Task<ApiPageResult<NotificationUser>> GetNotificationsForManager([FromBody]NotificationSearchCriteria criteria)
+        public async Task<ApiPageResult<NotificationUser>> GetNotificationsForManager([FromBody]NotificationPageSearchCriteria criteria)
         {
             var page = await _notificationService.GetPageAsync(criteria);
             var result = new ApiPageResult<NotificationUser>
@@ -48,7 +48,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 result.Message = "编辑通知失败：无需通知Id";
                 return result;
             }
-            if (!ModelState.IsValid || !await _notificationService.SaveAsync(notificationInput, ModelState))
+            if (!await _notificationService.SaveAsync(notificationInput, ModelState))
             {
                 result.Code = 400;
                 result.Message = "发布通知失败：" + ModelState.FirstErrorMessage();
@@ -77,7 +77,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 result.Message = "编辑通知失败：无通知ID";
                 return result;
             }
-            if (!ModelState.IsValid || !await _notificationService.SaveAsync(notificationInput, ModelState))
+            if (!await _notificationService.SaveAsync(notificationInput, ModelState))
             {
                 result.Code = 400;
                 result.Message = "编辑通知失败：" + ModelState.FirstErrorMessage();
@@ -99,7 +99,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> RemoveNotification([FromBody]NotificationIdInput notificationIdInput)
         {
             var result = new ApiResult();
-            if (!ModelState.IsValid || !await _notificationService.RemoveAsync(notificationIdInput.NotificationId, ModelState))
+            if (!await _notificationService.RemoveAsync(notificationIdInput.NotificationId, ModelState))
             {
                 result.Code = 400;
                 result.Message = "删除失败：" + ModelState.FirstErrorMessage();

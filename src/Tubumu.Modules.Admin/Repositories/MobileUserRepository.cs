@@ -126,7 +126,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 WeixinAppOpenId = u.WeixinAppOpenId,
                 WeixinWebOpenId = u.WeixinWebOpenId,
                 WeixinUnionId = u.WeixinUnionId,
-                CreationDate = u.CreationDate,
+                CreationTime = u.CreationTime,
                 Description = u.Description,
                 Status = u.Status,
                 HeadUrl = u.HeadUrl,
@@ -318,7 +318,7 @@ namespace Tubumu.Modules.Admin.Repositories
             var newUser = new User
             {
                 Status = status,
-                CreationDate = DateTime.Now,
+                CreationTime = DateTime.Now,
                 Mobile = mobile,
                 MobileIsValid = true,
                 GroupId = groupId,
@@ -402,7 +402,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 var newUser = new User
                 {
                     Status = generateStatus,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     Mobile = mobile,
                     MobileIsValid = mobileIsValid,
                     GroupId = groupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组

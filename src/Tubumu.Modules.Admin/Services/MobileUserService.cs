@@ -170,7 +170,7 @@ namespace Tubumu.Modules.Admin.Services
             var now = DateTime.Now;
             if (mobileValidationCode != null)
             {
-                if (now - mobileValidationCode.CreationDate < TimeSpan.FromSeconds(_mobileValidationCodeSettings.RequestInterval))
+                if (now - mobileValidationCode.CreationTime < TimeSpan.FromSeconds(_mobileValidationCodeSettings.RequestInterval))
                 {
                     modelState.AddModelError("Mobile", "请求过于频繁，请稍后再试");
                     return false;
@@ -198,7 +198,7 @@ namespace Tubumu.Modules.Admin.Services
                     MaxVerifyTimes = _mobileValidationCodeSettings.MaxVerifyTimes,
                     VerifyTimes = 0,
                     FinishVerifyDate = null,
-                    CreationDate = now,
+                    CreationTime = now,
                 };
                 await _cache.SetJsonAsync<MobileValidationCode>(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
                 {

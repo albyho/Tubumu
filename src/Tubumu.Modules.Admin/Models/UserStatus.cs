@@ -4,6 +4,7 @@ namespace Tubumu.Modules.Admin.Models
 {
     /// <summary>
     /// 用户状态
+    /// <remark>Normal: 默认 Normal: 待审 PendingApproval: 待删</remark>
     /// </summary>
     public enum UserStatus
     {

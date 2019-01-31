@@ -55,7 +55,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="moduleMetaDataProviders"></param>
         /// <param name="menuProviders"></param>
         public AdminController(
-            TokenValidationSettings tokenValidationSettings, 
+            TokenValidationSettings tokenValidationSettings,
             ITokenService tokenService,
             IOptions<FrontendSettings> frontendSettingsOptions,
             IUserService userService,

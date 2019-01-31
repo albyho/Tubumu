@@ -10,7 +10,7 @@ namespace Tubumu.Modules.Admin.Services
 {
     public interface INotificationService
     {
-        Task<Page<NotificationUser>> GetPageAsync(NotificationSearchCriteria criteria);
+        Task<Page<NotificationUser>> GetPageAsync(NotificationPageSearchCriteria criteria);
         Task<bool> SaveAsync(NotificationInput notificationInput, ModelStateDictionary modelState);
         Task<bool> RemoveAsync(int notificationId, ModelStateDictionary modelState);
         Task<bool> ReadAsync(int userId, int[] notificationIds, ModelStateDictionary modelState);
@@ -29,7 +29,7 @@ namespace Tubumu.Modules.Admin.Services
             _hubContext = hubContext;
         }
 
-        public async Task<Page<NotificationUser>> GetPageAsync(NotificationSearchCriteria criteria)
+        public async Task<Page<NotificationUser>> GetPageAsync(NotificationPageSearchCriteria criteria)
         {
             return await _notificationRepository.GetPageAsync(criteria);
         }

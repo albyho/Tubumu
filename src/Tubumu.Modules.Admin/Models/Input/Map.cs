@@ -23,6 +23,5 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         [DisplayName("维度")]
         public double Latitude { get; set; }
-
     }
 }

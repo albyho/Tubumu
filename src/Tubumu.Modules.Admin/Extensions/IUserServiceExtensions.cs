@@ -31,6 +31,7 @@ namespace Tubumu.Modules.Admin.Services
             if (userInfo == null || userInfo.Password.IsNullOrWhiteSpace()) return null;
             return CheckPassword(userInfo, password);
         }
+
         public static async Task<UserInfo> GetNormalUserAsync(this IUserService userService, int userId, string password)
         {
             if (password.IsNullOrWhiteSpace()) return null;
@@ -39,9 +40,10 @@ namespace Tubumu.Modules.Admin.Services
             if (userInfo == null || userInfo.Password.IsNullOrWhiteSpace()) return null;
             return CheckPassword(userInfo, password);
         }
+
         public static async Task<UserInfo> GetNormalUserByUesrIdAsync(this IUserService userService, string userId)
         {
-            if(int.TryParse(userId, out var value))
+            if (int.TryParse(userId, out var value))
             {
                 return await userService.GetItemByUserIdAsync(value, UserStatus.Normal);
             }
@@ -69,14 +71,17 @@ namespace Tubumu.Modules.Admin.Services
         {
             return Regex.IsMatch(source, @"^([\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?)$");
         }
+
         private static bool IsValidMobile(string source)
         {
             return Regex.IsMatch(source, @"^(1\d{10})$");
         }
+
         private static bool IsValidUsername(string source)
         {
             return Regex.IsMatch(source, @"^([a-zA-Z][a-zA-Z0-9-_]*)$");
         }
+
         private static UserInfo CheckPassword(UserInfo userInfo, string password)
         {
             string[] splitData = userInfo.Password.Split('|');

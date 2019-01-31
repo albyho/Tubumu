@@ -32,7 +32,7 @@ namespace Tubumu.Modules.Admin.Controllers
     public partial class BasicDataController : ControllerBase
     {
         private readonly IRegionService _regionService;
-        
+
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -140,6 +140,5 @@ namespace Tubumu.Modules.Admin.Controllers
             returnResult.Message = "获取成功";
             return returnResult;
         }
-        
     }
 }

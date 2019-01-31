@@ -177,7 +177,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 WeixinAppOpenId = u.WeixinAppOpenId,
                 WeixinWebOpenId = u.WeixinWebOpenId,
                 WeixinUnionId = u.WeixinUnionId,
-                CreationDate = u.CreationDate,
+                CreationTime = u.CreationTime,
                 Description = u.Description,
                 Status = u.Status,
                 HeadUrl = u.HeadUrl,
@@ -346,7 +346,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 var newUser = new User
                 {
                     Status = generateStatus,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     WeixinMobileEndOpenId = openId,
                     GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
                     Username = "g" + Guid.NewGuid().ToString("N").Substring(19),
@@ -377,7 +377,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 var newUser = new User
                 {
                     Status = generateStatus,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     WeixinAppOpenId = openId,
                     GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
                     Username = "g" + Guid.NewGuid().ToString("N").Substring(19),
@@ -409,7 +409,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 var newUser = new User
                 {
                     Status = generateStatus,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     WeixinWebOpenId = openId,
                     GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
                     Username = "g" + Guid.NewGuid().ToString("N").Substring(19),
@@ -440,7 +440,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 var newUser = new User
                 {
                     Status = generateStatus,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     WeixinUnionId = unionId,
                     GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
                     Username = "g" + Guid.NewGuid().ToString("N").Substring(19),

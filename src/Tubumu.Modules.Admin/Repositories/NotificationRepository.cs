@@ -22,7 +22,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        Task<Page<XM.NotificationUser>> GetPageAsync(XM.NotificationSearchCriteria criteria);
+        Task<Page<XM.NotificationUser>> GetPageAsync(XM.NotificationPageSearchCriteria criteria);
 
         /// <summary>
         /// SaveAsync
@@ -94,7 +94,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     DisplayName = m.FromUser.DisplayName,
                     HeadUrl = m.FromUser.HeadUrl,
                     LogoUrl = m.FromUser.LogoUrl,
-                }: null,
+                } : null,
                 ToUser = m.ToUser != null ? new XM.UserInfoWarpper
                 {
                     UserId = m.ToUser.UserId,
@@ -102,10 +102,10 @@ namespace Tubumu.Modules.Admin.Repositories
                     DisplayName = m.ToUser.DisplayName,
                     HeadUrl = m.ToUser.HeadUrl,
                     LogoUrl = m.ToUser.LogoUrl,
-                }: null,
+                } : null,
                 Title = m.Title,
                 Message = m.Message,
-                CreationDate = m.CreationDate,
+                CreationTime = m.CreationTime,
                 Url = m.Url,
             };
 
@@ -119,7 +119,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     DisplayName = m.FromUser.DisplayName,
                     HeadUrl = m.FromUser.HeadUrl,
                     LogoUrl = m.FromUser.LogoUrl,
-                }: null,
+                } : null,
                 ToUser = m.ToUser != null ? new XM.UserInfoWarpper
                 {
                     UserId = m.ToUser.UserId,
@@ -127,10 +127,10 @@ namespace Tubumu.Modules.Admin.Repositories
                     DisplayName = m.ToUser.DisplayName,
                     HeadUrl = m.ToUser.HeadUrl,
                     LogoUrl = m.ToUser.LogoUrl,
-                }: null,
+                } : null,
                 Title = m.Title,
                 Message = m.Message,
-                CreationDate = m.CreationDate,
+                CreationTime = m.CreationTime,
                 Url = m.Url,
 
                 ReadTime = null,
@@ -143,7 +143,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        public async Task<Page<XM.NotificationUser>> GetPageAsync(XM.NotificationSearchCriteria criteria)
+        public async Task<Page<XM.NotificationUser>> GetPageAsync(XM.NotificationPageSearchCriteria criteria)
         {
             if (criteria.ToUserId.HasValue)
             {
@@ -153,30 +153,7 @@ namespace Tubumu.Modules.Admin.Repositories
             // 备注：忽略搜索条件的 IsReaded, ToUserId
             // 备注：因为查询所有 ToUserId, 所有不会标记已读未读
 
-            IQueryable<Notification> query = _context.Notification;
-            if (criteria.FromUserId.HasValue)
-            {
-                query = query.Where(m => m.FromUserId == criteria.FromUserId);
-            }
-            if (criteria.Keyword != null)
-            {
-                var keyword = criteria.Keyword.Trim();
-                if (keyword.Length != 0)
-                {
-                    query = query.Where(m => m.Title.Contains(keyword));
-                }
-            }
-            if (criteria.CreationDateBegin.HasValue)
-            {
-                var begin = criteria.CreationDateBegin.Value.Date;
-                query = query.Where(m => m.CreationDate >= begin);
-            }
-            if (criteria.CreationDateEnd.HasValue)
-            {
-                var end = criteria.CreationDateEnd.Value.Date.AddDays(1);
-                query = query.Where(m => m.CreationDate < end);
-            }
-
+            IQueryable<Notification> query = CreateQuery(criteria);
             IOrderedQueryable<Notification> orderedQuery;
             if (criteria.PagingInfo.SortInfo != null && !criteria.PagingInfo.SortInfo.Sort.IsNullOrWhiteSpace())
             {
@@ -197,41 +174,19 @@ namespace Tubumu.Modules.Admin.Repositories
         /// </summary>
         /// <param name="criteria"></param>
         /// <returns></returns>
-        private async Task<Page<XM.NotificationUser>> GetNotificationUserPageAsync(XM.NotificationSearchCriteria criteria)
+        private async Task<Page<XM.NotificationUser>> GetNotificationUserPageAsync(XM.NotificationPageSearchCriteria criteria)
         {
             if (!criteria.ToUserId.HasValue)
             {
                 throw new ArgumentNullException(nameof(criteria.ToUserId), "必须输入 ToUserId");
             }
-            var userCreationDate = await _context.User.AsNoTracking().Where(m => m.UserId == criteria.ToUserId.Value).Select(m => m.CreationDate).FirstOrDefaultAsync();
+            var userCreationTime = await _context.User.AsNoTracking().Where(m => m.UserId == criteria.ToUserId.Value).Select(m => m.CreationTime).FirstOrDefaultAsync();
 
             // 备注：查询发送给所有人的以及本人的、未删除的记录
-            var query1 = from n in _context.Notification
-                         where n.CreationDate > userCreationDate && (!n.ToUserId.HasValue || n.ToUserId == criteria.ToUserId.Value)
-                         select n;
-
-            if (criteria.FromUserId.HasValue)
-            {
-                query1 = query1.Where(m => m.FromUserId == criteria.FromUserId);
-            }
-            if (criteria.Keyword != null)
-            {
-                var keyword = criteria.Keyword.Trim();
-                if (keyword.Length != 0)
-                {
-                    query1 = query1.Where(m => m.Title.Contains(keyword));
-                }
-            }
-            if (criteria.CreationDateBegin.HasValue)
-            {
-                var begin = criteria.CreationDateBegin.Value.Date;
-                query1 = query1.Where(m => m.CreationDate >= begin);
-            }
-            if (criteria.CreationDateEnd.HasValue)
-            {
-                var end = criteria.CreationDateEnd.Value.Date.AddDays(1);
-                query1 = query1.Where(m => m.CreationDate < end);
-            }
+            var query1 = CreateQuery(criteria);
+            query1 = from n in query1
+                     where n.CreationTime > userCreationTime && (!n.ToUserId.HasValue || n.ToUserId == criteria.ToUserId.Value)
+                     select n;
 
             // 剔除已逻辑删除的记录
             var query2 = from m in query1
@@ -262,7 +217,7 @@ namespace Tubumu.Modules.Admin.Repositories
                              Title = m.Title,
                              Message = m.Message,
                              Url = m.Url,
-                             CreationDate = m.CreationDate,
+                             CreationTime = m.CreationTime,
 
                              ReadTime = pu != null ? pu.ReadTime : null,
                              DeleteTime = pu != null ? pu.DeleteTime : null,
@@ -340,7 +295,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 {
                     FromUser = fromUser,
                     ToUser = toUser,
-                    CreationDate = DateTime.Now,
+                    CreationTime = DateTime.Now,
                     Url = notificationInput.Url,
                 };
 
@@ -395,7 +350,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
 
-            // TODO: 批量查询出 NotificationUsers，或以其他方式实现
+            // TODO: (alby)批量查询出 NotificationUsers，或以其他方式实现
             foreach (var notification in notifications)
             {
                 var notificationUser = await _context.NotificationUser.Where(m => m.NotificationId == notification.NotificationId && m.UserId == userId).FirstOrDefaultAsync();
@@ -441,7 +396,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 return false;
             }
 
-            // TODO: 批量查询出 NotificationUsers，或以其他方式实现
+            // TODO: (alby)批量查询出 NotificationUsers，或以其他方式实现
             foreach (var notification in notifications)
             {
                 var notificationUser = await _context.NotificationUser.Where(m => m.NotificationId == notification.NotificationId && m.UserId == userId).FirstOrDefaultAsync();
@@ -473,10 +428,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.NotificationUser> GetNewestAsync(int userId, int? currentNotificationId = null)
         {
-            var userCreationDate = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.CreationDate).FirstOrDefaultAsync();
+            var userCreationTime = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.CreationTime).FirstOrDefaultAsync();
 
             var query1 = from n in _context.Notification.AsNoTracking()
-                         where n.CreationDate > userCreationDate && (!n.ToUserId.HasValue || n.ToUserId == userId)
+                         where n.CreationTime > userCreationTime && (!n.ToUserId.HasValue || n.ToUserId == userId)
                          select n;
 
             if (currentNotificationId.HasValue)
@@ -514,13 +469,45 @@ namespace Tubumu.Modules.Admin.Repositories
                          Title = m.Title,
                          Message = m.Message,
                          Url = m.Url,
-                         CreationDate = m.CreationDate,
+                         CreationTime = m.CreationTime,
 
                          ReadTime = pu != null ? pu.ReadTime : null,
                          DeleteTime = pu != null ? pu.DeleteTime : null,
                      };
 
             return await query2.FirstOrDefaultAsync();
+        }
+
+        private IQueryable<Notification> CreateQuery(XM.NotificationPageSearchCriteria criteria)
+        {
+            IQueryable<Notification> query = _context.Notification;
+            if (criteria.FromUserId.HasValue)
+            {
+                query = query.Where(m => m.FromUserId == criteria.FromUserId);
+            }
+            if (criteria.ToUserId.HasValue)
+            {
+                query = query.Where(m => m.ToUserId == criteria.ToUserId);
+            }
+            if (criteria.Keyword != null)
+            {
+                var keyword = criteria.Keyword.Trim();
+                if (keyword.Length != 0)
+                {
+                    query = query.Where(m => m.Title.Contains(keyword));
+                }
+            }
+            if (criteria.CreationTimeBegin.HasValue)
+            {
+                var begin = criteria.CreationTimeBegin.Value.Date;
+                query = query.Where(m => m.CreationTime >= begin);
+            }
+            if (criteria.CreationTimeEnd.HasValue)
+            {
+                var end = criteria.CreationTimeEnd.Value.Date.AddDays(1);
+                query = query.Where(m => m.CreationTime < end);
+            }
+            return query;
         }
     }
 }
