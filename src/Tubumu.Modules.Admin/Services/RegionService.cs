@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Api;
 using Tubumu.Modules.Admin.Models.Input;
@@ -17,9 +18,7 @@ namespace Tubumu.Modules.Admin.Services
     {
         Task<string> GetRegionInfoListJsonAsync();
 
-        Task<List<RegionInfo>> GetRegionInfoListAsync();
-
-        Task<List<RegionInfo>> GetRegionInfoListAsync(int? parentId);
+        Task<List<RegionInfo>> GetRegionInfoListAsync(int? parentId = null);
 
         Task<List<RegionTreeNode>> GetRegiontTreeAsync();
 
@@ -33,39 +32,39 @@ namespace Tubumu.Modules.Admin.Services
     public class RegionService : IRegionService
     {
         private readonly IRegionRepository _repository;
-        private readonly IDistributedCache _cache;
+        private readonly IDistributedCache _distributedCache;
+        private readonly IMemoryCache _memoryCache;
         private const string ListCacheKey = "RegionList";
         private const string TreeCacheKey = "RegionTree";
 
-        public RegionService(IRegionRepository repository, IDistributedCache cache)
+        public RegionService(IRegionRepository repository, IDistributedCache distributedCache, IMemoryCache memoryCache)
         {
             _repository = repository;
-            _cache = cache;
+            _distributedCache = distributedCache;
+            _memoryCache = memoryCache;
         }
 
         public async Task<string> GetRegionInfoListJsonAsync()
         {
-            var json = await _cache.GetStringAsync(ListCacheKey);
+            var json = await _distributedCache.GetStringAsync(ListCacheKey);
             if (json == null)
             {
                 var list = await _repository.GetRegionInfoListAsync();
                 json = list.ToJson();
-                await _cache.SetStringAsync(ListCacheKey, json);
+                await _distributedCache.SetStringAsync(ListCacheKey, json);
             }
             return json;
         }
 
-        public async Task<List<RegionInfo>> GetRegionInfoListAsync()
+        public async Task<List<RegionInfo>> GetRegionInfoListAsync(int? parentId = null)
         {
             var list = await GetListInCacheInternalAsync();
+            if(parentId.HasValue)
+            {
+                var subList = list?.Where(m => m.ParentId == parentId).ToList();
+                return subList;
+            }
             return list;
-        }
-
-        public async Task<List<RegionInfo>> GetRegionInfoListAsync(int? parentId)
-        {
-            var list = await GetListInCacheInternalAsync();
-            var subList = list?.Where(m => m.ParentId == parentId).ToList();
-            return subList;
         }
 
         public async Task<List<RegionTreeNode>> GetRegiontTreeAsync()
@@ -128,18 +127,42 @@ namespace Tubumu.Modules.Admin.Services
 
         private async Task<List<RegionInfo>> GetListInCacheInternalAsync()
         {
-            var list = await _cache.GetJsonAsync<List<RegionInfo>>(ListCacheKey);
+            /*
+            var list = await _distributedCache.GetJsonAsync<List<RegionInfo>>(ListCacheKey);
             if (list == null)
             {
                 list = await _repository.GetRegionInfoListAsync();
-                await _cache.SetJsonAsync<List<RegionInfo>>(ListCacheKey, list);
+                await _distributedCache.SetJsonAsync<List<RegionInfo>>(ListCacheKey, list);
             }
+            return list;
+            */
+
+            if (!_memoryCache.TryGetValue(ListCacheKey, out List<RegionInfo> list))
+            {
+                // Key not in cache, so get data.
+                list = await _distributedCache.GetJsonAsync<List<RegionInfo>>(ListCacheKey);
+                if (list == null)
+                {
+                    list = await _repository.GetRegionInfoListAsync();
+                    await _distributedCache.SetJsonAsync<List<RegionInfo>>(ListCacheKey, list);
+                }
+
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetSlidingExpiration(TimeSpan.FromDays(30));
+
+                // Save data in cache.
+                _memoryCache.Set(ListCacheKey, list, cacheEntryOptions);
+            }
+
             return list;
         }
 
         private async Task<List<RegionTreeNode>> GetTreeInCacheInternalAsync()
         {
-            var tree = await _cache.GetJsonAsync<List<RegionTreeNode>>(TreeCacheKey);
+            /*
+            var tree = await _distributedCache.GetJsonAsync<List<RegionTreeNode>>(TreeCacheKey);
             if (tree == null)
             {
                 var list = await GetListInCacheInternalAsync();
@@ -155,7 +178,33 @@ namespace Tubumu.Modules.Admin.Services
                         RegionTreeAddChildren(list, node);
                     }
                 }
-                await _cache.SetJsonAsync<List<RegionTreeNode>>(TreeCacheKey, tree);
+                await _distributedCache.SetJsonAsync<List<RegionTreeNode>>(TreeCacheKey, tree);
+            }
+            return tree;
+            */
+
+            if (!_memoryCache.TryGetValue(TreeCacheKey, out List<RegionTreeNode> tree))
+            {
+                var list = await GetListInCacheInternalAsync();
+                tree = new List<RegionTreeNode>();
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    if (!item.ParentId.HasValue)
+                    {
+                        var node = RegionTreeNodeFromRegion(item);
+                        node.ParentIdPath = null;
+                        tree.Add(node);
+                        RegionTreeAddChildren(list, node);
+                    }
+                }
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    // Keep in cache for this time, reset time if accessed.
+                    .SetSlidingExpiration(TimeSpan.FromDays(30));
+
+                // Save data in cache.
+                _memoryCache.Set(TreeCacheKey, tree, cacheEntryOptions);
             }
             return tree;
         }

@@ -88,7 +88,7 @@ namespace Tubumu.Modules.Admin.Services
             bool result = await _repository.SaveAsync(permissionInput, modelState);
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             else
             {
@@ -107,7 +107,7 @@ namespace Tubumu.Modules.Admin.Services
                     throw new InvalidOperationException("{0} 权限添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
                 }
             }
-            await RemoveCache();
+            await RemoveCacheAsync();
             return true;
         }
 
@@ -116,7 +116,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.RemoveAsync(permissionId);
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             return result;
         }
@@ -138,7 +138,7 @@ namespace Tubumu.Modules.Admin.Services
 
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             return result;
         }
@@ -263,7 +263,7 @@ namespace Tubumu.Modules.Admin.Services
             };
         }
 
-        private async Task RemoveCache()
+        private async Task RemoveCacheAsync()
         {
             await _cache.RemoveAsync(ListCacheKey);
             await _cache.RemoveAsync(TreeCacheKey);

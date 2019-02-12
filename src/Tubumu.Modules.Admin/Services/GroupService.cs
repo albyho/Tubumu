@@ -216,7 +216,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.SaveAsync(groupInput, modelState);
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             return result;
         }
@@ -243,7 +243,7 @@ namespace Tubumu.Modules.Admin.Services
                     throw new InvalidOperationException("{0} 分组添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
                 }
             }
-            await RemoveCache();
+            await RemoveCacheAsync();
             return true;
         }
 
@@ -258,7 +258,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.RemoveAsync(groupId, modelState);
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             return result;
         }
@@ -274,7 +274,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveAsync(groupId, movingTarget);
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             return result;
         }
@@ -293,7 +293,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveAsync(sourceGroupId, targetGroupId, movingLocation, isChild, modelState);
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             return result;
         }
@@ -312,7 +312,7 @@ namespace Tubumu.Modules.Admin.Services
             var result = await _repository.MoveByDisplayOrderAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);
             if (result)
             {
-                await RemoveCache();
+                await RemoveCacheAsync();
             }
             return result;
         }
@@ -573,7 +573,7 @@ namespace Tubumu.Modules.Admin.Services
             };
         }
 
-        private async Task RemoveCache()
+        private async Task RemoveCacheAsync()
         {
             await _cache.RemoveAsync(ListCacheKey);
             await _cache.RemoveAsync(TreeCacheKey);

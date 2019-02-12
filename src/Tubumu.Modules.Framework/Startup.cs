@@ -72,6 +72,8 @@ namespace Tubumu.Modules.Framework
                 options.InstanceName = _environment.ApplicationName + ":";
             });
 
+            services.AddMemoryCache();
+
             // Cors
             services.AddCors(options => options.AddPolicy("DefaultPolicy",
                 builder => builder.WithOrigins("http://localhost:9090", "http://localhost:8080").AllowAnyMethod().AllowAnyHeader().AllowCredentials())

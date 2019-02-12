@@ -45,14 +45,14 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <summary>
         /// 获取区域信息列表
         /// </summary>
-        /// <param name="parentId">父节点 Id 。 不为 null ,可获取该节点的子节点；否则获取第一级节点列表</param>
+        /// <param name="parentIdInput">父节点 Id 。 不为 null ,可获取该节点的子节点；否则获取第一级节点列表</param>
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiListResult<RegionInfoBase>> GetRegionInfoList(int? parentId)
+        public async Task<ApiListResult<RegionInfo>> GetRegionInfoList(ParentIdNullableInput parentIdInput)
         {
-            var returnResult = new ApiListResult<RegionInfoBase>();
-            var list = await _regionService.GetRegionInfoListAsync(parentId);
+            var returnResult = new ApiListResult<RegionInfo>();
+            var list = await _regionService.GetRegionInfoListAsync(parentIdInput.ParentId);
             returnResult.List = list;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";
