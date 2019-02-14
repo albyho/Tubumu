@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
 using Swashbuckle.AspNetCore.Swagger;
@@ -168,6 +169,19 @@ namespace Tubumu.Modules.Framework
                         OnChallenge = context =>
                         {
                             _logger.LogError($"Authentication Challenge(OnChallenge): {context.Request.Path}");
+
+                            // TODO: (alby)为不同客户端返回不同的内容
+                            var result = new ApiUrlResult()
+                            {
+                                Code = 400,
+                                Message = "Authentication Challenge",
+                                Url = tokenValidationSettings.LoginUrl,
+                            };
+                            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result));
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+                            context.Response.Body.Write(body, 0, body.Length);
+                            context.HandleResponse();
                             return Task.CompletedTask;
                         }
                     };

@@ -49,6 +49,9 @@ namespace Tubumu.Modules.Admin.Models
     [Serializable]
     public class Role : RoleBase
     {
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public Role()
         {
             Permissions = Enumerable.Empty<PermissionBase>();

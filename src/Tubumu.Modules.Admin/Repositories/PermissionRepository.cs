@@ -20,11 +20,48 @@ namespace Tubumu.Modules.Admin.Repositories
     /// </summary>
     public interface IPermissionRepository
     {
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="permissionId"></param>
+        /// <returns></returns>
         Task<XM.Permission> GetItemAsync(Guid permissionId);
+
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         Task<XM.Permission> GetItemAsync(string name);
+
+        /// <summary>
+        /// GetListAsync
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         Task<List<XM.Permission>> GetListAsync(Guid? parentId = null);
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="permissionInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> SaveAsync(PermissionInput permissionInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="permissionId"></param>
+        /// <returns></returns>
         Task<bool> RemoveAsync(Guid permissionId);
+
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="permissionId"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(Guid permissionId, MovingTarget target);
     }
 
@@ -96,7 +133,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     return new List<XM.Permission>();
                 else
                 {
-                    int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent.DisplayOrder, parent.Level);
+                    int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent);
                     if (displayOrderOfNextParentOrNextBrother != 0)
                         return await _context.Permission.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                             .OrderBy(m => m.DisplayOrder)
@@ -124,6 +161,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// SaveAsync
         /// </summary>
         /// <param name="permissionInput"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
         public async Task<bool> SaveAsync(PermissionInput permissionInput, ModelStateDictionary modelState)
         {
@@ -187,7 +225,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     permissionToSave.ParentId = permissionInput.ParentId;
 
                     //获取当前节点的下一个兄弟节点或更高层下一个父节点（不是自己的父节点）的DisplayOrder
-                    int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(permissionToSave.DisplayOrder, permissionToSave.Level);
+                    int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(permissionToSave);
 
                     #region 当前节点树Id集合
 
@@ -398,7 +436,7 @@ namespace Tubumu.Modules.Admin.Repositories
             #region 获取当前节点树
 
             List<Guid> currTreeIds;
-            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(permissionToMove.DisplayOrder, permissionToMove.Level);
+            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(permissionToMove);
             if (displayOrderOfNextParentOrNextBrother == 0)
             {
                 // 无兄弟节点
@@ -433,6 +471,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         .OrderByDescending(m => m.DisplayOrder)
                         .FirstOrDefaultAsync(m =>
                     m.ParentId == null && m.DisplayOrder < permissionToMove.DisplayOrder);
+
                 #endregion
 
                 if (targetPermission == null) return false;
@@ -461,6 +500,7 @@ namespace Tubumu.Modules.Admin.Repositories
             else
             {
                 #region 获取下一个兄弟节点
+
                 Permission nextBrotherPermission;
                 if (permissionToMove.ParentId.HasValue)
                     nextBrotherPermission = await _context.Permission.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
@@ -468,12 +508,14 @@ namespace Tubumu.Modules.Admin.Repositories
                 else
                     nextBrotherPermission = await _context.Permission.OrderBy(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == null && m.DisplayOrder > permissionToMove.DisplayOrder);
+
                 #endregion
 
                 if (nextBrotherPermission == null) return false;
 
                 #region 获取兄弟节点树的节点数
-                int displayOrderOfNextParentOrNextBrotherOfBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(nextBrotherPermission.DisplayOrder, nextBrotherPermission.Level);
+
+                int displayOrderOfNextParentOrNextBrotherOfBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(nextBrotherPermission);
                 int nextBrotherTreeCount;
                 if (displayOrderOfNextParentOrNextBrotherOfBrother == 0)
                     nextBrotherTreeCount = await _context.Permission.CountAsync(m => m.DisplayOrder >= nextBrotherPermission.DisplayOrder);
@@ -504,6 +546,11 @@ namespace Tubumu.Modules.Admin.Repositories
 
         #region Private Methods
 
+        private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(Permission permission)
+        {
+            return await GetDisplayOrderOfNextParentOrNextBrotherAsync(permission.DisplayOrder, permission.Level);
+        }
+
         private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(int displayOrder, int permissionLevel)
         {
             return await _context.Permission.Where(m => m.Level <= permissionLevel && m.DisplayOrder > displayOrder)
@@ -525,7 +572,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 throw new NullReferenceException("或许尝试将节点加到不存在的父节点之上");
 
             //获取父节点之下的兄弟节点或更高层次的父节点(不是自己的父节点)的DisplayOrder
-            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent.DisplayOrder, parent.Level);
+            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent);
 
             if (displayOrderOfNextParentOrNextBrother == 0)
                 maxDisplayOrder = await _context.Permission.Where(m => m.DisplayOrder > parent.DisplayOrder || m.PermissionId == parent.PermissionId).MaxAsync(m => m.DisplayOrder);

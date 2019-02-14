@@ -162,10 +162,24 @@ namespace Tubumu.Modules.Admin.Controllers
         #endregion
     }
 
+    /// <summary>
+    /// 元数据记录
+    /// </summary>
     public class MetaDataItem
     {
+        /// <summary>
+        /// 权限列表
+        /// </summary>
         public List<Models.Permission> Permissions { get; set; }
+
+        /// <summary>
+        /// 角色列表
+        /// </summary>
         public List<Models.Role> Roles { get; set; }
+
+        /// <summary>
+        /// 分组列表
+        /// </summary>
         public List<Models.Group> Groups { get; set; }
     }
 }

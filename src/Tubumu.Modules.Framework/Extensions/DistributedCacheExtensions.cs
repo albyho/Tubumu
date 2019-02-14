@@ -7,13 +7,13 @@ namespace Tubumu.Modules.Framework.Extensions
 {
     public static class DistributedCacheExtensions
     {
-        public static async Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken))
+        public static async Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
         {
             var json = value.ToJson();
             await distributedCache.SetStringAsync(key, json, options, token);
         }
 
-        public static async Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken))
+        public static async Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
         {
             var json = value.ToJson();
             await distributedCache.SetStringAsync(key, json, token);
@@ -25,13 +25,13 @@ namespace Tubumu.Modules.Framework.Extensions
             return ObjectExtensions.FromJson<T>(value);
         }
 
-        public static async Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken))
+        public static async Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
         {
             var bytes = value.ToByteArray();
             await distributedCache.SetAsync(key, bytes, options, token);
         }
 
-        public static async Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken))
+        public static async Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
         {
             var bytes = value.ToByteArray();
             await distributedCache.SetAsync(key, bytes, token);

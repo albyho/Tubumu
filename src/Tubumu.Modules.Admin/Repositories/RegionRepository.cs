@@ -51,7 +51,6 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// GetRegionInfoBaseListAsync
         /// </summary>
-        /// <param name="parentId"></param>
         /// <returns></returns>
         public async Task<List<XM.RegionInfo>> GetRegionInfoListAsync()
         {

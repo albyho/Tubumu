@@ -14,6 +14,6 @@
 
         public int ExpiresSeconds { get; set; }
 
-        public int RefreshTokenExpirationSeconds { get; set; }
+        public string LoginUrl { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace Tubumu.Modules.Admin.Settings
 
         public AuthenticationSettings()
         {
-            RegisterDefaultGroupId = new Guid("11111111-1111-1111-1111-111111111111"); // 等待分组组
+            RegisterDefaultGroupId = new Guid("11111111-1111-1111-1111-111111111111"); // 等待分配组
             RegisterDefaultStatus = UserStatus.Normal;
         }
     }

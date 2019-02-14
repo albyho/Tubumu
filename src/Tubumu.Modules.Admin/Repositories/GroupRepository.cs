@@ -14,34 +14,105 @@ using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
 {
+    /// <summary>
+    /// IGroupRepository
+    /// </summary>
     public interface IGroupRepository
     {
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         Task<XM.Group> GetItemAsync(Guid groupId);
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         Task<XM.Group> GetItemAsync(string name);
 
+        /// <summary>
+        /// GetListAsync
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         Task<List<XM.Group>> GetListAsync(Guid? parentId = null);
 
+        /// <summary>
+        /// GetBasePathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         Task<List<XM.GroupBase>> GetBasePathAsync(Guid groupId);
 
+        /// <summary>
+        /// GetInfoPathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         Task<List<XM.GroupInfo>> GetInfoPathAsync(Guid groupId);
 
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="groupInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState);
 
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> RemoveAsync(Guid groupId, ModelStateDictionary modelState);
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="movingTarget"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(Guid groupId, MovingTarget movingTarget);
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceGroupId"></param>
+        /// <param name="targetGroupId"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> MoveAsync(Guid sourceGroupId, Guid targetGroupId, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
 
+        /// <summary>
+        /// MoveByDisplayOrderAsync
+        /// </summary>
+        /// <param name="sourceDisplayOrder"></param>
+        /// <param name="targetDisplayOrder"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         Task<bool> MoveByDisplayOrderAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState);
     }
 
+    /// <summary>
+    /// GroupRepository
+    /// </summary>
     public class GroupRepository : IGroupRepository
     {
         private readonly TubumuContext _context;
         private readonly Expression<Func<Group, XM.Group>> _selector;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="context"></param>
         public GroupRepository(TubumuContext context)
         {
             _context = context;
@@ -87,16 +158,31 @@ namespace Tubumu.Modules.Admin.Repositories
 
         #region IGroupRepository 成员
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public async Task<XM.Group> GetItemAsync(Guid groupId)
         {
             return await _context.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.GroupId == groupId);
         }
 
+        /// <summary>
+        /// GetItemAsync
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public async Task<XM.Group> GetItemAsync(string name)
         {
             return await _context.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
         }
 
+        /// <summary>
+        /// GetListAsync
+        /// </summary>
+        /// <param name="parentId"></param>
+        /// <returns></returns>
         public async Task<List<XM.Group>> GetListAsync(Guid? parentId = null)
         {
             if (parentId.HasValue)
@@ -106,7 +192,7 @@ namespace Tubumu.Modules.Admin.Repositories
                     return new List<XM.Group>();
                 else
                 {
-                    int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent.DisplayOrder, parent.Level);
+                    int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(parent);
                     if (displayOrderOfNextParentOrNextBrother != 0)
                         return await _context.Group.AsNoTracking().Where(m => m.DisplayOrder >= parent.DisplayOrder && m.DisplayOrder < displayOrderOfNextParentOrNextBrother)
                             .OrderBy(m => m.DisplayOrder)
@@ -132,6 +218,11 @@ namespace Tubumu.Modules.Admin.Repositories
             }
         }
 
+        /// <summary>
+        /// GetBasePathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public async Task<List<XM.GroupBase>> GetBasePathAsync(Guid groupId)
         {
             const string sql = @"WITH CET AS
@@ -157,6 +248,11 @@ namespace Tubumu.Modules.Admin.Repositories
             }).ToListAsync();
         }
 
+        /// <summary>
+        /// GetInfoPathAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public async Task<List<XM.GroupInfo>> GetInfoPathAsync(Guid groupId)
         {
             const string sql = @"WITH CET AS
@@ -179,6 +275,12 @@ namespace Tubumu.Modules.Admin.Repositories
             }).ToListAsync();
         }
 
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="groupInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> SaveAsync(GroupInput groupInput, ModelStateDictionary modelState)
         {
             string sql;
@@ -257,7 +359,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 groupToSave.ParentId = groupInput.ParentId;
 
                 //获取当前节点的下一个兄弟节点或更高层下一个父节点（不是自己的父节点）的DisplayOrder
-                int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(groupToSave.DisplayOrder, groupToSave.Level);
+                int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(groupToSave);
                 // 当前节点树Id集合
                 var currTreeIds = await GetTreeIdListAsync(groupToSave, displayOrderOfNextParentOrNextBrother, true);
                 int currentTreeItemCount = currTreeIds.Count;
@@ -517,6 +619,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> RemoveAsync(Guid groupId, ModelStateDictionary modelState)
         {
             // 移除无限级分类步骤：
@@ -583,6 +691,12 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="movingTarget"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(Guid groupId, MovingTarget movingTarget)
         {
             string sql;
@@ -594,7 +708,7 @@ namespace Tubumu.Modules.Admin.Repositories
             #region 获取当前节点树(包含自身)
 
             List<Guid> currTreeIds;
-            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(groupToMove.DisplayOrder, groupToMove.Level);
+            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(groupToMove);
             if (displayOrderOfNextParentOrNextBrother == 0)
             {
                 currTreeIds = await _context.Group.Where(m => m.DisplayOrder >= groupToMove.DisplayOrder).Select(m => m.GroupId).ToListAsync();
@@ -625,6 +739,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 else
                     targetGroup = await _context.Group.OrderByDescending(m => m.DisplayOrder).FirstOrDefaultAsync(m =>
                     m.ParentId == null && m.DisplayOrder < groupToMove.DisplayOrder);
+
                 #endregion
 
                 if (targetGroup == null) return false;
@@ -673,7 +788,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                 #region 获取兄弟节点树的节点数
 
-                int displayOrderOfNextParentOrNextBrotherOfTarget = await GetDisplayOrderOfNextParentOrNextBrotherAsync(targetGroup.DisplayOrder, targetGroup.Level);
+                int displayOrderOfNextParentOrNextBrotherOfTarget = await GetDisplayOrderOfNextParentOrNextBrotherAsync(targetGroup);
                 int targetTreeCount;
                 if (displayOrderOfNextParentOrNextBrotherOfTarget == 0)
                     targetTreeCount = await _context.Group.CountAsync(m => m.DisplayOrder >= targetGroup.DisplayOrder);
@@ -709,6 +824,15 @@ namespace Tubumu.Modules.Admin.Repositories
             return true;
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceGroupId"></param>
+        /// <param name="targetGroupId"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> MoveAsync(Guid sourceGroupId, Guid targetGroupId, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             if (sourceGroupId == targetGroupId)
@@ -732,6 +856,15 @@ namespace Tubumu.Modules.Admin.Repositories
             return await MoveAsync(sourceGroup, targetGroup, movingLocation, isChild, modelState);
         }
 
+        /// <summary>
+        /// MoveByDisplayOrderAsync
+        /// </summary>
+        /// <param name="sourceDisplayOrder"></param>
+        /// <param name="targetDisplayOrder"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public async Task<bool> MoveByDisplayOrderAsync(int sourceDisplayOrder, int targetDisplayOrder, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             if (sourceDisplayOrder == targetDisplayOrder)
@@ -754,6 +887,15 @@ namespace Tubumu.Modules.Admin.Repositories
             return await MoveAsync(sourceGroup, targetGroup, movingLocation, isChild, modelState);
         }
 
+        /// <summary>
+        /// MoveAsync
+        /// </summary>
+        /// <param name="sourceGroup"></param>
+        /// <param name="targetGroup"></param>
+        /// <param name="movingLocation"></param>
+        /// <param name="isChild"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         private async Task<bool> MoveAsync(Group sourceGroup, Group targetGroup, MovingLocation movingLocation, bool? isChild, ModelStateDictionary modelState)
         {
             #region 数据验证: 基本
@@ -791,7 +933,7 @@ namespace Tubumu.Modules.Admin.Repositories
             #endregion
 
             // 获取当前节点的下一个兄弟节点或更高层下一个父节点（不是自己的父节点）的DisplayOrder
-            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(sourceGroup.DisplayOrder, sourceGroup.Level);
+            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(sourceGroup);
             // 当前节点树Id集合（包含本节点）
             var sourceTree = await GetTreeAsync(sourceGroup, displayOrderOfNextParentOrNextBrother, true);
 
@@ -934,12 +1076,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return await GetTreeIdListAsync(group, isIncludeSelf);
         }
+
         private async Task<List<Guid>> GetTreeIdListAsync(Group group, bool isIncludeSelf)
         {
-            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(group.DisplayOrder, group.Level);
+            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(group);
 
             return await GetTreeIdListAsync(group, displayOrderOfNextParentOrNextBrother, isIncludeSelf);
         }
+
         private async Task<List<Guid>> GetTreeIdListAsync(Group group, int displayOrderOfNextParentOrNextBrother, bool isIncludeSelf)
         {
             List<Guid> list;
@@ -966,6 +1110,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return list;
         }
+
         private async Task<List<Group>> GetTreeAsync(Guid groupId, bool isIncludeSelf)
         {
             var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
@@ -974,12 +1119,14 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return await GetTreeAsync(group, isIncludeSelf);
         }
+
         private async Task<List<Group>> GetTreeAsync(Group group, bool isIncludeSelf)
         {
-            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(group.DisplayOrder, group.Level);
+            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(group);
 
             return await GetTreeAsync(group, displayOrderOfNextParentOrNextBrother, isIncludeSelf);
         }
+
         private async Task<List<Group>> GetTreeAsync(Group group, int displayOrderOfNextParentOrNextBrother, bool isIncludeSelf)
         {
             List<Group> list;
@@ -999,6 +1146,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return list;
         }
+
         private async Task<int> GetTreeNodeCountAsync(Guid groupId, bool isIncludeSelf)
         {
             var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
@@ -1007,9 +1155,10 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return await GetTreeNodeCountAsync(group, isIncludeSelf);
         }
+
         private async Task<int> GetTreeNodeCountAsync(Group group, bool isIncludeSelf)
         {
-            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(group.DisplayOrder, group.Level);
+            int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(group);
 
             int count;
             if (displayOrderOfNextParentOrNextBrother == 0)
@@ -1030,18 +1179,21 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return count;
         }
+
         private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(Guid groupId)
         {
             var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
             if (group == null)
                 return 0;
 
-            return await GetDisplayOrderOfNextParentOrNextBrotherAsync(group.DisplayOrder, group.Level);
+            return await GetDisplayOrderOfNextParentOrNextBrotherAsync(group);
         }
+
         private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(Group group)
         {
             return await GetDisplayOrderOfNextParentOrNextBrotherAsync(group.DisplayOrder, group.Level);
         }
+
         private async Task<int> GetDisplayOrderOfNextParentOrNextBrotherAsync(int displayOrder, int level)
         {
             return await _context.Group.Where(m => m.Level <= level && m.DisplayOrder > displayOrder)
@@ -1049,10 +1201,12 @@ namespace Tubumu.Modules.Admin.Repositories
                 .Select(m => m.DisplayOrder)
                 .FirstOrDefaultAsync();
         }
+
         private async Task<int> GetMaxDisplayOrderAsync()
         {
             return await _context.Group.MaxAsync(m => (int?)m.DisplayOrder) ?? 0;
         }
+
         private async Task<int> GetMaxDisplayOrderInTreeAsync(Guid groupId)
         {
             var group = await _context.Group.FirstOrDefaultAsync(m => m.GroupId == groupId);
@@ -1061,6 +1215,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             return await GetMaxDisplayOrderInTreeAsync(group);
         }
+
         private async Task<int> GetMaxDisplayOrderInTreeAsync(Group group)
         {
             int maxDisplayOrder;
