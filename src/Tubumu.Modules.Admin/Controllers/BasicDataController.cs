@@ -29,7 +29,7 @@ namespace Tubumu.Modules.Admin.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
-    public partial class BasicDataController : ControllerBase
+    public class BasicDataController : ControllerBase
     {
         private readonly IRegionService _regionService;
 
