@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -21,17 +20,20 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using OrchardCore.BackgroundTasks;
 using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Tubumu.Modules.Framework.Authorization;
+using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Mappings;
 using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.Services;
 using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace Tubumu.Modules.Framework
 {
@@ -66,6 +68,9 @@ namespace Tubumu.Modules.Framework
         /// <param name="services"></param>
         public override void ConfigureServices(IServiceCollection services)
         {
+            // Background Service
+            services.AddSingleton<IBackgroundTask, IdleBackgroundTask>();
+
             // Cache
             services.AddDistributedRedisCache(options =>
             {
@@ -98,7 +103,7 @@ namespace Tubumu.Modules.Framework
 
             // HTTP Client
             services.AddHttpClient();
-
+            
             // ApiBehaviorOptions
             services.Configure<ApiBehaviorOptions>(options =>
             {
