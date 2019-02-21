@@ -5,8 +5,16 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Tubumu.Modules.Framework.Swagger
 {
+    /// <summary>
+    /// HiddenApiFilter
+    /// </summary>
     public class HiddenApiFilter : IDocumentFilter
     {
+        /// <summary>
+        /// Apply
+        /// </summary>
+        /// <param name="swaggerDoc"></param>
+        /// <param name="context"></param>
         public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
         {
             foreach (var apiDescription in context.ApiDescriptions)

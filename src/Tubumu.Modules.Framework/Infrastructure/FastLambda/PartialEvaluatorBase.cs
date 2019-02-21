@@ -6,22 +6,39 @@ using System.Linq.Expressions;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
 {
+    /// <summary>
+    /// PartialEvaluatorBase
+    /// </summary>
     public abstract class PartialEvaluatorBase : ExpressionVisitor
     {
         private IEvaluator m_evaluator;
         private HashSet<Expression> m_candidates;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="evaluator"></param>
         protected PartialEvaluatorBase(IEvaluator evaluator)
         {
             this.m_evaluator = evaluator;
         }
 
+        /// <summary>
+        /// Eval
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         public Expression Eval(Expression exp)
         {
             this.m_candidates = new Nominator().Nominate(exp);
             return this.m_candidates.Count > 0 ? this.Visit(exp) : exp;
         }
 
+        /// <summary>
+        /// Visit
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         protected override Expression Visit(Expression exp)
         {
             if (exp == null)

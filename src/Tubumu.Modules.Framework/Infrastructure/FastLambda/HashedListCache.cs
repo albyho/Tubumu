@@ -7,12 +7,22 @@ using System.Threading;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
 {
+    /// <summary>
+    /// HashedListCache
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class HashedListCache<T> : IDisposable, IExpressionCache<T> where T : class
     {
         private Dictionary<int, SortedList<Expression, T>> m_storage =
             new Dictionary<int, SortedList<Expression, T>>();
         private ReaderWriterLockSlim m_rwLock = new ReaderWriterLockSlim();
 
+        /// <summary>
+        /// Get
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="creator"></param>
+        /// <returns></returns>
         public T Get(Expression key, Func<Expression, T> creator)
         {
             SortedList<Expression, T> sortedList;
@@ -73,8 +83,13 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // 要检测冗余调用
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -92,6 +107,9 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             }
         }
 
+        /// <summary>
+        /// Dispose
+        /// </summary>
         // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
         // ~HashedListCache() {
         //   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
@@ -106,6 +124,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
             // GC.SuppressFinalize(this);
         }
+
         #endregion
     }
 }

@@ -12,11 +12,18 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
     public static class AES
     {
         private const String DefaultKey = "$uqn.atko@5!7%8*"; // 16 Bytes
-
         private static readonly byte[] DefaultIV = { 0x96, 0x47, 0x22, 0x18, 0x69, 0xCB, 0xDA, 0xFE, 0xAC, 0xBE, 0x85, 0x71, 0x23, 0x18, 0x39, 0x67 };
 
         #region 加密
 
+        /// <summary>
+        /// 字节数组 - 字节数组
+        /// </summary>
+        /// <param name="inputByteArray"></param>
+        /// <param name="padding"></param>
+        /// <param name="mode"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, PaddingMode padding, CipherMode mode, String key = null)
         {
             if(inputByteArray == null)
@@ -155,6 +162,12 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             return decryptBytes;
         }
 
+        /// <summary>
+        /// 字符串 - 字节数组
+        /// </summary>
+        /// <param name="decryptString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static Byte[] DecryptFromHexToByteArray(String decryptString, String key = null)
         {
             if(decryptString == null)
@@ -170,6 +183,12 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             return DecryptFromByteArrayToByteArray(buffer, key);
         }
 
+        /// <summary>
+        /// 字符串 - 字符串
+        /// </summary>
+        /// <param name="decryptString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String DecryptFromHexToString(String decryptString, String key = null)
         {
             var buffer = ByteArrayFromHexString(decryptString);
@@ -181,6 +200,12 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             return Encoding.UTF8.GetString(DecryptFromByteArrayToByteArray(buffer, key)).Replace("\0", "");
         }
 
+        /// <summary>
+        /// Base64字符串 - 字节数组
+        /// </summary>
+        /// <param name="decryptString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static Byte[] DecryptFromBase64ToByteArray(String decryptString, String key = null)
         {
             if(decryptString == null)
@@ -199,6 +224,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         #endregion
 
         #region Private Methods
+
         private static Byte[] ByteArrayFromHexString(String hexString)
         {
             if (hexString.IsNullOrWhiteSpace() || hexString.Length % 2 != 0)
@@ -225,6 +251,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             }
             return Encoding.UTF8.GetBytes(DefaultKey);
         }
+
         #endregion
     }
 }

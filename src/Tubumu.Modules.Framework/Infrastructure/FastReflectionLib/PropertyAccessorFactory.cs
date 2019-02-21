@@ -6,8 +6,16 @@ using System.Reflection;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
 {
+    /// <summary>
+    /// PropertyAccessorFactory
+    /// </summary>
     public class PropertyAccessorFactory : IFastReflectionFactory<PropertyInfo, IPropertyAccessor>
     {
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IPropertyAccessor Create(PropertyInfo key)
         {
             return new PropertyAccessor(key);

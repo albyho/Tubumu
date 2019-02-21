@@ -7,17 +7,35 @@ using System.Linq.Expressions;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
 {
+    /// <summary>
+    /// IFieldAccessor
+    /// </summary>
     public interface IFieldAccessor
     {
+        /// <summary>
+        /// GetValue
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         object GetValue(object instance);
     }
 
+    /// <summary>
+    /// FieldAccessor
+    /// </summary>
     public class FieldAccessor : IFieldAccessor
     {
         private Func<object, object> m_getter;
 
+        /// <summary>
+        /// FieldInfo
+        /// </summary>
         public FieldInfo FieldInfo { get; private set; }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="fieldInfo"></param>
         public FieldAccessor(FieldInfo fieldInfo)
         {
             this.FieldInfo = fieldInfo;
@@ -46,6 +64,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
             this.m_getter = lambda.Compile();
         }
 
+        /// <summary>
+        /// GetValue
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         public object GetValue(object instance)
         {
             return this.m_getter(instance);

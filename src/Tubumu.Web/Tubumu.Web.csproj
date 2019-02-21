@@ -6,14 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="App_Data\logs\" />
+    <Folder Include="App_Data\Sites\Default\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="OrchardCore" Version="1.0.0-beta3-70683" />
-    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-beta3-70683" />
-    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-beta3-70683" />
+    <PackageReference Include="OrchardCore" Version="1.0.0-beta3-70746" />
+    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-beta3-70746" />
+    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-beta3-70746" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Tubumu.Modules.Framework.Utilities
 {
+    /// <summary>
+    /// StructHelper
+    /// </summary>
     public class StructHelper
     {
         /// <summary>
@@ -12,7 +15,7 @@ namespace Tubumu.Modules.Framework.Utilities
         /// </summary>
         /// <param name="structObj">要转换的结构体</param>
         /// <returns>转换后的byte数组</returns>
-        public static byte[] StructToBytes<T>(T structObj) where T:struct 
+        public static byte[] StructToBytes<T>(T structObj) where T : struct
         {
             //得到结构体的大小
             Int32 size = Marshal.SizeOf(structObj);
@@ -34,11 +37,10 @@ namespace Tubumu.Modules.Framework.Utilities
         /// Byte数组转结构体
         /// </summary>
         /// <param name="bytes">byte数组</param>
-        /// <param name="type">结构体类型</param>
         /// <returns>转换后的结构体</returns>
-        public static T BytesToStuct<T>(byte[] bytes) where T:struct
+        public static T BytesToStuct<T>(byte[] bytes) where T : struct
         {
-            Type type = typeof (T);
+            Type type = typeof(T);
             //得到结构体的大小
             Int32 size = Marshal.SizeOf(type);
             //byte数组长度小于结构体的大小
@@ -66,7 +68,7 @@ namespace Tubumu.Modules.Framework.Utilities
         /// <param name="bytes">byte数组</param>
         /// <param name="offset"></param>
         /// <returns>转换后的结构体</returns>
-        public static T BytesToStuct<T>(byte[] bytes,Int32 offset) where T : struct
+        public static T BytesToStuct<T>(byte[] bytes, Int32 offset) where T : struct
         {
             Type type = typeof(T);
             //得到结构体的大小
@@ -90,6 +92,11 @@ namespace Tubumu.Modules.Framework.Utilities
             return (T)obj;
         }
 
+        /// <summary>
+        /// 字节序列转16进制
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <returns></returns>
         public static String ByteArray2String(IEnumerable<Byte> buffer)
         {
             var sb = new StringBuilder();
@@ -99,6 +106,5 @@ namespace Tubumu.Modules.Framework.Utilities
             }
             return sb.ToString();
         }
-
     }
 }

@@ -7,20 +7,39 @@ using System.Linq.Expressions;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
 {
+    /// <summary>
+    /// IMethodInvoker
+    /// </summary>
     public interface IMethodInvoker
     {
+        /// <summary>
+        /// Invoke
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         object Invoke(object instance, params object[] parameters);
     }
 
+    /// <summary>
+    /// MethodInvoker
+    /// </summary>
     public class MethodInvoker : IMethodInvoker
     {
         private Func<object, object[], object> m_invoker;
 
+        /// <summary>
+        /// MethodInfo
+        /// </summary>
         public MethodInfo MethodInfo { get; private set; }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="methodInfo"></param>
         public MethodInvoker(MethodInfo methodInfo)
         {
-            if(methodInfo == null)
+            if (methodInfo == null)
             {
                 throw new ArgumentNullException(nameof(methodInfo));
             }
@@ -29,6 +48,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
             this.m_invoker = CreateInvokeDelegate(methodInfo);
         }
 
+        /// <summary>
+        /// Invoke
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public object Invoke(object instance, params object[] parameters)
         {
             return this.m_invoker(instance, parameters);
@@ -79,7 +104,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
             else
             {
                 var castMethodCall = Expression.Convert(methodCall, typeof(object));
-                var lambda =Expression.Lambda<Func<object, object[], object>>(
+                var lambda = Expression.Lambda<Func<object, object[], object>>(
                     castMethodCall, instanceParameter, parametersParameter);
 
                 return lambda.Compile();

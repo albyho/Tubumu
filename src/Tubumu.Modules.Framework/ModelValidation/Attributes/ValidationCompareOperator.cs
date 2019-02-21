@@ -1,7 +1,38 @@
 ﻿namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
+    /// <summary>
+    /// ValidationCompareOperator
+    /// </summary>
     public enum ValidationCompareOperator : byte
     {
-        Equal, NotEqual,GreaterThan,GreaterThanEqual,LessThan,LessThanEqual
+        /// <summary>
+        /// Equal
+        /// </summary>
+        Equal,
+
+        /// <summary>
+        /// NotEqual
+        /// </summary>
+        NotEqual,
+
+        /// <summary>
+        /// GreaterThan
+        /// </summary>
+        GreaterThan,
+
+        /// <summary>
+        /// GreaterThanEqual
+        /// </summary>
+        GreaterThanEqual,
+
+        /// <summary>
+        /// LessThan
+        /// </summary>
+        LessThan,
+
+        /// <summary>
+        /// LessThanEqual
+        /// </summary>
+        LessThanEqual
     }
 }

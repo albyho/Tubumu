@@ -267,7 +267,7 @@ namespace Tubumu.Modules.Admin.Repositories
                 {
                     RoleId = u.Role.RoleId,
                     Name = u.Role.Name,
-                }: null,
+                } : null,
                 Roles = from ur in u.UserRole
                         select new XM.RoleInfo
                         {

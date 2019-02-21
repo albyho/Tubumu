@@ -17,7 +17,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <returns>DisplayName</returns>
         public static string GetEnumDisplayName(this object enumValue)
         {
-            if(enumValue == null)
+            if (enumValue == null)
             {
                 throw new ArgumentNullException(nameof(enumValue));
             }
@@ -26,7 +26,7 @@ namespace Tubumu.Modules.Framework.Extensions
             if (!type.IsEnum)
                 throw new ArgumentOutOfRangeException(nameof(enumValue), "The parameter named \"enumValue\" is not an enum value.");
 
-            return GetEnumDisplayName(enumValue, type);            
+            return GetEnumDisplayName(enumValue, type);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <returns>枚举值与DisplayName形成的字典</returns>
         public static IEnumerable<KeyValuePair<T, string>> GetEnumDictionary<T>(this Type type)
         {
-            if(type == null)
+            if (type == null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
@@ -68,7 +68,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <returns></returns>
         public static string GetEnumRawConstantValue(this object enumValue)
         {
-            if(enumValue == null)
+            if (enumValue == null)
             {
                 throw new ArgumentNullException(nameof(enumValue));
             }

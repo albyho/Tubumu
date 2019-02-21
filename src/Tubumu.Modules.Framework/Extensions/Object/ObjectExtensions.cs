@@ -35,7 +35,7 @@ namespace Tubumu.Modules.Framework.Extensions.Object
         /// <typeparam name="T"></typeparam>
         /// <param name="json"></param>
         /// <returns></returns>
-        public static T FromJson<T>(string json) where T:class
+        public static T FromJson<T>(string json) where T : class
         {
             if (string.IsNullOrWhiteSpace(json))
                 return default(T);
@@ -56,8 +56,8 @@ namespace Tubumu.Modules.Framework.Extensions.Object
             {
                 var binaryFormatter = new BinaryFormatter(null,
                      new StreamingContext(StreamingContextStates.Clone));
-                binaryFormatter.Serialize(memStream, source);                
-                memStream.Position=0;
+                binaryFormatter.Serialize(memStream, source);
+                memStream.Position = 0;
                 return binaryFormatter.Deserialize(memStream);
             }
         }
@@ -67,9 +67,9 @@ namespace Tubumu.Modules.Framework.Extensions.Object
         /// </summary>
         /// <param name="source">源对象</param>
         /// <returns>新对象</returns>
-        public static T DeepClone<T>(this object source) where T:class 
+        public static T DeepClone<T>(this object source) where T : class
         {
-            if (source == null||source.GetType()!=typeof(T))
+            if (source == null || source.GetType() != typeof(T))
                 return null;
 
             using (var memStream = new MemoryStream())
@@ -140,7 +140,7 @@ namespace Tubumu.Modules.Framework.Extensions.Object
         /// <typeparam name="T"></typeparam>
         /// <param name="serializedObject"></param>
         /// <returns></returns>
-        public static T FromXml<T>(string serializedObject) where T:class
+        public static T FromXml<T>(string serializedObject) where T : class
         {
             return FromXml(typeof(T), serializedObject) as T;
         }
@@ -179,7 +179,7 @@ namespace Tubumu.Modules.Framework.Extensions.Object
         /// <param name="noneXsn"></param>
         /// <returns></returns>
         public static string ToXml(this object source, bool noneXsn = false)
-        { 
+        {
             string serializedObject = String.Empty;
 
             if (source != null)

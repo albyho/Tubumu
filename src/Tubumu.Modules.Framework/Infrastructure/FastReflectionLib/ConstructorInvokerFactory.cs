@@ -7,8 +7,16 @@ using System.Reflection;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
 {
+    /// <summary>
+    /// ConstructorInvokerFactory
+    /// </summary>
     public class ConstructorInvokerFactory : IFastReflectionFactory<ConstructorInfo, IConstructorInvoker>
     {
+        /// <summary>
+        /// Create
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public IConstructorInvoker Create(ConstructorInfo key)
         {
             return new ConstructorInvoker(key);

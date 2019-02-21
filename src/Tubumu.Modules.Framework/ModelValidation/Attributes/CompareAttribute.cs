@@ -4,20 +4,52 @@ using System.Globalization;
 
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
+    /// <summary>
+    /// CompareAttribute
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = true, Inherited = true)]
     public class CompareAttribute : ValidationAttribute
     {
-        public string OtherProperty { get; }
-        public object ValueToCompare { get; }
-        public ValidationCompareOperator Operator { get; }
-        public ValidationDataType DataType { get; }
-
         private const string DefaultErrorMessage = "对{0}和{1}属性或值进行{2}型的{3}比较失败";
 
+        /// <summary>
+        /// OtherProperty
+        /// </summary>
+        public string OtherProperty { get; }
+
+        /// <summary>
+        /// ValueToCompare
+        /// </summary>
+        public object ValueToCompare { get; }
+
+        /// <summary>
+        /// Operator
+        /// </summary>
+        public ValidationCompareOperator Operator { get; }
+
+        /// <summary>
+        /// DataType
+        /// </summary>
+        public ValidationDataType DataType { get; }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="originalProperty"></param>
+        /// <param name="compareOperator"></param>
+        /// <param name="dataType"></param>
         public CompareAttribute(string originalProperty, ValidationCompareOperator compareOperator, ValidationDataType dataType)
             : this(originalProperty, null, compareOperator, dataType)
         {
         }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="originalProperty"></param>
+        /// <param name="valueToCompare"></param>
+        /// <param name="compareOperator"></param>
+        /// <param name="dataType"></param>
         public CompareAttribute(string originalProperty, object valueToCompare, ValidationCompareOperator compareOperator, ValidationDataType dataType)
             : base(DefaultErrorMessage)
         {
@@ -27,12 +59,23 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
             DataType = dataType;
         }
 
+        /// <summary>
+        /// FormatErrorMessage
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public override string FormatErrorMessage(string name)
         {
             return String.Format(CultureInfo.CurrentUICulture, ErrorMessageString,
                 name, OtherProperty, DataType.ToString(), Operator.ToString());
         }
 
+        /// <summary>
+        /// IsValid
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="validationContext"></param>
+        /// <returns></returns>
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             ValidationResult validationResult = null;

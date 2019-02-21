@@ -5,8 +5,14 @@ using AutoMapper;
 
 namespace Tubumu.Modules.Framework.Mappings
 {
+    /// <summary>
+    /// Initalizer
+    /// </summary>
     public static class Initalizer
     {
+        /// <summary>
+        /// Initialize
+        /// </summary>
         public static void Initialize()
         {
             var assembliesToScan = AppDomain.CurrentDomain.GetAssemblies();

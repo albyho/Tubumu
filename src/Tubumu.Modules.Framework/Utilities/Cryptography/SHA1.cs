@@ -9,6 +9,11 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
     /// </summary>
     public static class SHA1
     {
+        /// <summary>
+        /// Encrypt
+        /// </summary>
+        /// <param name="rawString"></param>
+        /// <returns></returns>
         public static String Encrypt(String rawString)
         {
             if(rawString == null)
@@ -19,6 +24,11 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             return Convert.ToBase64String(EncryptToByteArray(rawString));
         }
 
+        /// <summary>
+        /// EncryptToByteArray
+        /// </summary>
+        /// <param name="rawString"></param>
+        /// <returns></returns>
         public static Byte[] EncryptToByteArray(String rawString)
         {
             if(rawString == null)

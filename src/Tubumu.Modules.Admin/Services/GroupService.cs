@@ -225,7 +225,6 @@ namespace Tubumu.Modules.Admin.Services
         /// SaveAsync
         /// </summary>
         /// <param name="groups"></param>
-        /// <param name="groupInputs"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
         public async Task<bool> SaveAsync(IEnumerable<GroupInput> groups, ModelStateDictionary modelState)

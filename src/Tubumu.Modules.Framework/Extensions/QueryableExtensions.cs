@@ -27,11 +27,11 @@ namespace Tubumu.Modules.Framework.Extensions
             IEnumerable<TValue> values
           )
         {
-            if(selector == null)
+            if (selector == null)
             {
                 throw new ArgumentNullException(nameof(selector));
-            }            
-            if(values == null)
+            }
+            if (values == null)
             {
                 throw new ArgumentNullException(nameof(values));
             }

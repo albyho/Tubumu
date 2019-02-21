@@ -7,10 +7,21 @@ using System.Collections.ObjectModel;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
 {
+    /// <summary>
+    /// ExpressionVisitor
+    /// </summary>
     public abstract class ExpressionVisitor
     {
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         protected ExpressionVisitor() { }
 
+        /// <summary>
+        /// Visit
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         protected virtual Expression Visit(Expression exp)
         {
             if (exp == null)
@@ -80,6 +91,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             }
         }
 
+        /// <summary>
+        /// VisitBinding
+        /// </summary>
+        /// <param name="binding"></param>
+        /// <returns></returns>
         protected virtual MemberBinding VisitBinding(MemberBinding binding)
         {
             switch (binding.BindingType)
@@ -95,6 +111,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             }
         }
 
+        /// <summary>
+        /// VisitElementInitializer
+        /// </summary>
+        /// <param name="initializer"></param>
+        /// <returns></returns>
         protected virtual ElementInit VisitElementInitializer(ElementInit initializer)
         {
             ReadOnlyCollection<Expression> arguments = this.VisitExpressionList(initializer.Arguments);
@@ -105,6 +126,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return initializer;
         }
 
+        /// <summary>
+        /// VisitUnary
+        /// </summary>
+        /// <param name="u"></param>
+        /// <returns></returns>
         protected virtual Expression VisitUnary(UnaryExpression u)
         {
             Expression operand = this.Visit(u.Operand);
@@ -115,6 +141,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return u;
         }
 
+        /// <summary>
+        /// VisitBinary
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
         protected virtual Expression VisitBinary(BinaryExpression b)
         {
             Expression left = this.Visit(b.Left);
@@ -130,6 +161,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return b;
         }
 
+        /// <summary>
+        /// VisitTypeIs
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns></returns>
         protected virtual Expression VisitTypeIs(TypeBinaryExpression b)
         {
             Expression expr = this.Visit(b.Expression);
@@ -140,11 +176,21 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return b;
         }
 
+        /// <summary>
+        /// VisitConstant
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         protected virtual Expression VisitConstant(ConstantExpression c)
         {
             return c;
         }
 
+        /// <summary>
+        /// VisitConditional
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         protected virtual Expression VisitConditional(ConditionalExpression c)
         {
             Expression test = this.Visit(c.Test);
@@ -157,11 +203,21 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return c;
         }
 
+        /// <summary>
+        /// VisitParameter
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         protected virtual Expression VisitParameter(ParameterExpression p)
         {
             return p;
         }
 
+        /// <summary>
+        /// VisitMemberAccess
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         protected virtual Expression VisitMemberAccess(MemberExpression m)
         {
             Expression exp = this.Visit(m.Expression);
@@ -172,6 +228,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return m;
         }
 
+        /// <summary>
+        /// VisitMethodCall
+        /// </summary>
+        /// <param name="m"></param>
+        /// <returns></returns>
         protected virtual Expression VisitMethodCall(MethodCallExpression m)
         {
             Expression obj = this.Visit(m.Object);
@@ -183,6 +244,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return m;
         }
 
+        /// <summary>
+        /// VisitExpressionList
+        /// </summary>
+        /// <param name="original"></param>
+        /// <returns></returns>
         protected virtual ReadOnlyCollection<Expression> VisitExpressionList(ReadOnlyCollection<Expression> original)
         {
             List<Expression> list = null;
@@ -210,6 +276,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return original;
         }
 
+        /// <summary>
+        /// VisitMemberAssignment
+        /// </summary>
+        /// <param name="assignment"></param>
+        /// <returns></returns>
         protected virtual MemberAssignment VisitMemberAssignment(MemberAssignment assignment)
         {
             Expression e = this.Visit(assignment.Expression);
@@ -220,6 +291,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return assignment;
         }
 
+        /// <summary>
+        /// VisitMemberMemberBinding
+        /// </summary>
+        /// <param name="binding"></param>
+        /// <returns></returns>
         protected virtual MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding binding)
         {
             IEnumerable<MemberBinding> bindings = this.VisitBindingList(binding.Bindings);
@@ -230,6 +306,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return binding;
         }
 
+        /// <summary>
+        /// VisitMemberListBinding
+        /// </summary>
+        /// <param name="binding"></param>
+        /// <returns></returns>
         protected virtual MemberListBinding VisitMemberListBinding(MemberListBinding binding)
         {
             IEnumerable<ElementInit> initializers = this.VisitElementInitializerList(binding.Initializers);
@@ -240,6 +321,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return binding;
         }
 
+        /// <summary>
+        /// VisitBindingList
+        /// </summary>
+        /// <param name="original"></param>
+        /// <returns></returns>
         protected virtual IEnumerable<MemberBinding> VisitBindingList(ReadOnlyCollection<MemberBinding> original)
         {
             List<MemberBinding> list = null;
@@ -265,6 +351,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return original;
         }
 
+        /// <summary>
+        /// VisitElementInitializerList
+        /// </summary>
+        /// <param name="original"></param>
+        /// <returns></returns>
         protected virtual IEnumerable<ElementInit> VisitElementInitializerList(ReadOnlyCollection<ElementInit> original)
         {
             List<ElementInit> list = null;
@@ -290,6 +381,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return original;
         }
 
+        /// <summary>
+        /// VisitLambda
+        /// </summary>
+        /// <param name="lambda"></param>
+        /// <returns></returns>
         protected virtual Expression VisitLambda(LambdaExpression lambda)
         {
             Expression body = this.Visit(lambda.Body);
@@ -300,6 +396,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return lambda;
         }
 
+        /// <summary>
+        /// VisitNew
+        /// </summary>
+        /// <param name="nex"></param>
+        /// <returns></returns>
         protected virtual NewExpression VisitNew(NewExpression nex)
         {
             IEnumerable<Expression> args = this.VisitExpressionList(nex.Arguments);
@@ -313,6 +414,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return nex;
         }
 
+        /// <summary>
+        /// VisitMemberInit
+        /// </summary>
+        /// <param name="init"></param>
+        /// <returns></returns>
         protected virtual Expression VisitMemberInit(MemberInitExpression init)
         {
             NewExpression n = this.VisitNew(init.NewExpression);
@@ -324,6 +430,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return init;
         }
 
+        /// <summary>
+        /// VisitListInit
+        /// </summary>
+        /// <param name="init"></param>
+        /// <returns></returns>
         protected virtual Expression VisitListInit(ListInitExpression init)
         {
             NewExpression n = this.VisitNew(init.NewExpression);
@@ -335,6 +446,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return init;
         }
 
+        /// <summary>
+        /// VisitNewArray
+        /// </summary>
+        /// <param name="na"></param>
+        /// <returns></returns>
         protected virtual Expression VisitNewArray(NewArrayExpression na)
         {
             IEnumerable<Expression> exprs = this.VisitExpressionList(na.Expressions);
@@ -352,6 +468,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return na;
         }
 
+        /// <summary>
+        /// VisitInvocation
+        /// </summary>
+        /// <param name="iv"></param>
+        /// <returns></returns>
         protected virtual Expression VisitInvocation(InvocationExpression iv)
         {
             IEnumerable<Expression> args = this.VisitExpressionList(iv.Arguments);

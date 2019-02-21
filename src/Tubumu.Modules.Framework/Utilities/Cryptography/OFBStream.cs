@@ -4,6 +4,9 @@ using System.Security.Cryptography;
 
 namespace Tubumu.Modules.Framework.Utilities.Cryptography
 {
+    /// <summary>
+    /// OFBStream
+    /// </summary>
     public class OFBStream : Stream
     {
         private const int Blocks = 16;
@@ -16,12 +19,18 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         private int _keyStreamBufferOffset;
         private readonly byte[] _readWriteBuffer;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="algo"></param>
+        /// <param name="mode"></param>
         public OFBStream(Stream parent, SymmetricAlgorithm algo, CryptoStreamMode mode)
         {
             //if (algo.Mode != CipherMode.CBC)
-                algo.Mode = CipherMode.CBC;
+            algo.Mode = CipherMode.CBC;
             //if (algo.Padding != PaddingMode.None)
-                algo.Padding = PaddingMode.None;
+            algo.Padding = PaddingMode.None;
             this._parent = parent;
             this._cbcStream = new CryptoStream(new ZeroStream(), algo.CreateEncryptor(), CryptoStreamMode.Read);
             this._mode = mode;
@@ -29,6 +38,13 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             _readWriteBuffer = new byte[_keyStreamBuffer.Length];
         }
 
+        /// <summary>
+        /// Read
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public override int Read(byte[] buffer, int offset, int count)
         {
             if (!CanRead)
@@ -57,6 +73,12 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             return read;
         }
 
+        /// <summary>
+        /// Write
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="count"></param>
         public override void Write(byte[] buffer, int offset, int count)
         {
             if (!CanWrite)
@@ -95,42 +117,70 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
                 throw new InvalidOperationException("Implementation error: could not read all bytes from CBC stream");
         }
 
+        /// <summary>
+        /// CanRead
+        /// </summary>
         public override bool CanRead
         {
             get { return _mode == CryptoStreamMode.Read; }
         }
 
+        /// <summary>
+        /// CanWrite
+        /// </summary>
         public override bool CanWrite
         {
             get { return _mode == CryptoStreamMode.Write; }
         }
 
+        /// <summary>
+        /// Flush
+        /// </summary>
         public override void Flush()
         {
             // should never have to be flushed, implementation empty
         }
 
+        /// <summary>
+        /// CanSeek
+        /// </summary>
         public override bool CanSeek
         {
             get { return false; }
         }
 
+        /// <summary>
+        /// Seek
+        /// </summary>
+        /// <param name="offset"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
         public override long Seek(long offset, SeekOrigin origin)
         {
             throw new NotSupportedException();
         }
 
+        /// <summary>
+        /// Position
+        /// </summary>
         public override long Position
         {
             get { throw new NotSupportedException(); }
             set { throw new NotSupportedException(); }
         }
 
+        /// <summary>
+        /// Length
+        /// </summary>
         public override long Length
         {
             get { throw new NotSupportedException(); }
         }
 
+        /// <summary>
+        /// SetLength
+        /// </summary>
+        /// <param name="value"></param>
         public override void SetLength(long value)
         {
             throw new NotSupportedException();

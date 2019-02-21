@@ -97,7 +97,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <returns></returns>
         public static async Task<Page<T>> GetPageAsync<T>(this IQueryable<T> sourceQuery, PagingInfo pagingInfo, ICollection<T> topQuery = null) where T : class
         {
-            if(sourceQuery == null)
+            if (sourceQuery == null)
             {
                 throw new ArgumentNullException(nameof(sourceQuery));
             }

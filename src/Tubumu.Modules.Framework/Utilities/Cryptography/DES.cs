@@ -23,7 +23,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         // 字符串   -> Hex
 
         /// <summary>
-        /// 核心方法
+        /// 核心方法 EncryptFromByteArrayToByteArray
         /// </summary>
         /// <param name="inputByteArray"></param>
         /// <param name="mode"></param>
@@ -32,7 +32,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <returns></returns>
         public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, CipherMode mode, PaddingMode paddingMode, String key = null)
         {
-            if(inputByteArray == null)
+            if (inputByteArray == null)
             {
                 throw new ArgumentNullException(nameof(inputByteArray));
             }
@@ -50,17 +50,38 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             cStream.FlushFinalBlock();
             return mStream.ToArray();
         }
-        public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, String key=null)
+
+        /// <summary>
+        /// EncryptFromByteArrayToByteArray
+        /// </summary>
+        /// <param name="inputByteArray"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, String key = null)
         {
             return EncryptFromByteArrayToByteArray(inputByteArray, CipherMode.ECB, PaddingMode.Zeros, key);
         }
+
+        /// <summary>
+        /// EncryptFromByteArrayToBase64String
+        /// </summary>
+        /// <param name="inputByteArray"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String EncryptFromByteArrayToBase64String(Byte[] inputByteArray, String key = null)
         {
             return Convert.ToBase64String(EncryptFromByteArrayToByteArray(inputByteArray, key));
         }
+
+        /// <summary>
+        /// EncryptFromStringToByteArray
+        /// </summary>
+        /// <param name="encryptString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static Byte[] EncryptFromStringToByteArray(String encryptString, String key = null)
         {
-            if(encryptString == null)
+            if (encryptString == null)
             {
                 throw new ArgumentNullException(nameof(encryptString));
             }
@@ -69,20 +90,35 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
 
             return EncryptFromByteArrayToByteArray(inputByteArray, key);
         }
+
+        /// <summary>
+        /// EncryptFromStringToBase64String
+        /// </summary>
+        /// <param name="encryptString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String EncryptFromStringToBase64String(String encryptString, String key = null)
         {
-            if(encryptString == null)
+            if (encryptString == null)
             {
                 throw new ArgumentNullException(nameof(encryptString));
             }
 
             Byte[] inputByteArray = Encoding.UTF8.GetBytes(encryptString);
 
-            return EncryptFromByteArrayToBase64String(inputByteArray,key);
+            return EncryptFromByteArrayToBase64String(inputByteArray, key);
         }
+
+        /// <summary>
+        /// EncryptFromStringToBase64String
+        /// </summary>
+        /// <param name="encryptString"></param>
+        /// <param name="paddingMode"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String EncryptFromStringToBase64String(String encryptString, PaddingMode paddingMode, String key = null)
         {
-            if(encryptString == null)
+            if (encryptString == null)
             {
                 throw new ArgumentNullException(nameof(encryptString));
             }
@@ -103,6 +139,13 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             cStream.FlushFinalBlock();
             return Convert.ToBase64String(mStream.ToArray());
         }
+
+        /// <summary>
+        /// EncryptFromStringToHex
+        /// </summary>
+        /// <param name="encryptString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String EncryptFromStringToHex(String encryptString, String key = null)
         {
             var encryptBuffer = EncryptFromStringToByteArray(encryptString, key);
@@ -114,7 +157,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         #region 解密
 
         /// <summary>
-        /// 核心方法
+        /// 核心方法 DecryptFromByteArrayToByteArray
         /// </summary>
         /// <param name="inputByteArray"></param>
         /// <param name="mode"></param>
@@ -123,7 +166,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <returns></returns>
         public static Byte[] DecryptFromByteArrayToByteArray(Byte[] inputByteArray, CipherMode mode, PaddingMode paddingMode, String key = null)
         {
-            if(inputByteArray == null)
+            if (inputByteArray == null)
             {
                 throw new ArgumentNullException(nameof(inputByteArray));
             }
@@ -141,32 +184,61 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             cStream.FlushFinalBlock();
             return mStream.ToArray();
         }
+
+        /// <summary>
+        /// DecryptFromByteArrayToByteArray
+        /// </summary>
+        /// <param name="inputByteArray"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static Byte[] DecryptFromByteArrayToByteArray(Byte[] inputByteArray, String key = null)
         {
             return DecryptFromByteArrayToByteArray(inputByteArray, CipherMode.ECB, PaddingMode.Zeros);
         }
+
+        /// <summary>
+        /// DecryptFromByteArrayToString
+        /// </summary>
+        /// <param name="inputByteArray"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String DecryptFromByteArrayToString(Byte[] inputByteArray, String key = null)
         {
-            if(inputByteArray == null)
+            if (inputByteArray == null)
             {
                 throw new ArgumentNullException(nameof(inputByteArray));
             }
 
             return Encoding.UTF8.GetString(DecryptFromByteArrayToByteArray(inputByteArray, key));
         }
+
+        /// <summary>
+        /// DecryptFromBase64StringToByteArray
+        /// </summary>
+        /// <param name="decryptBase64String"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static Byte[] DecryptFromBase64StringToByteArray(String decryptBase64String, String key = null)
         {
-            if(decryptBase64String == null)
+            if (decryptBase64String == null)
             {
                 throw new ArgumentNullException(nameof(decryptBase64String));
             }
 
             Byte[] inputByteArray = Convert.FromBase64String(decryptBase64String);
-            return DecryptFromByteArrayToByteArray(inputByteArray,key);
+            return DecryptFromByteArrayToByteArray(inputByteArray, key);
         }
+
+        /// <summary>
+        /// DecryptFromBase64StringToString
+        /// </summary>
+        /// <param name="decryptBase64String"></param>
+        /// <param name="paddingMode"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String DecryptFromBase64StringToString(String decryptBase64String, PaddingMode paddingMode, String key)
         {
-            if(decryptBase64String == null)
+            if (decryptBase64String == null)
             {
                 throw new ArgumentNullException(nameof(decryptBase64String));
             }
@@ -185,6 +257,13 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             cStream.FlushFinalBlock();
             return Encoding.UTF8.GetString(mStream.ToArray());
         }
+
+        /// <summary>
+        /// DecryptFromHexToString
+        /// </summary>
+        /// <param name="decryptString"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static String DecryptFromHexToString(String decryptString, String key = null)
         {
             var decryptBuffer = new Byte[decryptString.Length / 2];
@@ -192,12 +271,17 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
             {
                 decryptBuffer[i] = Convert.ToByte(decryptString.Substring(i * 2, 2), 16);
             }
-            return Encoding.UTF8.GetString(DecryptFromByteArrayToByteArray(decryptBuffer,key)).Replace("\0", "");
-            
+            return Encoding.UTF8.GetString(DecryptFromByteArrayToByteArray(decryptBuffer, key)).Replace("\0", "");
+
         }
 
         #endregion
 
+        /// <summary>
+        /// HexFromByteArray
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static String HexFromByteArray(Byte[] value)
         {
             if (value == null || value.Length == 0) return String.Empty;

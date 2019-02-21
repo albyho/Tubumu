@@ -7,8 +7,18 @@ using Tubumu.Modules.Framework.Utilities.Cryptography;
 
 namespace Tubumu.Modules.Admin.Services
 {
+    /// <summary>
+    /// UserServiceExtensions
+    /// </summary>
     public static class IUserServiceExtensions
     {
+        /// <summary>
+        /// GetNormalUserAsync
+        /// </summary>
+        /// <param name="userService"></param>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static async Task<UserInfo> GetNormalUserAsync(this IUserService userService, string account, string password)
         {
             if (account.IsNullOrWhiteSpace() || password.IsNullOrWhiteSpace()) return null;
@@ -32,6 +42,13 @@ namespace Tubumu.Modules.Admin.Services
             return CheckPassword(userInfo, password);
         }
 
+        /// <summary>
+        /// GetNormalUserAsync
+        /// </summary>
+        /// <param name="userService"></param>
+        /// <param name="userId"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static async Task<UserInfo> GetNormalUserAsync(this IUserService userService, int userId, string password)
         {
             if (password.IsNullOrWhiteSpace()) return null;
@@ -41,6 +58,12 @@ namespace Tubumu.Modules.Admin.Services
             return CheckPassword(userInfo, password);
         }
 
+        /// <summary>
+        /// GetNormalUserByUesrIdAsync
+        /// </summary>
+        /// <param name="userService"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public static async Task<UserInfo> GetNormalUserByUesrIdAsync(this IUserService userService, string userId)
         {
             if (int.TryParse(userId, out var value))
@@ -51,6 +74,12 @@ namespace Tubumu.Modules.Admin.Services
             return null;
         }
 
+        /// <summary>
+        /// VerifyPassword
+        /// </summary>
+        /// <param name="userInfo"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static Boolean VerifyPassword(this UserInfo userInfo, string password)
         {
             if (userInfo == null || password.IsNullOrWhiteSpace()) return false;

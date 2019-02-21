@@ -7,20 +7,43 @@ using System.Reflection;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
 {
+    /// <summary>
+    /// IPropertyAccessor
+    /// </summary>
     public interface IPropertyAccessor
     {
+        /// <summary>
+        /// GetValue
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <returns></returns>
         object GetValue(object instance);
 
+        /// <summary>
+        /// SetValue
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="value"></param>
         void SetValue(object instance, object value);
     }
 
+    /// <summary>
+    /// PropertyAccessor
+    /// </summary>
     public class PropertyAccessor : IPropertyAccessor
     {
         private Func<object, object> m_getter;
         private MethodInvoker m_setMethodInvoker;
 
+        /// <summary>
+        /// PropertyInfo
+        /// </summary>
         public PropertyInfo PropertyInfo { get; private set; }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="propertyInfo"></param>
         public PropertyAccessor(PropertyInfo propertyInfo)
         {
             this.PropertyInfo = propertyInfo;
@@ -59,6 +82,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
             this.m_setMethodInvoker = new MethodInvoker(propertyInfo.GetSetMethod(true));
         }
 
+        /// <summary>
+        /// GetValue
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
         public object GetValue(object o)
         {
             if (this.m_getter == null)
@@ -69,6 +97,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
             return this.m_getter(o);
         }
 
+        /// <summary>
+        /// SetValue
+        /// </summary>
+        /// <param name="o"></param>
+        /// <param name="value"></param>
         public void SetValue(object o, object value)
         {
             if (this.m_setMethodInvoker == null)

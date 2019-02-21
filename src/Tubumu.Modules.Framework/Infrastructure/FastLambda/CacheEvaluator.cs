@@ -9,7 +9,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
     /// <summary>
     /// CacheEvaluator
     /// </summary>
-    public class CacheEvaluator: IEvaluator
+    public class CacheEvaluator : IEvaluator
     {
         private static IExpressionCache<Delegate> s_cache = new HashedListCache<Delegate>();
 

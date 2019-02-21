@@ -7,13 +7,44 @@ namespace Tubumu.Modules.Framework.Extensions
     /// </summary>
     public enum DateInterval
     {
+        /// <summary>
+        /// Second
+        /// </summary>
         Second,
+
+        /// <summary>
+        /// Minute
+        /// </summary>
         Minute,
+
+        /// <summary>
+        /// Hour
+        /// </summary>
         Hour,
+
+        /// <summary>
+        /// Day
+        /// </summary>
         Day,
+
+        /// <summary>
+        /// Week
+        /// </summary>
         Week,
+
+        /// <summary>
+        /// Month
+        /// </summary>
         Month,
+
+        /// <summary>
+        /// Quarter
+        /// </summary>
         Quarter,
+
+        /// <summary>
+        /// Year
+        /// </summary>
         Year
     }
 

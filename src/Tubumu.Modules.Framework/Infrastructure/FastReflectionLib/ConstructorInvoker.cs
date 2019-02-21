@@ -7,17 +7,35 @@ using System.Linq.Expressions;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
 {
+    /// <summary>
+    /// IConstructorInvoker
+    /// </summary>
     public interface IConstructorInvoker
     {
+        /// <summary>
+        /// Invoke
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         object Invoke(params object[] parameters);
     }
 
+    /// <summary>
+    /// ConstructorInvoker
+    /// </summary>
     public class ConstructorInvoker : IConstructorInvoker
     {
         private Func<object[], object> m_invoker;
 
+        /// <summary>
+        /// ConstructorInfo
+        /// </summary>
         public ConstructorInfo ConstructorInfo { get; private set; }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="constructorInfo"></param>
         public ConstructorInvoker(ConstructorInfo constructorInfo)
         {
             this.ConstructorInfo = constructorInfo;
@@ -54,6 +72,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
             return lambda.Compile();
         }
 
+        /// <summary>
+        /// Invoke
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
         public object Invoke(params object[] parameters)
         {
             return this.m_invoker(parameters);

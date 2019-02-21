@@ -86,6 +86,14 @@ namespace Tubumu.Modules.Framework.Extensions
             await distributedCache.SetAsync(key, bytes, token);
         }
 
+        /// <summary>
+        /// GetObjectAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="distributedCache"></param>
+        /// <param name="key"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         public static async Task<T> GetObjectAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
         {
             var value = await distributedCache.GetAsync(key, token);

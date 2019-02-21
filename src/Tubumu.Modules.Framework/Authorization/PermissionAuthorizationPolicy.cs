@@ -57,7 +57,7 @@ namespace Tubumu.Modules.Framework.Authorization
                     policyBuilder.RequireRole(trimmedRolesSplit);
                     useDefaultPolicy = false;
                 }
-                if(authorizeDatum is IPermissionAuthorizeData permissionAuthorizeDatum)
+                if (authorizeDatum is IPermissionAuthorizeData permissionAuthorizeDatum)
                 {
                     var groupsSplit = permissionAuthorizeDatum.Groups?.Split(',');
                     if (groupsSplit != null && groupsSplit.Any())

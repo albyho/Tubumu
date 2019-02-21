@@ -11,6 +11,11 @@ namespace Tubumu.Modules.Framework.Utilities.Security
     {
         private string ValidationCode { get; set; }
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="codeLength"></param>
+        /// <param name="validateCode"></param>
         public ValidationCodeCreater(int codeLength, out string validateCode)
         {
             if (codeLength < 1)
@@ -20,6 +25,11 @@ namespace Tubumu.Modules.Framework.Utilities.Security
             validateCode = ValidationCode;
         }
 
+        /// <summary>
+        /// CreateValidationCode
+        /// </summary>
+        /// <param name="codeLength"></param>
+        /// <returns></returns>
         public string CreateValidationCode(int codeLength)
         {
             var chars = "1234567890qwertyuipasdfghjklzxcvbnm";

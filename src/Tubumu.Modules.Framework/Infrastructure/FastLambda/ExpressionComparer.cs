@@ -103,7 +103,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
 
             result = this.CompareType(x.GetType(), y.GetType());
             if (result != 0) return result;
-                
+
             result = x.NodeType - y.NodeType;
             if (result != 0) return result;
 
