@@ -64,7 +64,6 @@ namespace Tubumu.Modules.Framework.Utilities
         /// Byte数组转结构体
         /// </summary>
         /// <param name="bytes">byte数组</param>
-        /// <param name="type">结构体类型</param>
         /// <param name="offset"></param>
         /// <returns>转换后的结构体</returns>
         public static T BytesToStuct<T>(byte[] bytes,Int32 offset) where T : struct

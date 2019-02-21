@@ -8,6 +8,9 @@ using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// EnumerableExtensions
+    /// </summary>
     public static class EnumerableExtensions
     {
         /// <summary>

@@ -117,6 +117,8 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// 核心方法
         /// </summary>
         /// <param name="inputByteArray"></param>
+        /// <param name="mode"></param>
+        /// <param name="paddingMode"></param>
         /// <param name="key"></param>
         /// <returns></returns>
         public static Byte[] DecryptFromByteArrayToByteArray(Byte[] inputByteArray, CipherMode mode, PaddingMode paddingMode, String key = null)

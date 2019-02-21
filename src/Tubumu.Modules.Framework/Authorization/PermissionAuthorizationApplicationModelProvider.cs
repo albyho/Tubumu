@@ -7,22 +7,40 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Tubumu.Modules.Framework.Authorization
 {
+    /// <summary>
+    /// PermissionAuthorizationApplicationModelProvider
+    /// </summary>
     public class PermissionAuthorizationApplicationModelProvider : IApplicationModelProvider
     {
         private readonly IAuthorizationPolicyProvider _policyProvider;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="policyProvider"></param>
         public PermissionAuthorizationApplicationModelProvider(IAuthorizationPolicyProvider policyProvider)
         {
             _policyProvider = policyProvider;
         }
 
+        /// <summary>
+        /// 序号
+        /// </summary>
         public int Order => -1000 + 10;
 
+        /// <summary>
+        /// OnProvidersExecuted
+        /// </summary>
+        /// <param name="context"></param>
         public void OnProvidersExecuted(ApplicationModelProviderContext context)
         {
             // Intentionally empty.
         }
 
+        /// <summary>
+        /// OnProvidersExecuting
+        /// </summary>
+        /// <param name="context"></param>
         public void OnProvidersExecuting(ApplicationModelProviderContext context)
         {
             if (context == null)
@@ -58,6 +76,12 @@ namespace Tubumu.Modules.Framework.Authorization
             }
         }
 
+        /// <summary>
+        /// GetFilter
+        /// </summary>
+        /// <param name="policyProvider"></param>
+        /// <param name="authData"></param>
+        /// <returns></returns>
         public static AuthorizeFilter GetFilter(IAuthorizationPolicyProvider policyProvider, IEnumerable<IAuthorizeData> authData)
         {
             // The default policy provider will make the same policy for given input, so make it only once.

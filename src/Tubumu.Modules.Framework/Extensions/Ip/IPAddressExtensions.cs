@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace Tubumu.Modules.Framework.Extensions.Ip
 {
+    /// <summary>
+    /// IpAddressExtensions
+    /// </summary>
     public static class IpAddressExtensions
     {
         /// <summary>

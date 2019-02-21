@@ -2,6 +2,9 @@
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// DictionaryExtensions
+    /// </summary>
     public static class DictionaryExtensions
     {
         /// <summary>

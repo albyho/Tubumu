@@ -48,6 +48,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="authenticationSettingsOptions"></param>
         /// <param name="tokenValidationSettings"></param>
         /// <param name="userService"></param>
+        /// <param name="tokenService"></param>
         /// <param name="mobileUserService"></param>
         /// <param name="weixinUserService"></param>
         public AuthenticationController(

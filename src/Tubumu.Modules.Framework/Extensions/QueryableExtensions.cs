@@ -6,8 +6,20 @@ using System.Reflection;
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// QueryableExtensions
+    /// </summary>
     public static class QueryableExtensions
     {
+        /// <summary>
+        /// WhereIn
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="selector"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public static IQueryable<TEntity> WhereIn<TEntity, TValue>
           (
             this IQueryable<TEntity> query,
@@ -35,6 +47,15 @@ namespace Tubumu.Modules.Framework.Extensions
             return query.Where(Expression.Lambda<Func<TEntity, bool>>(body, p));
         }
 
+        /// <summary>
+        /// WhereIn
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="selector"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public static IQueryable<TEntity> WhereIn<TEntity, TValue>
           (
             this IQueryable<TEntity> query,
@@ -45,6 +66,19 @@ namespace Tubumu.Modules.Framework.Extensions
             return WhereIn(query, selector, (IEnumerable<TValue>)values);
         }
 
+        /// <summary>
+        /// LeftJoin
+        /// </summary>
+        /// <typeparam name="TOuter"></typeparam>
+        /// <typeparam name="TInner"></typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="outer"></param>
+        /// <param name="inner"></param>
+        /// <param name="outerKeySelector"></param>
+        /// <param name="innerKeySelector"></param>
+        /// <param name="resultSelector"></param>
+        /// <returns></returns>
         public static IQueryable<TResult> LeftJoin<TOuter, TInner, TKey, TResult>(
             this IQueryable<TOuter> outer,
             IQueryable<TInner> inner,
@@ -107,6 +141,15 @@ namespace Tubumu.Modules.Framework.Extensions
             }
         }
 
+        /// <summary>
+        /// Order
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="descending"></param>
+        /// <param name="anotherLevel"></param>
+        /// <returns></returns>
         public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, string propertyName, bool descending, bool anotherLevel)
         {
             ParameterExpression param = Expression.Parameter(typeof(T), String.Empty); // I don't care about some naming
@@ -121,26 +164,62 @@ namespace Tubumu.Modules.Framework.Extensions
             return (IOrderedQueryable<T>)source.Provider.CreateQuery<T>(call);
         }
 
+        /// <summary>
+        /// Order
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="descending"></param>
+        /// <returns></returns>
         public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, string propertyName, bool descending)
         {
             return Order(source, propertyName, descending, false);
         }
 
+        /// <summary>
+        /// OrderBy
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public static IOrderedQueryable<T> OrderBy<T>(this IQueryable<T> source, string propertyName)
         {
             return Order(source, propertyName, false, false);
         }
 
+        /// <summary>
+        /// OrderByDescending
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public static IOrderedQueryable<T> OrderByDescending<T>(this IQueryable<T> source, string propertyName)
         {
             return Order(source, propertyName, true, false);
         }
 
+        /// <summary>
+        /// ThenBy
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public static IOrderedQueryable<T> ThenBy<T>(this IOrderedQueryable<T> source, string propertyName)
         {
             return Order(source, propertyName, false, true);
         }
 
+        /// <summary>
+        /// ThenByDescending
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <returns></returns>
         public static IOrderedQueryable<T> ThenByDescending<T>(this IOrderedQueryable<T> source, string propertyName)
         {
             return Order(source, propertyName, true, true);

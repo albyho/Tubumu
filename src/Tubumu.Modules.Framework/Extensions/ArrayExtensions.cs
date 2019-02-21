@@ -2,6 +2,9 @@
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// ArrayExtensions
+    /// </summary>
     public static class ArrayExtensions
     {
         /// <summary>
@@ -15,6 +18,7 @@ namespace Tubumu.Modules.Framework.Extensions
         {
             return SubArray(sourceArray, (long)length);
         }
+
         /// <summary>
         /// 获取子数组
         /// </summary>

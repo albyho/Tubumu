@@ -4,8 +4,17 @@ using System.Text;
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// NameValueCollectionExtensions
+    /// </summary>
     public static class NameValueCollectionExtensions
     {
+        /// <summary>
+        /// IsTrue
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static bool IsTrue(this NameValueCollection collection, string key)
         {
             if (collection == null) return false;
@@ -17,6 +26,12 @@ namespace Tubumu.Modules.Framework.Extensions
             return bool.TryParse(values[0], out var isTrue) && isTrue;
         }
 
+        /// <summary>
+        /// IsTrueNullable
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static bool? IsTrueNullable(this NameValueCollection collection, string key)
         {
             if (collection == null) return null;
@@ -27,6 +42,11 @@ namespace Tubumu.Modules.Framework.Extensions
             return bool.TryParse(values[0], out bool isTrueValue) && isTrueValue;
         }
 
+        /// <summary>
+        /// ToQueryString
+        /// </summary>
+        /// <param name="queryString"></param>
+        /// <returns></returns>
         public static string ToQueryString(this NameValueCollection queryString)
         {
             if (queryString.Count > 0)

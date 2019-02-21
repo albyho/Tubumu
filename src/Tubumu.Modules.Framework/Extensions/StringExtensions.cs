@@ -7,6 +7,9 @@ using Microsoft.International.Converters.PinYinConverter;
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// StringExtensions
+    /// </summary>
     public static class StringExtensions
     {
         private static readonly Regex TagRegex = new Regex("<[^<>]*>", RegexOptions.Compiled | RegexOptions.Singleline);
@@ -28,6 +31,7 @@ namespace Tubumu.Modules.Framework.Extensions
         {
             return !source.IsNullOrWhiteSpace() && GuidRegex.IsMatch(source);
         }
+
         /// <summary>
         /// 字符串转换为Guid
         /// </summary>
@@ -68,10 +72,24 @@ namespace Tubumu.Modules.Framework.Extensions
 
         #region 字符串截取
 
+        /// <summary>
+        /// Substr
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="len"></param>
+        /// <returns></returns>
         public static string Substr(this string source, int len)
         {
             return source.Substr(len, "...");
         }
+
+        /// <summary>
+        /// Substr
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="len"></param>
+        /// <param name="att"></param>
+        /// <returns></returns>
         public static string Substr(this string source, int len, string att)
         {
             if (string.IsNullOrEmpty(source)) return String.Empty;
@@ -99,34 +117,85 @@ namespace Tubumu.Modules.Framework.Extensions
         #endregion
 
         #region 字符串空/null校验
+
+        /// <summary>
+        /// IsNullOrEmpty
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static bool IsNullOrEmpty(this string source)
         {
             return String.IsNullOrEmpty(source);
         }
+
+        /// <summary>
+        /// IsNullOrWhiteSpace
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static bool IsNullOrWhiteSpace(this string source)
         {
             return string.IsNullOrWhiteSpace(source);
         }
+
         #endregion
 
         #region 字符串格式化
 
+        /// <summary>
+        /// FormatWith
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="arg0"></param>
+        /// <returns></returns>
         public static string FormatWith(this string format, object arg0)
         {
             return String.Format(format, arg0);
         }
+
+        /// <summary>
+        /// FormatWith
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="arg0"></param>
+        /// <param name="arg1"></param>
+        /// <returns></returns>
         public static string FormatWith(this string format, object arg0, object arg1)
         {
             return String.Format(format, arg0, arg1);
         }
+
+        /// <summary>
+        /// FormatWith
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="arg0"></param>
+        /// <param name="arg1"></param>
+        /// <param name="arg2"></param>
+        /// <returns></returns>
         public static string FormatWith(this string format, object arg0, object arg1, object arg2)
         {
             return String.Format(format, arg0, arg1, arg2);
         }
+
+        /// <summary>
+        /// FormatWith
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static string FormatWith(this string format, params object[] args)
         {
             return String.Format(format, args);
         }
+
+        /// <summary>
+        /// FormatWith
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="provider"></param>
+        /// <param name="args"></param>
+        /// <returns></returns>
         public static string FormatWith(this string format, IFormatProvider provider, params object[] args)
         {
             return String.Format(provider, format, args);
@@ -136,6 +205,12 @@ namespace Tubumu.Modules.Framework.Extensions
 
         #region 串联字符串集合
 
+        /// <summary>
+        /// Join
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="separator"></param>
+        /// <returns></returns>
         public static string Join(this IEnumerable<String> source, string separator)
         {
             if (source == null)
@@ -152,6 +227,14 @@ namespace Tubumu.Modules.Framework.Extensions
             return String.Join(separator, enumerable);
         }
 
+        /// <summary>
+        /// Join
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="separator"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
         public static string Join<T>(this IEnumerable<T> source, string separator, Func<T, String> selector)
         {
             if (source == null)
@@ -313,11 +396,23 @@ namespace Tubumu.Modules.Framework.Extensions
             return source?.ToString();
         }
 
+        /// <summary>
+        /// ToEmptyableString
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static string ToEmptyableString<T>(this T source) where T : class
         {
             return source?.ToString();
         }
 
+        /// <summary>
+        /// WithUrl
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public static string WithUrl(this string source, string url)
         {
             if (source == null || url == null)
@@ -327,6 +422,12 @@ namespace Tubumu.Modules.Framework.Extensions
         }
 
         #region 拼音
+
+        /// <summary>
+        /// ConvertToPinYin
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static string ConvertToPinYin(this string source)
         {
             var pinYin = "";
@@ -347,6 +448,11 @@ namespace Tubumu.Modules.Framework.Extensions
             return pinYin;
         }
 
+        /// <summary>
+        /// ConvertToPinYinPY
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static Tuple<string, string> ConvertToPinYinPY(this string source)
         {
             var pinYin = "";
@@ -370,6 +476,11 @@ namespace Tubumu.Modules.Framework.Extensions
             return new Tuple<string, string>(pinYin, py);
         }
 
+        /// <summary>
+        /// ConvertToPY
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static string ConvertToPY(this string source)
         {
             string py = "";

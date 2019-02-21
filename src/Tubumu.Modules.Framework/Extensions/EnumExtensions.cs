@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// EnumExtensions
+    /// </summary>
     public static class EnumExtensions
     {
         /// <summary>
@@ -58,6 +61,11 @@ namespace Tubumu.Modules.Framework.Extensions
             return GetEnumDictionary<T>(typeof(T));
         }
 
+        /// <summary>
+        /// 获取枚举原始常量值
+        /// </summary>
+        /// <param name="enumValue"></param>
+        /// <returns></returns>
         public static string GetEnumRawConstantValue(this object enumValue)
         {
             if(enumValue == null)

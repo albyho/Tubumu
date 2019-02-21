@@ -4,6 +4,9 @@ using System.Linq.Expressions;
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// TypeExtensions
+    /// </summary>
     public static class TypeExtensions
     {
         /// <summary>

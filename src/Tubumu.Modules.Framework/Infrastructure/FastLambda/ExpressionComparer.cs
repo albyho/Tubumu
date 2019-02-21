@@ -9,10 +9,13 @@ using System.Collections.ObjectModel;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
 {
+    /// <summary>
+    /// ExpressionComparer
+    /// </summary>
     public class ExpressionComparer : IComparer<Expression>
     {
         /// <summary>
-        /// 
+        /// CompareNull
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="x"></param>
@@ -37,6 +40,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return false;
         }
 
+        /// <summary>
+        /// CompareType
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareType(Type x, Type y)
         {
             if (x == y) return 0;
@@ -53,6 +62,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return x.AssemblyQualifiedName.CompareTo(y.AssemblyQualifiedName);
         }
 
+        /// <summary>
+        /// CompareMemberInfo
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareMemberInfo(MemberInfo x, MemberInfo y)
         {
             if (x == y) return 0;
@@ -75,6 +90,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return x.ToString().CompareTo(y.ToString());
         }
 
+        /// <summary>
+        /// Compare
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public virtual int Compare(Expression x, Expression y)
         {
             int result;
@@ -154,6 +175,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             }
         }
 
+        /// <summary>
+        /// CompareListInit
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareListInit(ListInitExpression x, ListInitExpression y)
         {
             int result = this.CompareElementInitializerList(x.Initializers, y.Initializers);
@@ -162,6 +189,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.CompareNew(x.NewExpression, y.NewExpression);
         }
 
+        /// <summary>
+        /// CompareElementInitializerList
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected int CompareElementInitializerList(ReadOnlyCollection<ElementInit> x, ReadOnlyCollection<ElementInit> y)
         {
             int result = x.Count - y.Count;
@@ -176,6 +209,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return 0;
         }
 
+        /// <summary>
+        /// CompareElementInitializer
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareElementInitializer(ElementInit x, ElementInit y)
         {
             int result = this.CompareMemberInfo(x.AddMethod, y.AddMethod);
@@ -184,6 +223,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.CompareExpressionList(x.Arguments, y.Arguments);
         }
 
+        /// <summary>
+        /// CompareMemberInit
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareMemberInit(MemberInitExpression x, MemberInitExpression y)
         {
             int result = this.CompareNew(x.NewExpression, y.NewExpression);
@@ -192,6 +237,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.CompareBindingList(x.Bindings, y.Bindings);
         }
 
+        /// <summary>
+        /// CompareBindingList
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareBindingList(ReadOnlyCollection<MemberBinding> x, ReadOnlyCollection<MemberBinding> y)
         {
             int result = x.Count - y.Count;
@@ -206,6 +257,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return 0;
         }
 
+        /// <summary>
+        /// CompareBinding
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareBinding(MemberBinding x, MemberBinding y)
         {
             int result = x.BindingType - y.BindingType;
@@ -214,6 +271,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.CompareMemberInfo(x.Member, y.Member);
         }
 
+        /// <summary>
+        /// CompareInvocation
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareInvocation(InvocationExpression x, InvocationExpression y)
         {
             int result = this.CompareExpressionList(x.Arguments, y.Arguments);
@@ -222,11 +285,23 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.Compare(x.Expression, y.Expression);
         }
 
+        /// <summary>
+        /// CompareNewArray
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareNewArray(NewArrayExpression x, NewArrayExpression y)
         {
             return this.CompareExpressionList(x.Expressions, y.Expressions);
         }
 
+        /// <summary>
+        /// CompareNew
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareNew(NewExpression x, NewExpression y)
         {
             int result;
@@ -245,6 +320,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.CompareExpressionList(x.Arguments, y.Arguments);
         }
 
+        /// <summary>
+        /// CompareLambda
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareLambda(LambdaExpression x, LambdaExpression y)
         {
             int result = x.Parameters.Count - y.Parameters.Count;
@@ -259,6 +340,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.Compare(x.Body, y.Body);
         }
 
+        /// <summary>
+        /// CompareMethodCall
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareMethodCall(MethodCallExpression x, MethodCallExpression y)
         {
             int result = this.CompareMemberInfo(x.Method, y.Method);
@@ -270,6 +357,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.Compare(x.Object, y.Object);
         }
 
+        /// <summary>
+        /// CompareExpressionList
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareExpressionList(ReadOnlyCollection<Expression> x, ReadOnlyCollection<Expression> y)
         {
             int result = x.Count - y.Count;
@@ -284,6 +377,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return 0;
         }
 
+        /// <summary>
+        /// CompareMemberAccess
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareMemberAccess(MemberExpression x, MemberExpression y)
         {
             int result = this.CompareMemberInfo(x.Member, y.Member);
@@ -292,16 +391,34 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.Compare(x.Expression, y.Expression);
         }
 
+        /// <summary>
+        /// CompareParameter
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareParameter(ParameterExpression x, ParameterExpression y)
         {
             return x.Name.CompareTo(y.Name);
         }
 
+        /// <summary>
+        /// CompareConstant
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareConstant(ConstantExpression x, ConstantExpression y)
         {
             return Comparer.Default.Compare(x.Value, y.Value);
         }
 
+        /// <summary>
+        /// CompareConditional
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareConditional(ConditionalExpression x, ConditionalExpression y)
         {
             int result = this.Compare(x.Test, y.Test);
@@ -313,6 +430,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.Compare(x.IfFalse, y.IfFalse);
         }
 
+        /// <summary>
+        /// CompareTypeIs
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareTypeIs(TypeBinaryExpression x, TypeBinaryExpression y)
         {
             int result = this.CompareType(x.TypeOperand, y.TypeOperand);
@@ -321,6 +444,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.Compare(x.Expression, y.Expression);
         }
 
+        /// <summary>
+        /// CompareBinary
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareBinary(BinaryExpression x, BinaryExpression y)
         {
             int result = x.IsLifted.CompareTo(y.IsLifted);
@@ -341,6 +470,12 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return this.Compare(x.Conversion, y.Conversion);
         }
 
+        /// <summary>
+        /// CompareUnary
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         protected virtual int CompareUnary(UnaryExpression x, UnaryExpression y)
         {
             int result = x.IsLifted.CompareTo(y.IsLifted);

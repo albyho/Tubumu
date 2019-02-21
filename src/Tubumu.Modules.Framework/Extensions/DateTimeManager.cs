@@ -7,9 +7,19 @@ namespace Tubumu.Modules.Framework.Extensions
     /// </summary>
     public enum DateInterval
     {
-        Second, Minute, Hour, Day, Week, Month, Quarter, Year
+        Second,
+        Minute,
+        Hour,
+        Day,
+        Week,
+        Month,
+        Quarter,
+        Year
     }
 
+    /// <summary>
+    /// DateTimeManger
+    /// </summary>
     public static class DateTimeManger
     {
         /// <summary>
@@ -19,7 +29,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="interval">时间间隔类型</param>
         /// <param name="startDate">起始时间</param>
         /// <returns></returns>
-        public static long DateDiff(this DateTime endDate,DateInterval interval, DateTime startDate)
+        public static long DateDiff(this DateTime endDate, DateInterval interval, DateTime startDate)
         {
             long lngDateDiffValue;
             var timeSpan = new TimeSpan(endDate.Ticks - startDate.Ticks);

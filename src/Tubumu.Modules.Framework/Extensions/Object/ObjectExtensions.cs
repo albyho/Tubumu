@@ -12,15 +12,29 @@ using Tubumu.Modules.Framework.Infrastructure.FastReflectionLib;
 
 namespace Tubumu.Modules.Framework.Extensions.Object
 {
+    /// <summary>
+    /// ObjectExtensions
+    /// </summary>
     public static class ObjectExtensions
     {
         private static readonly JsonSerializer JsonSerializer = new JsonSerializer();
 
+        /// <summary>
+        /// ToJson
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static string ToJson(this object source)
         {
             return JsonConvert.SerializeObject(source);
         }
 
+        /// <summary>
+        /// FromJson
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json"></param>
+        /// <returns></returns>
         public static T FromJson<T>(string json) where T:class
         {
             if (string.IsNullOrWhiteSpace(json))
@@ -120,11 +134,23 @@ namespace Tubumu.Modules.Framework.Extensions.Object
             return source;
         }
 
+        /// <summary>
+        /// FromXml
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="serializedObject"></param>
+        /// <returns></returns>
         public static T FromXml<T>(string serializedObject) where T:class
         {
             return FromXml(typeof(T), serializedObject) as T;
         }
 
+        /// <summary>
+        /// FromXml
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="serializedObject"></param>
+        /// <returns></returns>
         public static object FromXml(this Type type, string serializedObject)
         {
             object filledObject = null;
@@ -146,6 +172,12 @@ namespace Tubumu.Modules.Framework.Extensions.Object
             return filledObject;
         }
 
+        /// <summary>
+        /// ToXml
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="noneXsn"></param>
+        /// <returns></returns>
         public static string ToXml(this object source, bool noneXsn = false)
         { 
             string serializedObject = String.Empty;
@@ -187,6 +219,11 @@ namespace Tubumu.Modules.Framework.Extensions.Object
             return serializedObject;
         }
 
+        /// <summary>
+        /// ToByteArray
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static byte[] ToByteArray(this object obj)
         {
             if (obj == null)
@@ -201,6 +238,12 @@ namespace Tubumu.Modules.Framework.Extensions.Object
             }
         }
 
+        /// <summary>
+        /// FromByteArray
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="byteArray"></param>
+        /// <returns></returns>
         public static T FromByteArray<T>(this byte[] byteArray) where T : class
         {
             if (byteArray == null)

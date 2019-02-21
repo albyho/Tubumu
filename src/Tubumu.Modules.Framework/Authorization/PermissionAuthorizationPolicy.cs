@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Tubumu.Modules.Framework.Authorization
 {
+    /// <summary>
+    /// PermissionAuthorizationPolicy
+    /// </summary>
     public class PermissionAuthorizationPolicy
     {
         /// <summary>

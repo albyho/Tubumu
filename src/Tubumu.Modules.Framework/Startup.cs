@@ -103,7 +103,7 @@ namespace Tubumu.Modules.Framework
 
             // HTTP Client
             services.AddHttpClient();
-            
+
             // ApiBehaviorOptions
             services.Configure<ApiBehaviorOptions>(options =>
             {

@@ -31,6 +31,7 @@ namespace Tubumu.Modules.Framework.Services
         /// 构造函数
         /// </summary>
         /// <param name="tokenValidationSettings"></param>
+        /// <param name="cache"></param>
         public TokenService(
             TokenValidationSettings tokenValidationSettings,
             IDistributedCache cache

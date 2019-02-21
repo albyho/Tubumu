@@ -4,8 +4,16 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Tubumu.Modules.Framework.Extensions
 {
+    /// <summary>
+    /// ModelStateExtensions
+    /// </summary>
     public static class ModelStateExtensions
     {
+        /// <summary>
+        /// FirstErrorMessage
+        /// </summary>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
         public static string FirstErrorMessage(this ModelStateDictionary modelState)
         {
             if (modelState.IsValid)

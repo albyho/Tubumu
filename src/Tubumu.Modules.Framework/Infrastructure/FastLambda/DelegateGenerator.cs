@@ -7,6 +7,9 @@ using System.Reflection;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
 {
+    /// <summary>
+    /// DelegateGenerator
+    /// </summary>
     public class DelegateGenerator : ExpressionVisitor
     {
         private static readonly MethodInfo s_indexerInfo = typeof(List<object>).GetMethod("get_Item");
@@ -14,6 +17,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
         private int m_parameterCount;
         private ParameterExpression m_parametersExpression;
 
+        /// <summary>
+        /// Generate
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         public Func<List<object>, object> Generate(Expression exp)
         {
             this.m_parameterCount = 0;
@@ -30,6 +38,11 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
             return lambda.Compile();
         }
 
+        /// <summary>
+        /// VisitConstant
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         protected override Expression VisitConstant(ConstantExpression c)
         {
             Expression exp = Expression.Call(

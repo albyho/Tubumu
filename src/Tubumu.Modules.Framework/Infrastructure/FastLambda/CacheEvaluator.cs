@@ -6,6 +6,9 @@ using System.Linq.Expressions;
 
 namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
 {
+    /// <summary>
+    /// CacheEvaluator
+    /// </summary>
     public class CacheEvaluator: IEvaluator
     {
         private static IExpressionCache<Delegate> s_cache = new HashedListCache<Delegate>();
@@ -16,16 +19,28 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
         private IExpressionCache<Delegate> m_cache;
         private Func<Expression, Delegate> m_creatorDelegate;
 
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public CacheEvaluator()
             : this(s_cache)
         { }
 
+        /// <summary>
+        /// CacheEvaluator
+        /// </summary>
+        /// <param name="cache"></param>
         public CacheEvaluator(IExpressionCache<Delegate> cache)
         {
             this.m_cache = cache;
             this.m_creatorDelegate = (key) => this.m_delegateGenerator.Generate(key);
         }
 
+        /// <summary>
+        /// Eval
+        /// </summary>
+        /// <param name="exp"></param>
+        /// <returns></returns>
         public object Eval(Expression exp)
         {
             if (exp.NodeType == ExpressionType.Constant)
