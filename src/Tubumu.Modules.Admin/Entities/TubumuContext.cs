@@ -20,7 +20,6 @@ namespace Tubumu.Modules.Admin.Entities
         public virtual DbSet<GroupAvailableRole> GroupAvailableRole { get; set; }
         public virtual DbSet<GroupPermission> GroupPermission { get; set; }
         public virtual DbSet<GroupRole> GroupRole { get; set; }
-        public virtual DbSet<Log> Log { get; set; }
         public virtual DbSet<Notification> Notification { get; set; }
         public virtual DbSet<NotificationUser> NotificationUser { get; set; }
         public virtual DbSet<Permission> Permission { get; set; }
@@ -108,15 +107,6 @@ namespace Tubumu.Modules.Admin.Entities
                     .WithMany(p => p.GroupRole)
                     .HasForeignKey(d => d.RoleId)
                     .HasConstraintName("FK_GroupRole_Role");
-            });
-
-            modelBuilder.Entity<Log>(entity =>
-            {
-                entity.Property(e => e.Description).HasMaxLength(1000);
-
-                entity.Property(e => e.Ip)
-                    .IsRequired()
-                    .HasMaxLength(20);
             });
 
             modelBuilder.Entity<Notification>(entity =>
