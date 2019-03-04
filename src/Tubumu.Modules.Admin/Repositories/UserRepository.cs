@@ -228,7 +228,6 @@ namespace Tubumu.Modules.Admin.Repositories
         public UserRepository(TubumuContext context)
         {
             _context = context;
-
             _selector = u => new XM.UserInfo
             {
                 UserId = u.UserId,
