@@ -83,5 +83,36 @@ namespace Tubumu.Modules.Framework.Extensions
         {
             return new ReadOnlyCollection<T>(source.ToList());
         }
+
+        /// <summary>
+        /// Filters a <see cref="IEnumerable{T}"/> by given predicate if given condition is true.
+        /// </summary>
+        /// <param name="source">Enumerable to apply filtering</param>
+        /// <param name="condition">A boolean value</param>
+        /// <param name="predicate">Predicate to filter the enumerable</param>
+        /// <returns>Filtered or not filtered enumerable based on <paramref name="condition"/></returns>
+        /// <remarks>https://github.com/aspnetboilerplate/aspnetboilerplate/blob/e0ded5d8702f389aa1f5947d3446f16aec845287/src/Abp/Collections/Extensions/EnumerableExtensions.cs</remarks>
+        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, bool condition, Func<T, bool> predicate)
+        {
+            return condition
+                ? source.Where(predicate)
+                : source;
+        }
+
+        /// <summary>
+        /// Filters a <see cref="IEnumerable{T}"/> by given predicate if given condition is true.
+        /// </summary>
+        /// <param name="source">Enumerable to apply filtering</param>
+        /// <param name="condition">A boolean value</param>
+        /// <param name="predicate">Predicate to filter the enumerable</param>
+        /// <returns>Filtered or not filtered enumerable based on <paramref name="condition"/></returns>
+        /// <remarks>https://github.com/aspnetboilerplate/aspnetboilerplate/blob/e0ded5d8702f389aa1f5947d3446f16aec845287/src/Abp/Collections/Extensions/EnumerableExtensions.cs</remarks>
+        public static IEnumerable<T> WhereIf<T>(this IEnumerable<T> source, bool condition, Func<T, int, bool> predicate)
+        {
+            return condition
+                ? source.Where(predicate)
+                : source;
+        }
+
     }
 }

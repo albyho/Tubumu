@@ -481,22 +481,8 @@ namespace Tubumu.Modules.Admin.Repositories
         private IQueryable<Notification> CreateQuery(XM.NotificationPageSearchCriteria criteria)
         {
             IQueryable<Notification> query = _context.Notification;
-            if (criteria.FromUserId.HasValue)
-            {
-                query = query.Where(m => m.FromUserId == criteria.FromUserId);
-            }
-            if (criteria.ToUserId.HasValue)
-            {
-                query = query.Where(m => m.ToUserId == criteria.ToUserId);
-            }
-            if (criteria.Keyword != null)
-            {
-                var keyword = criteria.Keyword.Trim();
-                if (keyword.Length != 0)
-                {
-                    query = query.Where(m => m.Title.Contains(keyword));
-                }
-            }
+            query = query.WhereIf(criteria.FromUserId.HasValue, m => m.FromUserId == criteria.FromUserId);
+            query = query.WhereIf(criteria.ToUserId.HasValue, m => m.ToUserId == criteria.ToUserId);
             if (criteria.CreationTimeBegin.HasValue)
             {
                 var begin = criteria.CreationTimeBegin.Value.Date;
@@ -506,6 +492,14 @@ namespace Tubumu.Modules.Admin.Repositories
             {
                 var end = criteria.CreationTimeEnd.Value.Date.AddDays(1);
                 query = query.Where(m => m.CreationTime < end);
+            }
+            if (criteria.Keyword != null)
+            {
+                var keyword = criteria.Keyword.Trim();
+                if (keyword.Length != 0)
+                {
+                    query = query.Where(m => m.Title.Contains(keyword));
+                }
             }
             return query;
         }

@@ -153,7 +153,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="descending"></param>
         /// <param name="anotherLevel"></param>
         /// <returns></returns>
-        public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, string propertyName, bool descending, bool anotherLevel)
+        public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, string propertyName, bool descending, bool anotherLevel = false)
         {
             ParameterExpression param = Expression.Parameter(typeof(T), String.Empty); // I don't care about some naming
             MemberExpression property = Expression.PropertyOrField(param, propertyName);
@@ -165,19 +165,6 @@ namespace Tubumu.Modules.Framework.Extensions
                 source.Expression,
                 Expression.Quote(sort));
             return (IOrderedQueryable<T>)source.Provider.CreateQuery<T>(call);
-        }
-
-        /// <summary>
-        /// Order
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
-        /// <param name="propertyName"></param>
-        /// <param name="descending"></param>
-        /// <returns></returns>
-        public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, string propertyName, bool descending)
-        {
-            return Order(source, propertyName, descending, false);
         }
 
         /// <summary>
@@ -297,5 +284,36 @@ namespace Tubumu.Modules.Framework.Extensions
 
             return page;
         }
+
+        /// <summary>
+        /// Filters a <see cref="IQueryable{T}"/> by given predicate if given condition is true.
+        /// </summary>
+        /// <param name="query">Queryable to apply filtering</param>
+        /// <param name="condition">A boolean value</param>
+        /// <param name="predicate">Predicate to filter the query</param>
+        /// <returns>Filtered or not filtered query based on <paramref name="condition"/></returns>
+        /// <remarks>https://github.com/aspnetboilerplate/aspnetboilerplate/blob/e0ded5d8702f389aa1f5947d3446f16aec845287/src/Abp/Linq/Extensions/QueryableExtensions.cs</remarks>
+        public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool condition, Expression<Func<T, bool>> predicate)
+        {
+            return condition
+                ? query.Where(predicate)
+                : query;
+        }
+
+        /// <summary>
+        /// Filters a <see cref="IQueryable{T}"/> by given predicate if given condition is true.
+        /// </summary>
+        /// <param name="query">Queryable to apply filtering</param>
+        /// <param name="condition">A boolean value</param>
+        /// <param name="predicate">Predicate to filter the query</param>
+        /// <returns>Filtered or not filtered query based on <paramref name="condition"/></returns>
+        /// <remarks>https://github.com/aspnetboilerplate/aspnetboilerplate/blob/e0ded5d8702f389aa1f5947d3446f16aec845287/src/Abp/Linq/Extensions/QueryableExtensions.cs</remarks>
+        public static IQueryable<T> WhereIf<T>(this IQueryable<T> query, bool condition, Expression<Func<T, int, bool>> predicate)
+        {
+            return condition
+                ? query.Where(predicate)
+                : query;
+        }
+
     }
 }

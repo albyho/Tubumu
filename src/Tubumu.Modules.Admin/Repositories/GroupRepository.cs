@@ -165,7 +165,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Group> GetItemAsync(Guid groupId)
         {
-            return await _context.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.GroupId == groupId);
+            return await _context.Group.AsNoTracking().Where(m => m.GroupId == groupId).Select(_selector).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Group> GetItemAsync(string name)
         {
-            return await _context.Group.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Name == name);
+            return await _context.Group.AsNoTracking().Where(m => m.Name == name).Select(_selector).FirstOrDefaultAsync();
         }
 
         /// <summary>
@@ -981,7 +981,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             int xDisplayOrder;
             int xLevel;
-            Guid? sourceNewParentId = sourceNewParentId = isChild.HasValue && isChild.Value ? targetGroup.GroupId : targetGroup.ParentId;
+            Guid? sourceNewParentId = isChild.HasValue && isChild.Value ? targetGroup.GroupId : targetGroup.ParentId;
 
             if (sourceGroup.ParentId == targetGroup.GroupId && movingLocation == MovingLocation.Under && (!isChild.HasValue || !isChild.Value))
             {

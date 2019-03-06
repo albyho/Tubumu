@@ -5,7 +5,7 @@ using System.Text;
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Scoped Service
+    /// Scoped service
     /// </summary>
     public interface IScopedService
     {

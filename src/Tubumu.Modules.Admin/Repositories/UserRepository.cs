@@ -663,14 +663,17 @@ namespace Tubumu.Modules.Admin.Repositories
             };
 
             IQueryable<User> query = _context.User;
-            if (!criteria.GroupIds.IsNullOrEmpty())
+            query = query.WhereIf(!criteria.GroupIds.IsNullOrEmpty(), m => criteria.GroupIds.Contains(m.GroupId));
+            query = query.WhereIf(criteria.Status.HasValue, m => m.Status == criteria.Status.Value);
+            if (criteria.CreationTimeBegin.HasValue)
             {
-                query = query.Where(m => criteria.GroupIds.Contains(m.GroupId));
+                var begin = criteria.CreationTimeBegin.Value.Date;
+                query = query.Where(m => m.CreationTime >= begin);
             }
-            if (criteria.Status.HasValue)
+            if (criteria.CreationTimeEnd.HasValue)
             {
-                //int status = (int)criteria.Status.Value;
-                query = query.Where(m => m.Status == criteria.Status.Value);
+                var end = criteria.CreationTimeEnd.Value.Date.AddDays(1);
+                query = query.Where(m => m.CreationTime < end);
             }
             if (criteria.Keyword != null)
             {
@@ -683,17 +686,6 @@ namespace Tubumu.Modules.Admin.Repositories
                         m.Mobile.Contains(keyword) ||
                         m.DisplayName.Contains(keyword));
                 }
-            }
-
-            if (criteria.CreationTimeBegin.HasValue)
-            {
-                var begin = criteria.CreationTimeBegin.Value.Date;
-                query = query.Where(m => m.CreationTime >= begin);
-            }
-            if (criteria.CreationTimeEnd.HasValue)
-            {
-                var end = criteria.CreationTimeEnd.Value.Date.AddDays(1);
-                query = query.Where(m => m.CreationTime < end);
             }
 
             IOrderedQueryable<User> orderedQuery;
