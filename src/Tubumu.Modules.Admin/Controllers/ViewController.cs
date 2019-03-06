@@ -75,7 +75,7 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly FrontendSettings _frontendSettings;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="frontendSettingsOptions"></param>
         public ViewController(IOptions<FrontendSettings> frontendSettingsOptions)

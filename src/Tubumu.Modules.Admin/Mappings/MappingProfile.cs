@@ -10,7 +10,7 @@ namespace Tubumu.Modules.Admin.Mappings
     public class MappingProfile : Profile
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public MappingProfile()
         {

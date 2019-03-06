@@ -77,7 +77,7 @@ namespace Tubumu.Modules.Admin.Repositories
         private readonly Expression<Func<Notification, XM.NotificationUser>> _notificationUserSelector;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="context"></param>
         public NotificationRepository(TubumuContext context)

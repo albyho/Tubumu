@@ -34,7 +34,7 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly IRegionService _regionService;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="regionService"></param>
         public BasicDataController(IRegionService regionService)

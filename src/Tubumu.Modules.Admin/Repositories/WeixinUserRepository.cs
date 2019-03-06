@@ -153,7 +153,7 @@ namespace Tubumu.Modules.Admin.Repositories
         private readonly Expression<Func<User, XM.UserInfo>> _selector;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="context"></param>
         public WeixinUserRepository(TubumuContext context)

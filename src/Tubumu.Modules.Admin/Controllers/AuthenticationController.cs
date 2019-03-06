@@ -43,7 +43,7 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly IWeixinUserService _weixinUserService;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="authenticationSettingsOptions"></param>
         /// <param name="tokenValidationSettings"></param>

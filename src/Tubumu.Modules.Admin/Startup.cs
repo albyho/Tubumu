@@ -27,7 +27,7 @@ namespace Tubumu.Modules.Admin
         private readonly IConfiguration _configuration;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="configuration"></param>
         public Startup(

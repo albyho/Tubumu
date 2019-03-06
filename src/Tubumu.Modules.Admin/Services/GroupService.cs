@@ -125,7 +125,7 @@ namespace Tubumu.Modules.Admin.Services
         private const string TreeCacheKey = "GroupTree";
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="cache"></param>
         /// <param name="repository"></param>
@@ -229,6 +229,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <returns></returns>
         public async Task<bool> SaveAsync(IEnumerable<GroupInput> groups, ModelStateDictionary modelState)
         {
+            // TODO: (alby)事务处理
             foreach (var item in groups)
             {
                 if (!await ValidateExistsAsync(item, modelState))

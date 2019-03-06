@@ -191,7 +191,7 @@ namespace Tubumu.Modules.Admin.Services
         private readonly WeixinMobileEndSettings _weixinMobileSettings;
         private readonly WeixinWebSettings _weixinWebSettings;
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="weixinAppSettingsOptions"></param>
         /// <param name="weixinMobileSettingsOptions"></param>

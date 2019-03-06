@@ -50,7 +50,7 @@ namespace Tubumu.Modules.Admin.Models
     public class Role : RoleBase
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public Role()
         {

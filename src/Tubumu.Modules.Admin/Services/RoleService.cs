@@ -91,6 +91,7 @@ namespace Tubumu.Modules.Admin.Services
 
         public async Task<bool> SaveAsync(IEnumerable<RoleInput> roles, ModelStateDictionary modelState)
         {
+            // TODO: (alby)事务处理
             foreach (var item in roles)
             {
                 if (!await ValidateExistsAsync(item, modelState))

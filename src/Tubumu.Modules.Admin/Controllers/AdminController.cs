@@ -40,7 +40,7 @@ namespace Tubumu.Modules.Admin.Controllers
 
         // /Api/Admin/{action}
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="tokenValidationSettings"></param>
         /// <param name="tokenService"></param>

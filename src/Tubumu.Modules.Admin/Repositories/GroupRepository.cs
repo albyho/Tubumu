@@ -110,7 +110,7 @@ namespace Tubumu.Modules.Admin.Repositories
         private readonly Expression<Func<Group, XM.Group>> _selector;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="context"></param>
         public GroupRepository(TubumuContext context)

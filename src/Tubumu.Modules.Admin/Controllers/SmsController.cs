@@ -36,7 +36,7 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly ISmsSender _smsSender;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="smsSender"></param>
         public SmsController(

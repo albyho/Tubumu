@@ -229,7 +229,7 @@ namespace Tubumu.Modules.Admin.Services
         public const string UserCacheKeyFormat = "User:{0}";
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="cache"></param>
         /// <param name="repository"></param>

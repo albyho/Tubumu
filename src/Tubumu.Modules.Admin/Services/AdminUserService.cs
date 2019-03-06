@@ -36,7 +36,7 @@ namespace Tubumu.Modules.Admin.Services
         private readonly IUserService _userService;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="userService"></param>
         public AdminUserService(IUserService userService)

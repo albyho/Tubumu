@@ -105,7 +105,7 @@ namespace Tubumu.Modules.Admin.Repositories
         private readonly Expression<Func<Role, XM.Role>> _selector;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="context"></param>
         public RoleRepository(TubumuContext context)

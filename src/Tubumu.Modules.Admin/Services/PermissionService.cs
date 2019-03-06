@@ -100,6 +100,7 @@ namespace Tubumu.Modules.Admin.Services
 
         public async Task<bool> SaveAsync(IEnumerable<PermissionInput> permissions, ModelStateDictionary modelState)
         {
+            // TODO: (alby)事务处理
             foreach (var item in permissions)
             {
                 if (!await _repository.SaveAsync(item, modelState))

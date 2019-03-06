@@ -5,6 +5,9 @@ using Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Settings
 {
+    /// <summary>
+    /// MobileValidationCodeSettings
+    /// </summary>
     public class MobileValidationCodeSettings
     {
         /// <summary>

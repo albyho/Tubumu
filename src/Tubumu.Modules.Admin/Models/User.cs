@@ -129,7 +129,7 @@ namespace Tubumu.Modules.Admin.Models
     public class UserInfoBase
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public UserInfoBase()
         {
@@ -336,7 +336,7 @@ namespace Tubumu.Modules.Admin.Models
     public class UserInfo : UserInfoBase
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public UserInfo()
         {

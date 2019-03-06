@@ -39,7 +39,7 @@ namespace Tubumu.Modules.Admin.Repositories
         private readonly TubumuContext _context;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="context"></param>
         public RegionRepository(TubumuContext context)

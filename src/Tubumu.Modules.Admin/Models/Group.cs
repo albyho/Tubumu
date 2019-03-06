@@ -63,7 +63,7 @@ namespace Tubumu.Modules.Admin.Models
     public class Group : GroupBase
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public Group() {
             Roles = Enumerable.Empty<RoleBase>();
