@@ -97,7 +97,7 @@ namespace Tubumu.Modules.Framework.Utilities
         /// </summary>
         /// <param name="buffer"></param>
         /// <returns></returns>
-        public static String ByteArray2String(IEnumerable<Byte> buffer)
+        public static string ByteArray2String(IEnumerable<Byte> buffer)
         {
             var sb = new StringBuilder();
             foreach (byte item in buffer)

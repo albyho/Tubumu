@@ -18,7 +18,7 @@ namespace Tubumu.Modules.Framework.Models
         /// 排序字段
         /// </summary>
         [JsonProperty(PropertyName = "sort")]
-        public String Sort { get; set; }
+        public string Sort { get; set; }
     }
 
     /// <summary>

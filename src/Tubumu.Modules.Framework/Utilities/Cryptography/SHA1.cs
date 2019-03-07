@@ -14,7 +14,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// </summary>
         /// <param name="rawString"></param>
         /// <returns></returns>
-        public static String Encrypt(String rawString)
+        public static string Encrypt(string rawString)
         {
             if(rawString == null)
             {
@@ -29,7 +29,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// </summary>
         /// <param name="rawString"></param>
         /// <returns></returns>
-        public static Byte[] EncryptToByteArray(String rawString)
+        public static Byte[] EncryptToByteArray(string rawString)
         {
             if(rawString == null)
             {

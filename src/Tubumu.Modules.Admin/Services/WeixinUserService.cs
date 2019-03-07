@@ -120,7 +120,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="openId"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> UpdateWeixinMobileEndOpenIdAsync(int userId, String openId, ModelStateDictionary modelState);
+        Task<bool> UpdateWeixinMobileEndOpenIdAsync(int userId, string openId, ModelStateDictionary modelState);
 
         /// <summary>
         /// CleanWeixinMobileEndOpenIdAsync
@@ -136,7 +136,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="openId"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> UpdateWeixinAppOpenIdAsync(int userId, String openId, ModelStateDictionary modelState);
+        Task<bool> UpdateWeixinAppOpenIdAsync(int userId, string openId, ModelStateDictionary modelState);
 
         /// <summary>
         /// CleanWeixinAppOpenIdAsync
@@ -152,7 +152,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="openId"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> UpdateWeixinWebOpenIdAsync(int userId, String openId, ModelStateDictionary modelState);
+        Task<bool> UpdateWeixinWebOpenIdAsync(int userId, string openId, ModelStateDictionary modelState);
 
         /// <summary>
         /// CleanWeixinWebOpenIdAsync
@@ -168,7 +168,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="unionId"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> UpdateWeixinUnionIdAsync(int userId, String unionId, ModelStateDictionary modelState);
+        Task<bool> UpdateWeixinUnionIdAsync(int userId, string unionId, ModelStateDictionary modelState);
 
         /// <summary>
         /// CleanWeixinUnionIdAsync
@@ -446,7 +446,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="openId"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateWeixinAppOpenIdAsync(int userId, String openId, ModelStateDictionary modelState)
+        public async Task<bool> UpdateWeixinAppOpenIdAsync(int userId, string openId, ModelStateDictionary modelState)
         {
             var result = await _repository.UpdateWeixinAppOpenIdAsync(userId, openId, modelState);
             if (result)
@@ -478,7 +478,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="openId"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateWeixinWebOpenIdAsync(int userId, String openId, ModelStateDictionary modelState)
+        public async Task<bool> UpdateWeixinWebOpenIdAsync(int userId, string openId, ModelStateDictionary modelState)
         {
             var result = await _repository.UpdateWeixinWebOpenIdAsync(userId, openId, modelState);
             if (result)
@@ -510,7 +510,7 @@ namespace Tubumu.Modules.Admin.Services
         /// <param name="openId"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateWeixinUnionIdAsync(int userId, String openId, ModelStateDictionary modelState)
+        public async Task<bool> UpdateWeixinUnionIdAsync(int userId, string openId, ModelStateDictionary modelState)
         {
             var result = await _repository.UpdateWeixinUnionIdAsync(userId, openId, modelState);
             if (result)

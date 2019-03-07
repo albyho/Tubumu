@@ -89,16 +89,16 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 包含角色
         /// </summary>
-        public virtual IEnumerable<RoleBase> Roles { get; set; }
+        public IEnumerable<RoleBase> Roles { get; set; }
 
         /// <summary>
         /// 分组可用的角色(该分组的用户的主要角色只能使用 AvailableRoles)
         /// </summary>
-        public virtual IEnumerable<RoleBase> AvailableRoles { get; set; }
+        public IEnumerable<RoleBase> AvailableRoles { get; set; }
 
         /// <summary>
         /// 拥有权限
         /// </summary>
-        public virtual IEnumerable<PermissionBase> Permissions { get; set; }
+        public IEnumerable<PermissionBase> Permissions { get; set; }
    }
 }

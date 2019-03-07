@@ -11,7 +11,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
     /// </summary>
     public static class DES
     {
-        private const String DefaultKey = "$uo@5%8*";
+        private const string DefaultKey = "$uo@5%8*";
 
         #region 加密
 
@@ -30,7 +30,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="paddingMode"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, CipherMode mode, PaddingMode paddingMode, String key = null)
+        public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, CipherMode mode, PaddingMode paddingMode, string key = null)
         {
             if (inputByteArray == null)
             {
@@ -57,7 +57,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="inputByteArray"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, String key = null)
+        public static Byte[] EncryptFromByteArrayToByteArray(Byte[] inputByteArray, string key = null)
         {
             return EncryptFromByteArrayToByteArray(inputByteArray, CipherMode.ECB, PaddingMode.Zeros, key);
         }
@@ -68,7 +68,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="inputByteArray"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static String EncryptFromByteArrayToBase64String(Byte[] inputByteArray, String key = null)
+        public static string EncryptFromByteArrayToBase64String(Byte[] inputByteArray, string key = null)
         {
             return Convert.ToBase64String(EncryptFromByteArrayToByteArray(inputByteArray, key));
         }
@@ -79,7 +79,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="encryptString"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static Byte[] EncryptFromStringToByteArray(String encryptString, String key = null)
+        public static Byte[] EncryptFromStringToByteArray(string encryptString, string key = null)
         {
             if (encryptString == null)
             {
@@ -97,7 +97,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="encryptString"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static String EncryptFromStringToBase64String(String encryptString, String key = null)
+        public static string EncryptFromStringToBase64String(string encryptString, string key = null)
         {
             if (encryptString == null)
             {
@@ -116,7 +116,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="paddingMode"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static String EncryptFromStringToBase64String(String encryptString, PaddingMode paddingMode, String key = null)
+        public static string EncryptFromStringToBase64String(string encryptString, PaddingMode paddingMode, string key = null)
         {
             if (encryptString == null)
             {
@@ -146,7 +146,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="encryptString"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static String EncryptFromStringToHex(String encryptString, String key = null)
+        public static string EncryptFromStringToHex(string encryptString, string key = null)
         {
             var encryptBuffer = EncryptFromStringToByteArray(encryptString, key);
             return HexFromByteArray(encryptBuffer);
@@ -164,7 +164,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="paddingMode"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static Byte[] DecryptFromByteArrayToByteArray(Byte[] inputByteArray, CipherMode mode, PaddingMode paddingMode, String key = null)
+        public static Byte[] DecryptFromByteArrayToByteArray(Byte[] inputByteArray, CipherMode mode, PaddingMode paddingMode, string key = null)
         {
             if (inputByteArray == null)
             {
@@ -191,7 +191,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="inputByteArray"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static Byte[] DecryptFromByteArrayToByteArray(Byte[] inputByteArray, String key = null)
+        public static Byte[] DecryptFromByteArrayToByteArray(Byte[] inputByteArray, string key = null)
         {
             return DecryptFromByteArrayToByteArray(inputByteArray, CipherMode.ECB, PaddingMode.Zeros);
         }
@@ -202,7 +202,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="inputByteArray"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static String DecryptFromByteArrayToString(Byte[] inputByteArray, String key = null)
+        public static string DecryptFromByteArrayToString(Byte[] inputByteArray, string key = null)
         {
             if (inputByteArray == null)
             {
@@ -218,7 +218,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="decryptBase64String"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static Byte[] DecryptFromBase64StringToByteArray(String decryptBase64String, String key = null)
+        public static Byte[] DecryptFromBase64StringToByteArray(string decryptBase64String, string key = null)
         {
             if (decryptBase64String == null)
             {
@@ -236,7 +236,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="paddingMode"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static String DecryptFromBase64StringToString(String decryptBase64String, PaddingMode paddingMode, String key)
+        public static string DecryptFromBase64StringToString(string decryptBase64String, PaddingMode paddingMode, string key)
         {
             if (decryptBase64String == null)
             {
@@ -264,7 +264,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// <param name="decryptString"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static String DecryptFromHexToString(String decryptString, String key = null)
+        public static string DecryptFromHexToString(string decryptString, string key = null)
         {
             var decryptBuffer = new Byte[decryptString.Length / 2];
             for (int i = 0; i < decryptBuffer.Length; i++)
@@ -282,7 +282,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static String HexFromByteArray(Byte[] value)
+        public static string HexFromByteArray(Byte[] value)
         {
             if (value == null || value.Length == 0) return String.Empty;
             var sb = new StringBuilder();
@@ -295,7 +295,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
 
         #region Private Methods
 
-        private static Byte[] EnsureKey(String key)
+        private static Byte[] EnsureKey(string key)
         {
             if (key != null)
             {

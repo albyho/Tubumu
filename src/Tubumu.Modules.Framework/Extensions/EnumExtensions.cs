@@ -92,8 +92,8 @@ namespace Tubumu.Modules.Framework.Extensions
             if (enumName == null) return null;
 
             var attributes = type.GetField(enumName).GetCustomAttributes(typeof(DisplayAttribute), false);
-            if (attributes.Length > 0) // TODO: (alby)如果DisplayAttribute的DisplayName属性为IsNullOrWhiteSpace,尝试从资源文件获取
-                return ((DisplayAttribute)attributes[0]).GetName();
+            if (attributes.Length > 0)
+                return ((DisplayAttribute)attributes[0]).GetName(); // TODO: (alby)如果 DisplayAttribute 的 DisplayName 属性为 IsNullOrWhiteSpace ,尝试从资源文件获取
             else
                 return enumValue.ToString();
         }
