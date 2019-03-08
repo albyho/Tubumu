@@ -121,7 +121,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Item ApiResult
     /// </summary>
-    public class ApiItemResult<T> : ApiResult where T : class
+    public class ApiItemResult<T> : ApiResult
     {
 
         /// <summary>
