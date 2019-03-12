@@ -69,7 +69,7 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 账号(用户名、手机号或邮箱) + 登录
+        /// 账号(用户名、手机号或邮箱) + 密码 登录
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>

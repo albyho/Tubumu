@@ -15,7 +15,7 @@ namespace Tubumu.Modules.Framework.Mappings
         /// </summary>
         public static void Initialize()
         {
-            // TODO: (alby) 全局扫描程序集。考虑其他方式。
+            // TODO: (alby)全局扫描程序集。考虑其他方式。
             var assembliesToScan = AppDomain.CurrentDomain.GetAssemblies();
 
             var allTypes = assembliesToScan
