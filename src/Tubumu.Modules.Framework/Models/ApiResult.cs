@@ -123,12 +123,23 @@ namespace Tubumu.Modules.Framework.Models
     /// </summary>
     public class ApiItemResult<T> : ApiResult
     {
-
         /// <summary>
         /// Item
         /// </summary>
         [JsonProperty(PropertyName = "item", NullValueHandling = NullValueHandling.Ignore)]
         public T Item { get; set; }
+    }
+
+    /// <summary>
+    /// Data ApiResult
+    /// </summary>
+    public class ApiDataResult<T> : ApiResult
+    {
+        /// <summary>
+        /// Data
+        /// </summary>
+        [JsonProperty(PropertyName = "data", NullValueHandling = NullValueHandling.Ignore)]
+        public T Data { get; set; }
     }
 
     /// <summary>

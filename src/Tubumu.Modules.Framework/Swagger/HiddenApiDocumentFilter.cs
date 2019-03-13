@@ -6,9 +6,9 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace Tubumu.Modules.Framework.Swagger
 {
     /// <summary>
-    /// HiddenApiFilter
+    /// HiddenApiDocumentFilter
     /// </summary>
-    public class HiddenApiFilter : IDocumentFilter
+    public class HiddenApiDocumentFilter : IDocumentFilter
     {
         /// <summary>
         /// Apply

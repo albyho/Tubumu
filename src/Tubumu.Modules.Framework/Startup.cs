@@ -221,7 +221,8 @@ namespace Tubumu.Modules.Framework
                 };
                 c.AddSecurityRequirement(security);
                 c.DescribeAllEnumsAsStrings();
-                c.DocumentFilter<HiddenApiFilter>();
+                c.DocumentFilter<HiddenApiDocumentFilter>();
+                c.DocumentFilter<PermissionDocumentFilter>();
                 c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
                 IncludeXmlCommentsForModules(c);
             });
