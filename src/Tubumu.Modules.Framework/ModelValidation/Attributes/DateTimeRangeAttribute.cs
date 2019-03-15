@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         public object Minimum { get; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="minimum"></param>
         /// <param name="maximum"></param>

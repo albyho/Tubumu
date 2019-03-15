@@ -41,7 +41,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
         public PropertyInfo PropertyInfo { get; private set; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="propertyInfo"></param>
         public PropertyAccessor(PropertyInfo propertyInfo)

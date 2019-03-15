@@ -33,7 +33,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
         public FieldInfo FieldInfo { get; private set; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="fieldInfo"></param>
         public FieldAccessor(FieldInfo fieldInfo)

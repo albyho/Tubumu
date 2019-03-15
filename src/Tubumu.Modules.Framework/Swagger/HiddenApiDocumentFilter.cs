@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -19,17 +21,8 @@ namespace Tubumu.Modules.Framework.Swagger
         {
             foreach (var apiDescription in context.ApiDescriptions)
             {
-                var hasHiddenApiAttribute = false;
-                var actionDescriptor = apiDescription.ActionDescriptor as ControllerActionDescriptor;
-                if (actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<HiddenApiAttribute>(true) != null)
-                {
-                    hasHiddenApiAttribute = true;
-                }
-                if (!hasHiddenApiAttribute && apiDescription.TryGetMethodInfo(out var methodInfo) && methodInfo.GetCustomAttribute<HiddenApiAttribute>(true) != null)
-                {
-                    hasHiddenApiAttribute = true;
-                }
-                if (hasHiddenApiAttribute)
+                var hiddenApiAttribute = GetCustomAttribute<HiddenApiAttribute>(apiDescription, true);
+                if (hiddenApiAttribute != null)
                 {
                     var key = "/" + apiDescription.RelativePath;
                     if (key.Contains("?"))
@@ -40,6 +33,20 @@ namespace Tubumu.Modules.Framework.Swagger
                     swaggerDoc.Paths.Remove(key);
                 }
             }
+        }
+
+        private static T GetCustomAttribute<T>(ApiDescription apiDescription, bool inherit) where T : Attribute
+        {
+            var actionDescriptor = apiDescription.ActionDescriptor as ControllerActionDescriptor;
+            var attribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<T>(inherit);
+            if (attribute == null)
+            {
+                if(apiDescription.TryGetMethodInfo(out var methodInfo))
+                {
+                    attribute = methodInfo.GetCustomAttribute<T>(inherit);
+                }
+            }
+            return attribute;
         }
     }
 }

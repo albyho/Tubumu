@@ -20,7 +20,7 @@ namespace Tubumu.Modules.Framework.Utilities.Cryptography
         private readonly byte[] _readWriteBuffer;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="algo"></param>

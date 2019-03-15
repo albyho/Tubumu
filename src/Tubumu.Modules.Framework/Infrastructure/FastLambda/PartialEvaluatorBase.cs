@@ -15,7 +15,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
         private HashSet<Expression> m_candidates;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="evaluator"></param>
         protected PartialEvaluatorBase(IEvaluator evaluator)

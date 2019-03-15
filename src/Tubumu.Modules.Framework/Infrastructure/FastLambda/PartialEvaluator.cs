@@ -12,7 +12,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
     public class PartialEvaluator : PartialEvaluatorBase
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public PartialEvaluator()
             : base(new Evaluator())

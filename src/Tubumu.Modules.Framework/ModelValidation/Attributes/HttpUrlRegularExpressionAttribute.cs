@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class HttpUrlAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         // ^https?://(?:[^./\\s'\"<)\\]]+\\.)+[^./\\s'\"<\")\\]]+(?:/[^'\"<]*)*$
         // ^(http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?$

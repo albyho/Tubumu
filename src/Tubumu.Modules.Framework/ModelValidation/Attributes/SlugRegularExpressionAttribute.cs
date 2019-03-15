@@ -9,7 +9,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class SlugAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public SlugAttribute() :
             base(@"^[a-zA-Z][a-zA-Z0-9-_]*$")
@@ -22,7 +22,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class SlugWithMobileAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public SlugWithMobileAttribute() :
             base(@"^(([a-zA-Z][a-zA-Z0-9-_]*)|(1\d{10}))$")
@@ -35,7 +35,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class SlugWithIntAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public SlugWithIntAttribute() :
             base(@"^(([a-zA-Z][a-zA-Z0-9-_]*)|(\d+))$")
@@ -48,7 +48,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class SlugWithChineseAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public SlugWithChineseAttribute() :
             base(@"^[a-zA-Z\u4E00-\u9FA5\uF900-\uFA2D][a-zA-Z0-9-_\u4E00-\u9FA5\uF900-\uFA2D]*$")
@@ -61,7 +61,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class SlugWithPrefixAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public SlugWithPrefixAttribute(string prefix) :
             base(@"^" + prefix + @"[a-zA-Z0-9-_]*$")
@@ -74,7 +74,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class SlugWithMobileEmailAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public SlugWithMobileEmailAttribute() :
             base(@"^(([a-zA-Z][a-zA-Z0-9-_]*)|(1\d{10}))|([\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?)$")

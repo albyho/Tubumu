@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class ChineseIdCardNumberAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public ChineseIdCardNumberAttribute() : base(@"^(^\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$") { }
     }

@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class GuidAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// @"^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}+$"
         /// @"^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{4}-[a-zA-Z0-9]{12}$"

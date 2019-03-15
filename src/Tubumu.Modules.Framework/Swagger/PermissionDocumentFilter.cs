@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -26,54 +27,30 @@ namespace Tubumu.Modules.Framework.Swagger
             foreach (var apiDescription in context.ApiDescriptions)
             {
                 string extension = null;
-                var actionDescriptor = apiDescription.ActionDescriptor as ControllerActionDescriptor;
-                
-                var allowAnonymousAttribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<AllowAnonymousAttribute>(true);
-                if (allowAnonymousAttribute == null)
-                {
-                    if(apiDescription.TryGetMethodInfo(out var methodInfo))
-                    {
-                        allowAnonymousAttribute = methodInfo.GetCustomAttribute<AllowAnonymousAttribute>(true);
-                    }
-                }
-
+                var allowAnonymousAttribute = GetCustomAttribute<AllowAnonymousAttribute>(apiDescription, true);
                 if (allowAnonymousAttribute != null)
                 {
                     continue;
                 }
 
-                // TODO: 目前仅考虑了单个 PermissionAuthorizeAttribute
-                var permissionAuthorizeAttribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<PermissionAuthorizeAttribute>(true);
-                if (permissionAuthorizeAttribute == null)
-                {
-                    if(apiDescription.TryGetMethodInfo(out var methodInfo))
-                    {
-                        permissionAuthorizeAttribute = methodInfo.GetCustomAttribute<PermissionAuthorizeAttribute>(true);
-                    }
-                }
+                // TODO: 目前仅考虑了单个 PermissionAuthorizeAttribute，并且显示不够清晰
+                var permissionAuthorizeAttribute = GetCustomAttribute<PermissionAuthorizeAttribute>(apiDescription, true);
                 if (permissionAuthorizeAttribute != null)
                 {
                     var permissions = permissionAuthorizeAttribute.Permissions;
                     var roles = permissionAuthorizeAttribute.Roles;
                     var groups = permissionAuthorizeAttribute.Groups;
                     extension = permissions;
-                    if (!extension.IsNullOrEmpty() && !roles.IsNullOrEmpty())
+                    if(!roles.IsNullOrEmpty())
                     {
-                        extension = $"({extension})&&({roles})";
-                    }
-                    if (!extension.IsNullOrEmpty() && !groups.IsNullOrEmpty())
+                        extension = extension.IsNullOrEmpty() ? roles : $"({extension})&&({roles})";
+                    } 
+                    if (!groups.IsNullOrEmpty())
                     {
-                        if (!roles.IsNullOrEmpty())
-                        {
-                            extension = $"({extension})&&({groups})";
-                        }
-                        else
-                        {
-                            extension = $"({extension})&&{groups}";
-                        }
+                        extension = extension.IsNullOrEmpty() ? groups : (!roles.IsNullOrEmpty() ? $"{extension}&&({groups})" : $"({extension})&&({groups})");
                     }
 
-                    if (extension != null)
+                    if (!extension.IsNullOrEmpty())
                     {
                         extension = extension.Replace(",", "||");
                         extension = $"[{extension}]";
@@ -82,21 +59,14 @@ namespace Tubumu.Modules.Framework.Swagger
                 else
                 {
                     // TODO: 目前仅考虑了单个 AuthorizeAttribute
-                    var authorizeAttribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<AuthorizeAttribute>(true);
-                    if (authorizeAttribute == null)
-                    {
-                        if(apiDescription.TryGetMethodInfo(out var methodInfo))
-                        {
-                            authorizeAttribute = methodInfo.GetCustomAttribute<AuthorizeAttribute>(true);
-                        }
-                    }
-
+                    var authorizeAttribute = GetCustomAttribute<AuthorizeAttribute>(apiDescription, true);
                     if (authorizeAttribute != null)
                     {
                         extension = "[认证]";
                     }
                 }
-                if (extension != null)
+
+                if (!extension.IsNullOrEmpty())
                 {
                     var key = "/" + apiDescription.RelativePath;
                     if (key.Contains("?"))
@@ -113,6 +83,20 @@ namespace Tubumu.Modules.Framework.Swagger
                     }
                 }
             }
+        }
+
+        private static T GetCustomAttribute<T>(ApiDescription apiDescription, bool inherit) where T : Attribute
+        {
+            var actionDescriptor = apiDescription.ActionDescriptor as ControllerActionDescriptor;
+            var attribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<T>(inherit);
+            if (attribute == null)
+            {
+                if(apiDescription.TryGetMethodInfo(out var methodInfo))
+                {
+                    attribute = methodInfo.GetCustomAttribute<T>(inherit);
+                }
+            }
+            return attribute;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Tubumu.Modules.Framework.Services
         private const string CacheKeyFormat = "RefreshToken:{0}";
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="tokenValidationSettings"></param>
         /// <param name="cache"></param>

@@ -15,7 +15,7 @@ namespace Tubumu.Modules.Framework.Json
         private readonly T _equalValue;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="propertyName"></param>
         /// <param name="equalValue"></param>

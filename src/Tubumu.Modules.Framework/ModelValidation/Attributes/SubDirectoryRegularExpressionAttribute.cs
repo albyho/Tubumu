@@ -12,7 +12,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class SubDirectoryAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public SubDirectoryAttribute() :
             base(@"^[a-zA-Z0-9-_]+(/[a-zA-Z0-9-_]+)*$")

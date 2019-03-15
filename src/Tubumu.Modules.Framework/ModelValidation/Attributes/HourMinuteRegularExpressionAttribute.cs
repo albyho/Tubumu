@@ -14,7 +14,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class HourMinuteAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public HourMinuteAttribute() :
             base(@"^([01]\d|2[0-3]):([0-5][0-9])$") { }

@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         public string OtherProperty { get; private set; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="originalProperty"></param>
         /// <param name="canBeNull"></param>

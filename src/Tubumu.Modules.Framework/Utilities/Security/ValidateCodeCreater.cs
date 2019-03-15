@@ -12,7 +12,7 @@ namespace Tubumu.Modules.Framework.Utilities.Security
         private string ValidationCode { get; set; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="codeLength"></param>
         /// <param name="validateCode"></param>

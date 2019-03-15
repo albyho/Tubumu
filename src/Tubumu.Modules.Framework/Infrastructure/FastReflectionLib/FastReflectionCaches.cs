@@ -12,7 +12,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
     public static class FastReflectionCaches
     {
         /// <summary>
-        /// 静态构造函数
+        /// Static constructor
         /// </summary>
         static FastReflectionCaches()
         {

@@ -34,7 +34,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
         public MethodInfo MethodInfo { get; private set; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="methodInfo"></param>
         public MethodInvoker(MethodInfo methodInfo)

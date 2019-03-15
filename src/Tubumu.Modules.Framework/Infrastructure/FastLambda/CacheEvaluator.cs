@@ -20,7 +20,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
         private Func<Expression, Delegate> m_creatorDelegate;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public CacheEvaluator()
             : this(s_cache)

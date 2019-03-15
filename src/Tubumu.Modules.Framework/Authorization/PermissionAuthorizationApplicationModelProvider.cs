@@ -15,7 +15,7 @@ namespace Tubumu.Modules.Framework.Authorization
         private readonly IAuthorizationPolicyProvider _policyProvider;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="policyProvider"></param>
         public PermissionAuthorizationApplicationModelProvider(IAuthorizationPolicyProvider policyProvider)

@@ -33,7 +33,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastReflectionLib
         public ConstructorInfo ConstructorInfo { get; private set; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="constructorInfo"></param>
         public ConstructorInvoker(ConstructorInfo constructorInfo)

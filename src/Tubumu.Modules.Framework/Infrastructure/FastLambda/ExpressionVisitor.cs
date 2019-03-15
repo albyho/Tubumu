@@ -13,7 +13,7 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
     public abstract class ExpressionVisitor
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         protected ExpressionVisitor() { }
 

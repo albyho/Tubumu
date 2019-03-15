@@ -22,14 +22,14 @@ namespace Tubumu.Modules.Framework.Infrastructure.FastLambda
         private readonly Func<Expression, Func<List<object>, object>> m_creatorDelegate;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public FastEvaluator()
             : this(s_cache)
         { }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="cache"></param>
         public FastEvaluator(IExpressionCache<Func<List<object>, object>> cache)

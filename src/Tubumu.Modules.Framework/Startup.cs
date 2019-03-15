@@ -47,7 +47,7 @@ namespace Tubumu.Modules.Framework
         private readonly ILogger<Startup> _logger;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="configuration"></param>
         /// <param name="environment"></param>

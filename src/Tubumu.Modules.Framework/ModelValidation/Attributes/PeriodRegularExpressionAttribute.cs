@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class PeriodAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public PeriodAttribute() :
             base(@"^([1-9][0-9]*((,[1-9][0-9]*)*|(-[1-9][0-9]*)*|(,[1-9][0-9]*-[1-9][0-9]*)*)*)$")
@@ -26,7 +26,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class NumberSerialPeriodAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public NumberSerialPeriodAttribute(int length) :
             base(@"^(\d{" + length + @"}((,\d{" + length + @"})*|(-\d{" + length + @"})*|(,\d{" + length + @"}-\d{" + length + @"})*)*)$")
@@ -42,7 +42,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class HourMinutePeriodAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public HourMinutePeriodAttribute() :
             base(@"^((([0-1][0-9])|([2][0-3])):([0-5][0-9])-(([0-1][0-9])|([2][0-3])):([0-5][0-9]))((,(([0-1][0-9])|([2][0-3])):([0-5][0-9])-(([0-1][0-9])|([2][0-3])):([0-5][0-9]))*)$")
@@ -56,7 +56,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class ChineseMobilePeriodAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         public ChineseMobilePeriodAttribute() :
             base(@"^(1\d{10}((,1\d{10})*))$")

@@ -12,7 +12,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class VirtualDirectoryAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// ^~(/[a-zA-Z0-9-_]+)+$ 匹配 ~/abc，但是不匹配 ~/
         /// ^~(/|(/[a-zA-Z0-9-_]+)*)$

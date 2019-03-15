@@ -33,7 +33,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         public ValidationDataType DataType { get; }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="originalProperty"></param>
         /// <param name="compareOperator"></param>
@@ -44,7 +44,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         }
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="originalProperty"></param>
         /// <param name="valueToCompare"></param>

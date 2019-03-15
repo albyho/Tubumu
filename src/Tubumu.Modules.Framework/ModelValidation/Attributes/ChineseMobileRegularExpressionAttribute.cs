@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     public class ChineseMobileAttribute : RegularExpressionAttribute
     {
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         // @"^(133|153|180|181|189|130|131|132|155|156|185|186|176|134|135|136|137|138|139|150|151|152|158|159|182|183|184|157|187|188|157|187|188|147|178)\d{8}$"
         public ChineseMobileAttribute() :

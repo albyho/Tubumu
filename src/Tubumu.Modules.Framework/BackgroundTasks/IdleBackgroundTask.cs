@@ -17,7 +17,7 @@ namespace Tubumu.Modules.Framework.BackgroundTasks
         private readonly ILogger<IdleBackgroundTask> _logger;
 
         /// <summary>
-        /// 构造函数
+        /// Constructor
         /// </summary>
         /// <param name="logger"></param>
         public IdleBackgroundTask(ILogger<IdleBackgroundTask> logger)
