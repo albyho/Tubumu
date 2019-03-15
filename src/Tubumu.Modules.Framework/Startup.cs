@@ -223,8 +223,8 @@ namespace Tubumu.Modules.Framework
                 c.DescribeAllEnumsAsStrings();
                 c.DocumentFilter<HiddenApiDocumentFilter>();
                 c.DocumentFilter<PermissionDocumentFilter>();
-                c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
                 IncludeXmlCommentsForModules(c);
+                c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
             });
         }
 

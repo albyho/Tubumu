@@ -27,6 +27,21 @@ namespace Tubumu.Modules.Framework.Swagger
             {
                 string extension = null;
                 var actionDescriptor = apiDescription.ActionDescriptor as ControllerActionDescriptor;
+                
+                var allowAnonymousAttribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<AllowAnonymousAttribute>(true);
+                if (allowAnonymousAttribute == null)
+                {
+                    if(apiDescription.TryGetMethodInfo(out var methodInfo))
+                    {
+                        allowAnonymousAttribute = methodInfo.GetCustomAttribute<AllowAnonymousAttribute>(true);
+                    }
+                }
+
+                if (allowAnonymousAttribute != null)
+                {
+                    continue;
+                }
+
                 // TODO: 目前仅考虑了单个 PermissionAuthorizeAttribute
                 var permissionAuthorizeAttribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<PermissionAuthorizeAttribute>(true);
                 if (permissionAuthorizeAttribute == null)

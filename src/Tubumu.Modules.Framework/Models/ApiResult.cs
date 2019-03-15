@@ -51,7 +51,6 @@ namespace Tubumu.Modules.Framework.Models
         public string Url { get; set; }
     }
 
-
     /// <summary>
     /// Token ApiResult
     /// </summary>
