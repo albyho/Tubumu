@@ -10,6 +10,8 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// <summary>
         /// Constructor
         /// </summary>
-        public ChineseIdCardNumberAttribute() : base(@"^(^\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$") { }
+        public ChineseIdCardNumberAttribute() : base(@"^(^\d{15}$|^\d{18}$|^\d{17}(\d|X|x))$")
+        {
+        }
     }
 }

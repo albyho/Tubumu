@@ -13,7 +13,8 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// </summary>
         public SlugAttribute() :
             base(@"^[a-zA-Z][a-zA-Z0-9-_]*$")
-        { }
+        {
+        }
     }
 
     /// <summary>

@@ -54,7 +54,7 @@ namespace Tubumu.Modules.Framework.Authorization.Infrastructure
                 else
                 {
                     var permissionsClaim = context.User.Claims.FirstOrDefault(c => string.Equals(c.Type, ClaimType, StringComparison.OrdinalIgnoreCase));
-                    if(permissionsClaim?.Value != null && permissionsClaim.Value.Length > 0)
+                    if (permissionsClaim?.Value != null && permissionsClaim.Value.Length > 0)
                     {
                         var permissionsClaimSplit = permissionsClaim.Value.Split(',');
                         found = requirement.AllowedPermissions.Intersect(permissionsClaimSplit).Any();

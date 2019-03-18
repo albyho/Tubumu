@@ -1,25 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
-using Senparc.Weixin.Exceptions;
-using Senparc.Weixin.Open.QRConnect;
-using Senparc.Weixin.WxOpen.AdvancedAPIs.Sns;
-using Senparc.Weixin.WxOpen.Entities;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Admin.Settings;
+using Tubumu.Modules.Core.Extensions;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.Services;
-using Tubumu.Modules.Framework.Utilities.Cryptography;
 
 namespace Tubumu.Modules.Admin.Services
 {
@@ -54,7 +45,7 @@ namespace Tubumu.Modules.Admin.Services
         private readonly MobileValidationCodeSettings _mobileValidationCodeSettings;
         private const string MobileValidationCodeCacheKeyFormat = "MobileValidationCode:{0}";
 
-        public MobileUserService(IMobileUserRepository repository, 
+        public MobileUserService(IMobileUserRepository repository,
             IDistributedCache cache,
             ISmsSender smsSender,
             IOptions<MobileValidationCodeSettings> mobileValidationCodeSettingsOptions
@@ -133,7 +124,7 @@ namespace Tubumu.Modules.Admin.Services
         public async Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, UserStatus generateStatus, string mobile, bool mobileIsValid, ModelStateDictionary modelState)
         {
             var userInfo = await _repository.GetItemByMobileAsync(mobile);
-            if(userInfo == null)
+            if (userInfo == null)
             {
                 var password = UserService.GenerateRandomPassword(6);
                 userInfo = await _repository.GenerateItemAsync(groupId, generateStatus, mobile, password, modelState);
@@ -205,7 +196,7 @@ namespace Tubumu.Modules.Admin.Services
                     SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
                 });
             }
-            var sms =  "{\"code\":\""+ validationCode +"\",\"time\":\""+ (_mobileValidationCodeSettings.Expiration / 60) +"\"}";
+            var sms = "{\"code\":\"" + validationCode + "\",\"time\":\"" + (_mobileValidationCodeSettings.Expiration / 60) + "\"}";
             return await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, sms);
         }
 
@@ -264,7 +255,7 @@ namespace Tubumu.Modules.Admin.Services
 
             return true;
         }
-        
+
         public async Task<bool> FinishVerifyMobileValidationCodeAsync(string mobile, MobileValidationCodeType type, ModelStateDictionary modelState)
         {
             var cacheKey = MobileValidationCodeCacheKeyFormat.FormatWith(mobile);

@@ -16,6 +16,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// </summary>
         public SubDirectoryAttribute() :
             base(@"^[a-zA-Z0-9-_]+(/[a-zA-Z0-9-_]+)*$")
-        { }
+        {
+        }
     }
 }

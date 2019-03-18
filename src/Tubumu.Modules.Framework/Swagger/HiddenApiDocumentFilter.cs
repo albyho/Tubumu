@@ -41,7 +41,7 @@ namespace Tubumu.Modules.Framework.Swagger
             var attribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<T>(inherit);
             if (attribute == null)
             {
-                if(apiDescription.TryGetMethodInfo(out var methodInfo))
+                if (apiDescription.TryGetMethodInfo(out var methodInfo))
                 {
                     attribute = methodInfo.GetCustomAttribute<T>(inherit);
                 }

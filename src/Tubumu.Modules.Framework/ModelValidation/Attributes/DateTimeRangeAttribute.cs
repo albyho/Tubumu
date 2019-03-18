@@ -9,7 +9,6 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class DateTimeRangeAttribute : ValidationAttribute
     {
-
         /// <summary>
         /// Maximum
         /// </summary>

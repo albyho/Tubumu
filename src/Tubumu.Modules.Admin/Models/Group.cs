@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace Tubumu.Modules.Admin.Models
 {
@@ -65,7 +65,8 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// Constructor
         /// </summary>
-        public Group() {
+        public Group()
+        {
             Roles = Enumerable.Empty<RoleBase>();
             AvailableRoles = Enumerable.Empty<RoleBase>();
             Permissions = Enumerable.Empty<PermissionBase>();
@@ -100,5 +101,5 @@ namespace Tubumu.Modules.Admin.Models
         /// 拥有权限
         /// </summary>
         public IEnumerable<PermissionBase> Permissions { get; set; }
-   }
+    }
 }

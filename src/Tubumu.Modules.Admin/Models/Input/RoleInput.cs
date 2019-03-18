@@ -9,6 +9,9 @@ namespace Tubumu.Modules.Admin.Models.Input
     /// </summary>
     public class RoleIdInput
     {
+        /// <summary>
+        /// 角色 Id
+        /// </summary>
         [Required(ErrorMessage = "请输入角色 Id")]
         public Guid RoleId { get; set; }
     }

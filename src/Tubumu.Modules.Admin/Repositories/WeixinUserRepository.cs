@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Modules.Admin.Repositories.Entities;
-using Tubumu.Modules.Framework.Extensions;
+using Tubumu.Modules.Core.Extensions;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
@@ -196,7 +196,7 @@ namespace Tubumu.Modules.Admin.Repositories
                          },
                 Role = u.Role != null ? new XM.RoleInfo
                 {
-                    RoleId =  u.Role.RoleId,
+                    RoleId = u.Role.RoleId,
                     Name = u.Role.Name,
                 } : null,
                 Roles = from ur in u.UserRole

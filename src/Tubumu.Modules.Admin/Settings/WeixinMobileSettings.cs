@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Tubumu.Modules.Admin.Models;
-
-namespace Tubumu.Modules.Admin.Settings
+﻿namespace Tubumu.Modules.Admin.Settings
 {
     /// <summary>
     /// WeixinMobileEndSettings

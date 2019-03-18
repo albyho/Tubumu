@@ -5,15 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using OrchardCore.Modules;
-using Tubumu.Modules.Admin.Repositories.Entities;
 using Tubumu.Modules.Admin.Frontend;
-using Tubumu.Modules.Admin.Hubs;
 using Tubumu.Modules.Admin.ModuleMenus;
 using Tubumu.Modules.Admin.Repositories;
+using Tubumu.Modules.Admin.Repositories.Entities;
 using Tubumu.Modules.Admin.Services;
 using Tubumu.Modules.Admin.Settings;
+using Tubumu.Modules.Admin.SignalR.Hubs;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Services;
 
@@ -55,7 +54,7 @@ namespace Tubumu.Modules.Admin
                     warnings.Throw(CoreEventId.IncludeIgnoredWarning);
                     //warnings.Throw(RelationalEventId.QueryClientEvaluationWarning);
                 }));
-        
+
             // Repositories
             services.AddScoped<IRegionRepository, RegionRepository>();
             services.AddScoped<IBulletinRepository, BulletinRepository>();
@@ -66,7 +65,7 @@ namespace Tubumu.Modules.Admin
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMobileUserRepository, MobileUserRepository>();
             services.AddScoped<IWeixinUserRepository, WeixinUserRepository>();
-            
+
             // Services
             services.AddScoped<IRegionService, RegionService>();
             services.AddScoped<INotificationService, NotificationService>();
@@ -134,7 +133,6 @@ namespace Tubumu.Modules.Admin
             {
                 configure.MapHub<NotificationHub>("/hubs/notificationHub");
             });
-
         }
     }
 }

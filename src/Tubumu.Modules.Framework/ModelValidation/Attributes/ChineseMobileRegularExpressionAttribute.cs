@@ -13,7 +13,8 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         // @"^(133|153|180|181|189|130|131|132|155|156|185|186|176|134|135|136|137|138|139|150|151|152|158|159|182|183|184|157|187|188|157|187|188|147|178)\d{8}$"
         public ChineseMobileAttribute() :
             base(@"^1\d{10}$")
-        { }
+        {
+        }
     }
 }
 

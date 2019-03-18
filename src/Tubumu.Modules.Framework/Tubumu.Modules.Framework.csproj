@@ -30,4 +30,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="4.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Tubumu.Modules.Core\Tubumu.Modules.Core.csproj" />
+  </ItemGroup>
+
 </Project>

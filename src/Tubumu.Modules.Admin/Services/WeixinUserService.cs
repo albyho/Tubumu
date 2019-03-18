@@ -1,25 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
-using Senparc.Weixin.Exceptions;
-using Senparc.Weixin.Open.QRConnect;
 using Senparc.Weixin.WxOpen.AdvancedAPIs.Sns;
-using Senparc.Weixin.WxOpen.Entities;
 using Tubumu.Modules.Admin.Models;
-using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Admin.Settings;
+using Tubumu.Modules.Core.Extensions;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.Services;
-using Tubumu.Modules.Framework.Utilities.Cryptography;
 
 namespace Tubumu.Modules.Admin.Services
 {
@@ -537,7 +527,7 @@ namespace Tubumu.Modules.Admin.Services
 
         #endregion
 
-        
+
         private async Task CacheUser(UserInfo userInfo)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userInfo.UserId);

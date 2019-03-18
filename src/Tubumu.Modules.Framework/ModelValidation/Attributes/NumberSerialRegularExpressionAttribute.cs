@@ -10,6 +10,8 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// <summary>
         /// Constructor
         /// </summary>
-        public NumberSerialAttribute(int length) : base(@"^\d{" + length + @"}$") { }
+        public NumberSerialAttribute(int length) : base(@"^\d{" + length + @"}$")
+        {
+        }
     }
 }

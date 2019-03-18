@@ -54,7 +54,7 @@ namespace Tubumu.Modules.Framework.Authorization.Infrastructure
                 else
                 {
                     var groupsClaim = context.User.Claims.FirstOrDefault(c => string.Equals(c.Type, ClaimType, StringComparison.OrdinalIgnoreCase));
-                    if(groupsClaim?.Value != null && groupsClaim.Value.Length > 0)
+                    if (groupsClaim?.Value != null && groupsClaim.Value.Length > 0)
                     {
                         var groupsClaimSplit = groupsClaim.Value.Split(',');
                         found = requirement.AllowedGrous.Intersect(groupsClaimSplit).Any();

@@ -2,8 +2,8 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tubumu.Modules.Admin.Models;
-using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Utilities.Cryptography;
+using Tubumu.Modules.Core.Extensions;
+using Tubumu.Modules.Core.Utilities.Cryptography;
 
 namespace Tubumu.Modules.Admin.Services
 {

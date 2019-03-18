@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using Tubumu.Modules.Framework.Extensions;
+using Tubumu.Modules.Core.Extensions;
 
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
@@ -18,7 +18,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// <summary>
         /// OtherProperty
         /// </summary>
-        public string OtherProperty { get; private set; }
+        public string OtherProperty { get; }
 
         /// <summary>
         /// Constructor

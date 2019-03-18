@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Models.Input

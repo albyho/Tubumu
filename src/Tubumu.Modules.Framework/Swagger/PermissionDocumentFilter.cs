@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Tubumu.Modules.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
-using Tubumu.Modules.Framework.Extensions;
 
 namespace Tubumu.Modules.Framework.Swagger
 {
@@ -41,10 +39,10 @@ namespace Tubumu.Modules.Framework.Swagger
                     var roles = permissionAuthorizeAttribute.Roles;
                     var groups = permissionAuthorizeAttribute.Groups;
                     extension = permissions;
-                    if(!roles.IsNullOrEmpty())
+                    if (!roles.IsNullOrEmpty())
                     {
                         extension = extension.IsNullOrEmpty() ? roles : $"({extension})&&({roles})";
-                    } 
+                    }
                     if (!groups.IsNullOrEmpty())
                     {
                         extension = extension.IsNullOrEmpty() ? groups : (!roles.IsNullOrEmpty() ? $"{extension}&&({groups})" : $"({extension})&&({groups})");
@@ -91,7 +89,7 @@ namespace Tubumu.Modules.Framework.Swagger
             var attribute = actionDescriptor?.ControllerTypeInfo.GetCustomAttribute<T>(inherit);
             if (attribute == null)
             {
-                if(apiDescription.TryGetMethodInfo(out var methodInfo))
+                if (apiDescription.TryGetMethodInfo(out var methodInfo))
                 {
                     attribute = methodInfo.GetCustomAttribute<T>(inherit);
                 }

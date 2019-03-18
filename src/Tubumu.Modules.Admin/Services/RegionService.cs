@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Api;
-using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
+using Tubumu.Modules.Core.Extensions.Object;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Extensions.Object;
 
 namespace Tubumu.Modules.Admin.Services
 {
@@ -59,7 +57,7 @@ namespace Tubumu.Modules.Admin.Services
         public async Task<List<RegionInfo>> GetRegionInfoListAsync(int? parentId = null)
         {
             var list = await GetListInCacheInternalAsync();
-            if(parentId.HasValue)
+            if (parentId.HasValue)
             {
                 var subList = list?.Where(m => m.ParentId == parentId).ToList();
                 return subList;
@@ -86,7 +84,7 @@ namespace Tubumu.Modules.Admin.Services
             // 父级及同级
             var tree = await GetTreeInCacheInternalAsync();
             var self = FindRegion(tree, regionId);
-            if(self == null) return new List<RegionTreeNode>(0);
+            if (self == null) return new List<RegionTreeNode>(0);
             CleanTree(tree, self.ParentIdPath?.ToArray(), 0);
             return tree;
         }
@@ -112,7 +110,7 @@ namespace Tubumu.Modules.Admin.Services
                 else if (node.HasChildren && node.Children != null && node.Children.Count > 0)
                 {
                     var child = FindRegion(node.Children, regionId);
-                    if(child != null)
+                    if (child != null)
                     {
                         region = child;
                         break;
@@ -251,7 +249,7 @@ namespace Tubumu.Modules.Admin.Services
 
         private void CleanTree(List<RegionTreeNode> source, int[] parentIdPath, int index)
         {
-            if(parentIdPath != null && index > parentIdPath.Length - 1)
+            if (parentIdPath != null && index > parentIdPath.Length - 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }

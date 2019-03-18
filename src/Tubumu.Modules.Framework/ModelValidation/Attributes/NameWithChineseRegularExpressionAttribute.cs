@@ -13,6 +13,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// </summary>
         public NameWithChineseAttribute() :
             base(@"^[a-zA-Z0-9-_\u4E00-\u9FA5\uF900-\uFA2D]*$")
-        { }
+        {
+        }
     }
 }

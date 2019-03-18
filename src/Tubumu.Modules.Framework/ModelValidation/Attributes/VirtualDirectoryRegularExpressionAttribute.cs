@@ -18,7 +18,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// ^~(/|(/[a-zA-Z0-9-_]+)*)$
         public VirtualDirectoryAttribute() :
             base(@"^~(/[a-zA-Z0-9-_]+)+$")
-        { }
-
+        {
+        }
     }
 }

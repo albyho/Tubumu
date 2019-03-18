@@ -16,7 +16,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         /// <remarks>添加时为 null；编辑时未非 null</remarks>
         [DisplayName("用户 Id")]
-        [Range(1,Int32.MaxValue,ErrorMessage = "请选择存在的用户")]
+        [Range(1, Int32.MaxValue, ErrorMessage = "请选择存在的用户")]
         public int UserId { get; set; }
     }
 
@@ -29,7 +29,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 用户 Id
         /// </summary>
         [DisplayName("用户 Id")]
-        [Range(1,Int32.MaxValue,ErrorMessage = "请选择存在的用户")]
+        [Range(1, Int32.MaxValue, ErrorMessage = "请选择存在的用户")]
         public int UserId { get; set; }
 
         /// <summary>

@@ -15,7 +15,7 @@ namespace Tubumu.Modules.Framework.Authorization
         /// <returns></returns>
         public static bool HasPermission(this ClaimsPrincipal user, string permission)
         {
-            if(user?.Identity.Name == null)
+            if (user?.Identity.Name == null)
             {
                 return false;
             }
@@ -30,7 +30,7 @@ namespace Tubumu.Modules.Framework.Authorization
         /// <returns></returns>
         public static bool IsInGroup(this ClaimsPrincipal user, string group)
         {
-            if(user?.Identity.Name == null)
+            if (user?.Identity.Name == null)
             {
                 return false;
             }
@@ -45,7 +45,7 @@ namespace Tubumu.Modules.Framework.Authorization
         /// <returns></returns>
         public static int GetUserId(this ClaimsPrincipal user)
         {
-            if(user?.Identity.Name == null)
+            if (user?.Identity.Name == null)
             {
                 return -1;
             }

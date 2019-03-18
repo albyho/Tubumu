@@ -25,6 +25,7 @@ using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Tubumu.Modules.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;
@@ -140,7 +141,7 @@ namespace Tubumu.Modules.Framework
                         ValidateIssuerSigningKey = tokenValidationSettings.ValidateLifetime,
 
                         ValidateLifetime = true,
-                        ClockSkew  = TimeSpan.FromSeconds(tokenValidationSettings.ClockSkewSeconds),
+                        ClockSkew = TimeSpan.FromSeconds(tokenValidationSettings.ClockSkewSeconds),
                     };
 
                     // We have to hook the OnMessageReceived event in order to

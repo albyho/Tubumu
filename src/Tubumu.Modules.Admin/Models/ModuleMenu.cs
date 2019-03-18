@@ -1,9 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Newtonsoft.Json;
-using Tubumu.Modules.Framework.Authorization.Infrastructure;
 
 namespace Tubumu.Modules.Admin.Models
 {
@@ -42,7 +40,7 @@ namespace Tubumu.Modules.Admin.Models
         /// 类型
         /// </summary>
         [JsonProperty(PropertyName = "type")]
-        public ModuleMenuType Type { get; set; } 
+        public ModuleMenuType Type { get; set; }
 
         /// <summary>
         /// 子菜单

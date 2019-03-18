@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tubumu.Modules.Core\Tubumu.Modules.Core.csproj" />
     <ProjectReference Include="..\Tubumu.Modules.Framework\Tubumu.Modules.Framework.csproj" />
   </ItemGroup>
 
