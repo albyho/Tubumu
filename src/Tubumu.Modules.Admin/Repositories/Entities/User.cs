@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using XM = Tubumu.Modules.Admin.Models;
 
-namespace Tubumu.Modules.Admin.Entities
+namespace Tubumu.Modules.Admin.Repositories.Entities
 {
     public partial class User
     {

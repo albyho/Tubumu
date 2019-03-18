@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Tubumu.Modules.Admin.Entities;
+using Tubumu.Modules.Admin.Repositories.Entities;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Mappings

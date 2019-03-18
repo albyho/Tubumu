@@ -242,10 +242,12 @@ namespace Tubumu.Modules.Framework
             app.UseAuthentication();
 
             // Swagger
+            var swaggerIndexAssembly = typeof(Startup).Assembly;
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", _environment.ApplicationName + " API v1");
+                c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Swagger>Tubumu.SwaggerUI.Index.html");
             });
         }
 

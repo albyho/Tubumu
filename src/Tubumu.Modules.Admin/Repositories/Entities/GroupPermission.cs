@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Tubumu.Modules.Admin.Entities
+namespace Tubumu.Modules.Admin.Repositories.Entities
 {
     public partial class GroupPermission
     {

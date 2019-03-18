@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using OrchardCore.Modules;
-using Tubumu.Modules.Admin.Entities;
+using Tubumu.Modules.Admin.Repositories.Entities;
 using Tubumu.Modules.Admin.Frontend;
 using Tubumu.Modules.Admin.Hubs;
 using Tubumu.Modules.Admin.ModuleMenus;

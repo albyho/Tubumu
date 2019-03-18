@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace Tubumu.Modules.Admin.Entities
+namespace Tubumu.Modules.Admin.Repositories.Entities
 {
     public partial class TubumuContext : DbContext
     {
