@@ -33,7 +33,7 @@ namespace Tubumu.Modules.Framework.Swagger
                     continue;
                 }
 
-                // TODO: 目前仅考虑了单个 PermissionAuthorizeAttribute，并且显示不够清晰
+                // TODO: (alby)目前仅考虑了单个 PermissionAuthorizeAttribute，并且显示不够清晰
                 var permissionAuthorizeAttribute = GetCustomAttribute<PermissionAuthorizeAttribute>(apiDescription, true);
                 if (permissionAuthorizeAttribute != null)
                 {
@@ -58,7 +58,7 @@ namespace Tubumu.Modules.Framework.Swagger
                 }
                 else
                 {
-                    // TODO: 目前仅考虑了单个 AuthorizeAttribute
+                    // TODO: (alby)目前仅考虑了单个 AuthorizeAttribute
                     var authorizeAttribute = GetCustomAttribute<AuthorizeAttribute>(apiDescription, true);
                     if (authorizeAttribute != null)
                     {
