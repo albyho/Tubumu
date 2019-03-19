@@ -101,7 +101,7 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 通知Id
         /// </summary>
-        [CollectionElementRange(1, Int32.MaxValue, ErrorMessage = "请输入合法的通知Id集")]
+        [CollectionCountRange(1, Int32.MaxValue, ErrorMessage = "请输入通知 Id 集")]
         public int[] NotificationIds { get; set; }
     }
 

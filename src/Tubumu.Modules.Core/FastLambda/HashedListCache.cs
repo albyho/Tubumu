@@ -11,8 +11,7 @@ namespace Tubumu.Modules.Core.FastLambda
     /// <typeparam name="T"></typeparam>
     public class HashedListCache<T> : IDisposable, IExpressionCache<T> where T : class
     {
-        private Dictionary<int, SortedList<Expression, T>> m_storage =
-            new Dictionary<int, SortedList<Expression, T>>();
+        private Dictionary<int, SortedList<Expression, T>> m_storage = new Dictionary<int, SortedList<Expression, T>>();
         private ReaderWriterLockSlim m_rwLock = new ReaderWriterLockSlim();
 
         /// <summary>
@@ -55,7 +54,7 @@ namespace Tubumu.Modules.Core.FastLambda
                     value = creator(key);
                     sortedList.Add(key, value);
                 }
-                
+
                 return value;
             }
             finally

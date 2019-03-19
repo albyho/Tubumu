@@ -8,6 +8,8 @@ namespace Tubumu.Modules.Core.Extensions.Ip
     /// </summary>
     public static class IpAddressExtensions
     {
+        private static readonly Regex IpRegex = new Regex(@"^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$", RegexOptions.Compiled);
+
         /// <summary>
         /// IPAddress 转 Int32 (可能产生负数)
         /// </summary>
@@ -18,7 +20,7 @@ namespace Tubumu.Modules.Core.Extensions.Ip
             var x = 3;
             var v = 0;
             var bytes = ip.GetAddressBytes();
-            for (var i = 0; i < bytes.Length; i++)
+            for (int i = 0; i < bytes.Length; i++)
             {
                 byte f = bytes[i];
                 v += (int)f << 8 * x--;
@@ -76,10 +78,8 @@ namespace Tubumu.Modules.Core.Extensions.Ip
             return new IPAddress(b);
         }
 
-        private static readonly Regex IpRegex = new Regex(@"^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$", RegexOptions.Compiled);
-
         /// <summary>
-        /// 是否ip格式
+        /// 是否 ip 格式
         /// </summary>
         /// <param name="ip"></param>
         /// <returns></returns>

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
     /// <summary>
-    /// 判断集合的每个元素是否在某个范围
+    /// 判断集合的元素数是否在某个范围
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter | AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
-    public class CollectionElementRangeAttribute : ValidationAttribute
+    public class CollectionCountRangeAttribute : ValidationAttribute
     {
         /// <summary>
         /// Minimum
@@ -22,11 +21,11 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         public int Maximum { get; }
 
         /// <summary>
-        /// c
+        /// Constructor
         /// </summary>
         /// <param name="minimum"></param>
         /// <param name="maximum"></param>
-        public CollectionElementRangeAttribute(int minimum, int maximum)
+        public CollectionCountRangeAttribute(int minimum, int maximum)
         {
             Minimum = minimum;
             Maximum = maximum;
@@ -39,13 +38,9 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// <returns></returns>
         public override bool IsValid(object value)
         {
-
-            if (value is IEnumerable<int> list)
+            if (value is ICollection list)
             {
-                foreach(var item in list)
-                {
-                    return item >= Minimum && item <= Maximum;
-                }
+                return list.Count >= Minimum && list.Count <= Maximum;
             }
             return false;
         }

@@ -10,6 +10,7 @@
         /// </summary>
         public PartialEvaluator()
             : base(new Evaluator())
-        { }
+        {
+        }
     }
 }

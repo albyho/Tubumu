@@ -19,17 +19,17 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         public TValue Get(TKey key)
         {
             TValue value = default(TValue);
-            if (this.m_cache.TryGetValue(key, out value))
+            if (m_cache.TryGetValue(key, out value))
             {
                 return value;
             }
 
             lock (key)
             {
-                if (!this.m_cache.TryGetValue(key, out value))
+                if (!m_cache.TryGetValue(key, out value))
                 {
                     value = this.Create(key);
-                    this.m_cache[key] = value;
+                    m_cache[key] = value;
                 }
             }
 

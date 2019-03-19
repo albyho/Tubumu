@@ -185,7 +185,6 @@ namespace Tubumu.Modules.Core.Utilities.Cryptography
         {
             throw new NotSupportedException();
         }
-
     }
 
     class ZeroStream : Stream
@@ -254,7 +253,6 @@ namespace Tubumu.Modules.Core.Utilities.Cryptography
         }
     }
 }
-
 
 /*
  
