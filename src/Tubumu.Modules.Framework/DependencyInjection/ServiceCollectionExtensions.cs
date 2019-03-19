@@ -25,17 +25,18 @@ namespace Microsoft.Extensions.DependencyInjection
                 var interfaceTypeInfos = interfaceTypeInfosTemp as TypeInfo[] ?? interfaceTypeInfosTemp.ToArray();
                 if (interfaceTypeInfos.Length > 1)
                 {
-                    foreach (var handlerType in interfaceTypeInfos.Where(m => m != typeof(ITransientService) && m != typeof(ISingletonService) && m != typeof(IScopedService)))
+                    // 将类注册为其实现的所有非 ITransientDependency、ISingletonDependency 和 IScopedDependency 的接口的服务
+                    foreach (var handlerType in interfaceTypeInfos.Where(m => m != typeof(ITransientDependency) && m != typeof(ISingletonDependency) && m != typeof(IScopedDependency)))
                     {
-                        if (typeof(ITransientService).IsAssignableFrom(type))
+                        if (typeof(ITransientDependency).IsAssignableFrom(type))
                         {
                             services.AddTransient(handlerType.AsType(), type.AsType());
                         }
-                        else if (typeof(ISingletonService).IsAssignableFrom(type))
+                        else if (typeof(ISingletonDependency).IsAssignableFrom(type))
                         {
                             services.AddSingleton(handlerType.AsType(), type.AsType());
                         }
-                        else if (typeof(IScopedService).IsAssignableFrom(type))
+                        else if (typeof(IScopedDependency).IsAssignableFrom(type))
                         {
                             services.AddScoped(handlerType.AsType(), type.AsType());
                         }
@@ -43,15 +44,16 @@ namespace Microsoft.Extensions.DependencyInjection
                 }
                 else
                 {
-                    if (typeof(ITransientService).IsAssignableFrom(type))
+                    // 类没有实现非 ITransientDependency、ISingletonDependency 或 IScopedDependency 的其他接口
+                    if (typeof(ITransientDependency).IsAssignableFrom(type))
                     {
                         services.AddTransient(type.AsType());
                     }
-                    else if (typeof(ISingletonService).IsAssignableFrom(type))
+                    else if (typeof(ISingletonDependency).IsAssignableFrom(type))
                     {
                         services.AddSingleton(type.AsType());
                     }
-                    else if (typeof(IScopedService).IsAssignableFrom(type))
+                    else if (typeof(IScopedDependency).IsAssignableFrom(type))
                     {
                         services.AddScoped(type.AsType());
                     }

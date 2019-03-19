@@ -1,9 +1,9 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Scoped service
+    /// Scoped dependency
     /// </summary>
-    public interface IScopedService
+    public interface IScopedDependency
     {
     }
 }

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
     /// <summary>
-    /// 虚拟根路径,如:~/, ~/WebSite, ~/WebSite/abc/123
+    /// 虚拟根路径,如: ~/, ~/WebSite, ~/WebSite/abc/123
     /// </summary>
     public class VirtualDirectoryAttribute : RegularExpressionAttribute
     {

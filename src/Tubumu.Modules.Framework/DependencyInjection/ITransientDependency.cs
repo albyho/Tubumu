@@ -1,9 +1,9 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Transient service
+    /// Transient dependency
     /// </summary>
-    public interface ITransientService
+    public interface ITransientDependency
     {
     }
 }

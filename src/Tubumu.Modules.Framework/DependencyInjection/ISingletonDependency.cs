@@ -1,9 +1,9 @@
 ﻿namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
-    /// Singleton service
+    /// Singleton dependency
     /// </summary>
-    public interface ISingletonService
+    public interface ISingletonDependency
     {
     }
 }
