@@ -327,7 +327,6 @@ namespace Tubumu.Modules.Admin.Models
                 }
             }
         }
-
     }
 
     /// <summary>
@@ -362,7 +361,7 @@ namespace Tubumu.Modules.Admin.Models
         public string Description { get; set; }
 
         /// <summary>
-        /// 用户拥有的特定角色
+        /// 用户拥有的附加角色
         /// </summary>
         public IEnumerable<RoleInfo> Roles { get; set; }
 
@@ -372,7 +371,7 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<RoleInfo> GroupRoles { get; set; }
 
         /// <summary>
-        /// 用户主要分组所拥有的角色
+        /// 用户附加分组所拥有的角色
         /// </summary>
         public IEnumerable<RoleInfo> GroupsRoles { get; set; }
 
@@ -382,7 +381,7 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<PermissionBase> GroupPermissions { get; set; }
 
         /// <summary>
-        /// 用户主要分组所拥有的权限
+        /// 用户附加分组所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupsPermissions { get; set; }
 
@@ -392,7 +391,7 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<PermissionBase> GroupRolesPermissions { get; set; }
 
         /// <summary>
-        /// 用户主要分组所拥有的角色所拥有的权限
+        /// 用户附加分组所拥有的角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> GroupsRolesPermissions { get; set; }
 
@@ -402,7 +401,7 @@ namespace Tubumu.Modules.Admin.Models
         public IEnumerable<PermissionBase> RolePermissions { get; set; }
 
         /// <summary>
-        /// 用户拥有的角色所拥有的权限
+        /// 用户的附加角色所拥有的权限
         /// </summary>
         public IEnumerable<PermissionBase> RolesPermissions { get; set; }
 
