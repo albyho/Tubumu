@@ -79,7 +79,7 @@ namespace Tubumu.Modules.Admin.Services
             if (bulletin == null)
             {
                 bulletin = await _repository.GetItemAsync();
-                await _cache.SetJsonAsync<Bulletin>(CacheKey, bulletin);
+                await _cache.SetJsonAsync(CacheKey, bulletin);
             }
             return bulletin;
 

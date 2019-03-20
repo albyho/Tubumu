@@ -654,6 +654,7 @@ namespace Tubumu.Modules.Admin.Repositories
             // 3、更新用户表
             using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
+                // TODO: (alby)考虑允许用户不属于任何分组
                 // 注：这里硬编码的节点是“待分配组”
                 Guid targetGroupId = new Guid("11111111-1111-1111-1111-111111111111");
 

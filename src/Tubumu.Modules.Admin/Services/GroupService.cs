@@ -489,7 +489,7 @@ namespace Tubumu.Modules.Admin.Services
             if (groups == null)
             {
                 groups = await _repository.GetListAsync();
-                await _cache.SetJsonAsync<List<Group>>(ListCacheKey, groups);
+                await _cache.SetJsonAsync(ListCacheKey, groups);
             }
             return groups;
             /*
@@ -529,7 +529,7 @@ namespace Tubumu.Modules.Admin.Services
                         GroupTreeAddChildren(list, node, i);
                     }
                 }
-                await _cache.SetJsonAsync<List<GroupTreeNode>>(TreeCacheKey, tree);
+                await _cache.SetJsonAsync(TreeCacheKey, tree);
             }
             return tree;
         }
@@ -545,7 +545,7 @@ namespace Tubumu.Modules.Admin.Services
                     if (node.Children == null)
                     {
                         node.Children = new List<GroupTreeNode>();
-                    };
+                    }
                     var child = GroupTreeNodeFromGroup(item);
                     // 在父节点的 ParentIdPath 基础上增加 ParentId
                     child.ParentIdPath = node.ParentIdPath != null ? new List<Guid>(node.ParentIdPath) : new List<Guid>(1);

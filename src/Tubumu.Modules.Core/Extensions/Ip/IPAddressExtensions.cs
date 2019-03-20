@@ -23,7 +23,7 @@ namespace Tubumu.Modules.Core.Extensions.Ip
             for (int i = 0; i < bytes.Length; i++)
             {
                 byte f = bytes[i];
-                v += (int)f << 8 * x--;
+                v += f << 8 * x--;
             }
             return v;
         }
@@ -79,7 +79,7 @@ namespace Tubumu.Modules.Core.Extensions.Ip
         }
 
         /// <summary>
-        /// 是否 ip 格式
+        /// 是否 IPv4 格式
         /// </summary>
         /// <param name="ip"></param>
         /// <returns></returns>

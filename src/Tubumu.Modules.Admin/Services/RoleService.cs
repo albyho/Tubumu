@@ -185,7 +185,7 @@ namespace Tubumu.Modules.Admin.Services
             if (roles == null)
             {
                 roles = await _repository.GetListAsync();
-                await _cache.SetJsonAsync<List<Role>>(RoleListCacheKey, roles);
+                await _cache.SetJsonAsync(RoleListCacheKey, roles);
             }
             return roles;
         }

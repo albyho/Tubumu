@@ -39,9 +39,7 @@ namespace Tubumu.Modules.Core.Extensions
             if (!values.Any()) return query;
 
             ParameterExpression p = selector.Parameters.Single();
-
             IEnumerable<Expression> equals = values.Select(value => (Expression)Expression.Equal(selector.Body, Expression.Constant(value, typeof(TValue))));
-
             Expression body = equals.Aggregate((accumulate, equal) => Expression.Or(accumulate, equal));
 
             return query.Where(Expression.Lambda<Func<TEntity, bool>>(body, p));

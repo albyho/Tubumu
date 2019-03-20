@@ -74,7 +74,6 @@ namespace Tubumu.Modules.Admin.Repositories
     public class NotificationRepository : INotificationRepository
     {
         private readonly TubumuContext _context;
-        private readonly Expression<Func<Notification, XM.Notification>> _notificationSelector;
         private readonly Expression<Func<Notification, XM.NotificationUser>> _notificationUserSelector;
 
         /// <summary>
@@ -84,31 +83,6 @@ namespace Tubumu.Modules.Admin.Repositories
         public NotificationRepository(TubumuContext context)
         {
             _context = context;
-
-            _notificationSelector = m => new XM.Notification
-            {
-                NotificationId = m.NotificationId,
-                FromUser = m.FromUser != null ? new XM.UserInfoWarpper
-                {
-                    UserId = m.FromUser.UserId,
-                    Username = m.FromUser.Username,
-                    DisplayName = m.FromUser.DisplayName,
-                    HeadUrl = m.FromUser.HeadUrl,
-                    LogoUrl = m.FromUser.LogoUrl,
-                } : null,
-                ToUser = m.ToUser != null ? new XM.UserInfoWarpper
-                {
-                    UserId = m.ToUser.UserId,
-                    Username = m.ToUser.Username,
-                    DisplayName = m.ToUser.DisplayName,
-                    HeadUrl = m.ToUser.HeadUrl,
-                    LogoUrl = m.ToUser.LogoUrl,
-                } : null,
-                Title = m.Title,
-                Message = m.Message,
-                CreationTime = m.CreationTime,
-                Url = m.Url,
-            };
 
             _notificationUserSelector = m => new XM.NotificationUser
             {
@@ -320,7 +294,6 @@ namespace Tubumu.Modules.Admin.Repositories
         public async Task<bool> RemoveAsync(int notificationId, ModelStateDictionary modelState)
         {
             // 需删除 NotificationUser 的记录
-
             var sql = "DELETE [NotificationUser] WHERE NotificationId = @NotificationId; DELETE [Notification] WHERE NotificationId = @NotificationId;";
             await _context.Database.ExecuteSqlCommandAsync(sql
                 , new SqlParameter("NotificationId", notificationId)

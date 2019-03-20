@@ -17,8 +17,6 @@ namespace Tubumu.Modules.Core.Extensions.Object
     /// </summary>
     public static class ObjectExtensions
     {
-        private static readonly JsonSerializer JsonSerializer = new JsonSerializer();
-
         /// <summary>
         /// ToJson
         /// </summary>

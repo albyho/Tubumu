@@ -164,7 +164,7 @@ namespace Tubumu.Modules.Admin.Services
             if (list == null)
             {
                 list = await _repository.GetListAsync();
-                await _cache.SetJsonAsync<List<Permission>>(ListCacheKey, list);
+                await _cache.SetJsonAsync(ListCacheKey, list);
             }
             return list;
 
@@ -205,7 +205,7 @@ namespace Tubumu.Modules.Admin.Services
                         PermisssionTreeAddChildren(list, node, i);
                     }
                 }
-                await _cache.SetJsonAsync<List<PermissionTreeNode>>(TreeCacheKey, tree);
+                await _cache.SetJsonAsync(TreeCacheKey, tree);
             }
             return tree;
         }
@@ -241,7 +241,7 @@ namespace Tubumu.Modules.Admin.Services
                     if (node.Children == null)
                     {
                         node.Children = new List<PermissionTreeNode>();
-                    };
+                    }
                     var child = PermissionTreeNodeFromPermisssion(item);
                     // 在父节点的 ParentIdPath 基础上增加 ParentId
                     child.ParentIdPath = node.ParentIdPath != null ? new List<Guid>(node.ParentIdPath) : new List<Guid>(1);

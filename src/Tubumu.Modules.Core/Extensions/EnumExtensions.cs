@@ -48,7 +48,6 @@ namespace Tubumu.Modules.Core.Extensions
 
             return from e in Enum.GetValues(type).Cast<T>()
                    select new KeyValuePair<T, string>(e, e.GetEnumDisplayName(type));
-
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ namespace Tubumu.Modules.Core.Extensions
         #region Guid相关
 
         /// <summary>
-        /// 校验字符串是否是Guid格式
+        /// 校验字符串是否是 Guid 格式
         /// </summary>
         /// <param name="source"></param>
         /// <returns></returns>
@@ -116,7 +116,7 @@ namespace Tubumu.Modules.Core.Extensions
 
         #endregion
 
-        #region 字符串空/null校验
+        #region 字符串空 / null 校验
 
         /// <summary>
         /// IsNullOrEmpty
@@ -366,7 +366,7 @@ namespace Tubumu.Modules.Core.Extensions
         }
 
         /// <summary>
-        /// 简单过滤SQL语句
+        /// 简单过滤 SQL 语句
         /// </summary>
         /// <param name="sqlString"></param>
         /// <returns></returns>
@@ -387,7 +387,7 @@ namespace Tubumu.Modules.Core.Extensions
         }
 
         /// <summary>
-        /// 如果源对象为null，则返回null，否则返回其ToString方法返回值
+        /// 如果源对象为 null ，则返回 null ，否则返回其 ToString 方法返回值
         /// </summary>
         /// <param name="source">源对象</param>
         /// <returns>字符串</returns>

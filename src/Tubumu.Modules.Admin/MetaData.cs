@@ -53,7 +53,7 @@ namespace Tubumu.Modules.Admin
             var groups = new List<Group>
             {
                 new Group { GroupId = new Guid("11111111-1111-1111-1111-111111111111"), Name = "等待分配组", IsContainsUser = true },
-                new Group { GroupId = new Guid("d33b7d65-297b-4633-9971-a491c525db5e"), Name = "系统管理组", IsContainsUser = true, RoleIds = new Guid[]
+                new Group { GroupId = new Guid("d33b7d65-297b-4633-9971-a491c525db5e"), Name = "系统管理组", IsContainsUser = true, RoleIds = new []
                 {
                     new Guid("10c0b1fd-f284-4a7d-bbe0-38a671e2bd34"), // 角色：系统管理员
                 }},

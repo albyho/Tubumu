@@ -191,7 +191,7 @@ namespace Tubumu.Modules.Admin.Services
                     FinishVerifyDate = null,
                     CreationTime = now,
                 };
-                await _cache.SetJsonAsync<MobileValidationCode>(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
+                await _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
                 });
@@ -209,7 +209,6 @@ namespace Tubumu.Modules.Admin.Services
 
             var cacheKey = MobileValidationCodeCacheKeyFormat.FormatWith(verifyMobileValidationCodeInput.Mobile);
             var mobileValidationCode = await _cache.GetJsonAsync<MobileValidationCode>(cacheKey);
-            var now = DateTime.Now;
             if (mobileValidationCode == null)
             {
                 modelState.AddModelError("Mobile", "尚未请求验证码");
@@ -267,7 +266,7 @@ namespace Tubumu.Modules.Admin.Services
             }
 
             mobileValidationCode.FinishVerifyDate = DateTime.Now;
-            await _cache.SetJsonAsync<MobileValidationCode>(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
+            await _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
             });
@@ -279,7 +278,7 @@ namespace Tubumu.Modules.Admin.Services
         private async Task CacheUser(UserInfo userInfo)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userInfo.UserId);
-            await _cache.SetJsonAsync<UserInfo>(cacheKey, userInfo, new DistributedCacheEntryOptions
+            await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromDays(1)
             });
@@ -299,7 +298,7 @@ namespace Tubumu.Modules.Admin.Services
             //生成起始序列值
             int seekSeek = unchecked((int)DateTime.Now.Ticks);
             Random seekRand = new Random(seekSeek);
-            int beginSeek = (int)seekRand.Next(0, Int32.MaxValue - codeLength * 10000);
+            int beginSeek = seekRand.Next(0, Int32.MaxValue - codeLength * 10000);
             int[] seeks = new int[codeLength];
             for (int i = 0; i < codeLength; i++)
             {

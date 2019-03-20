@@ -113,6 +113,5 @@ namespace Tubumu.Modules.Core.Extensions
                 ? source.Where(predicate)
                 : source;
         }
-
     }
 }

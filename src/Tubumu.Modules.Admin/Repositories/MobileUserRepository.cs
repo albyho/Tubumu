@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Modules.Admin.Repositories.Entities;
 using Tubumu.Modules.Core.Extensions;
-using Tubumu.Modules.Framework.Extensions;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
@@ -245,7 +244,7 @@ namespace Tubumu.Modules.Admin.Repositories
         {
             var enumerable = mobiles as string[] ?? mobiles.ToArray();
             if (enumerable.Length == 0) return false;
-            return await _context.User.Where(m => mobiles.Contains(m.Mobile)).AnyAsync();
+            return await _context.User.Where(m => enumerable.Contains(m.Mobile)).AnyAsync();
         }
 
         /// <summary>

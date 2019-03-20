@@ -142,7 +142,7 @@ namespace Tubumu.Modules.Admin.Services
                 if (list == null)
                 {
                     list = await _repository.GetRegionInfoListAsync();
-                    await _distributedCache.SetJsonAsync<List<RegionInfo>>(ListCacheKey, list);
+                    await _distributedCache.SetJsonAsync(ListCacheKey, list);
                 }
 
                 // Set cache options.
@@ -217,7 +217,7 @@ namespace Tubumu.Modules.Admin.Services
                     if (node.Children == null)
                     {
                         node.Children = new List<RegionTreeNode>();
-                    };
+                    }
                     var child = RegionTreeNodeFromRegion(item);
                     // 在父节点的 ParentIdPath 基础上增加 ParentId
                     child.ParentIdPath = node.ParentIdPath != null ? new List<int>(node.ParentIdPath) : new List<int>(1);

@@ -692,7 +692,7 @@ namespace Tubumu.Modules.Admin.Services
         private async Task CacheUser(UserInfo userInfo)
         {
             var cacheKey = UserCacheKeyFormat.FormatWith(userInfo.UserId);
-            await _cache.SetJsonAsync<UserInfo>(cacheKey, userInfo, new DistributedCacheEntryOptions
+            await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromDays(1)
             });
@@ -725,7 +725,7 @@ namespace Tubumu.Modules.Admin.Services
             if (userInfo == null)
             {
                 userInfo = await _repository.GetItemByUserIdAsync(userId, UserStatus.Normal);
-                await _cache.SetJsonAsync<UserInfo>(cacheKey, userInfo, new DistributedCacheEntryOptions
+                await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromDays(1)
                 });

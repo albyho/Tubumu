@@ -9,7 +9,6 @@ using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Core.Extensions;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Services;
 
 namespace Tubumu.Modules.Admin.Services
 {
@@ -176,35 +175,22 @@ namespace Tubumu.Modules.Admin.Services
     {
         private readonly IDistributedCache _cache;
         private readonly IWeixinUserRepository _repository;
-        private readonly IGroupService _groupService;
         private readonly WeixinAppSettings _weixinAppSettings;
-        private readonly WeixinMobileEndSettings _weixinMobileSettings;
-        private readonly WeixinWebSettings _weixinWebSettings;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="weixinAppSettingsOptions"></param>
-        /// <param name="weixinMobileSettingsOptions"></param>
-        /// <param name="weixinWebSettingsOptions"></param>
         /// <param name="cache"></param>
         /// <param name="repository"></param>
-        /// <param name="groupService"></param>
-        /// <param name="smsSender"></param>
         public WeixinUserService(IDistributedCache cache,
             IWeixinUserRepository repository,
-            IGroupService groupService,
-            ISmsSender smsSender,
-            IOptions<WeixinAppSettings> weixinAppSettingsOptions,
-            IOptions<WeixinMobileEndSettings> weixinMobileSettingsOptions,
-            IOptions<WeixinWebSettings> weixinWebSettingsOptions
+            IOptions<WeixinAppSettings> weixinAppSettingsOptions
             )
         {
             _repository = repository;
             _cache = cache;
-            _groupService = groupService;
             _weixinAppSettings = weixinAppSettingsOptions.Value;
-            _weixinMobileSettings = weixinMobileSettingsOptions.Value;
-            _weixinWebSettings = weixinWebSettingsOptions.Value;
         }
 
         #region IWeixinUserService Members
@@ -527,11 +513,10 @@ namespace Tubumu.Modules.Admin.Services
 
         #endregion
 
-
         private async Task CacheUser(UserInfo userInfo)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userInfo.UserId);
-            await _cache.SetJsonAsync<UserInfo>(cacheKey, userInfo, new DistributedCacheEntryOptions
+            await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromDays(1)
             });

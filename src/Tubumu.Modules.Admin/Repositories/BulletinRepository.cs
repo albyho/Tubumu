@@ -2,9 +2,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Tubumu.Modules.Admin.Repositories.Entities;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Core.Extensions.Object;
+using Tubumu.Modules.Admin.Repositories.Entities;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories
@@ -23,10 +22,10 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// BulletinInput
         /// </summary>
-        /// <param name="bulletin"></param>
+        /// <param name="bulletinInput"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> SaveAsync(BulletinInput bulletin, ModelStateDictionary modelState);
+        Task<bool> SaveAsync(BulletinInput bulletinInput, ModelStateDictionary modelState);
     }
 
     /// <summary>
@@ -58,15 +57,15 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <summary>
         /// SaveAsync
         /// </summary>
-        /// <param name="bulletin"></param>
+        /// <param name="bulletinInput"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> SaveAsync(BulletinInput bulletin, ModelStateDictionary modelState)
+        public async Task<bool> SaveAsync(BulletinInput bulletinInput, ModelStateDictionary modelState)
         {
             var dbBulletin = await _context.Bulletin.FirstOrDefaultAsync();
             if (dbBulletin == null) return false;
 
-            dbBulletin.UpdateFrom(bulletin);
+            Mapper.Map(bulletinInput, dbBulletin);
             await _context.SaveChangesAsync();
 
             return true;

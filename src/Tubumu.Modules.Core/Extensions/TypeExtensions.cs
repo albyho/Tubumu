@@ -30,7 +30,7 @@ namespace Tubumu.Modules.Core.Extensions
 
         /// <summary>
         /// 判断类型是否是复合类型
-        /// <para>string,int等从string转化而来的类型为简单类型，其他为复合类型</para>
+        /// <para>string , int 等从 string 转化而来的类型为简单类型，其他为复合类型</para>
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
