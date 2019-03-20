@@ -1,25 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Tubumu.Modules.Admin.Frontend;
-using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Admin.ModuleMenus;
-using Tubumu.Modules.Admin.Services;
-using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Swagger;
-using Senparc.Weixin.Open;
-using Tubumu.Modules.Framework.Services;
+using Tubumu.Modules.Framework.Sms;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -55,7 +40,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> Send(SendSmsInput input)
         {
             var returnResult = new ApiResult();
-            var sendResult = await _smsSender.SendAsync(input.Mobile, input.Content);
+            var sendResult = await _smsSender.SendAsync(input.PhoneNumber, input.Text);
             if(!sendResult)
             {
                 returnResult.Code = 400;

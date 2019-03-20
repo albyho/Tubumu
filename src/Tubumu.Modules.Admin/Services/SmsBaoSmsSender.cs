@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Tubumu.Modules.Framework.Services;
+using Tubumu.Modules.Framework.Sms;
 
 namespace Tubumu.Modules.Admin.Services
 {
@@ -21,21 +21,21 @@ namespace Tubumu.Modules.Admin.Services
             _logger = logger;
         }
 
-        public async Task<bool> SendAsync(string mobile, string content)
+        public async Task<bool> SendAsync(SmsMessage smsMessage)
         {
             var client = _clientFactory.CreateClient();
 
             const string requestUriFormat = "https://api.smsbao.com/sms?u={0}&p={1}&m={2}&c={3}";
             // 如果需要 %20 转 + , 则用 Uri.EscapeDataString(someString);
-            var urlEncodedMessage = WebUtility.UrlEncode(content);
-            var requestUri = String.Format(requestUriFormat, _smsBaoSmsSettings.Username, _smsBaoSmsSettings.Password, mobile, urlEncodedMessage);
+            var urlEncodedMessage = WebUtility.UrlEncode(smsMessage.Text);
+            var requestUri = String.Format(requestUriFormat, _smsBaoSmsSettings.Username, _smsBaoSmsSettings.Password, smsMessage.PhoneNumber, urlEncodedMessage);
             try
             {
                 var sendResult = await client.GetStringAsync(requestUri);
                 var result = sendResult == "0";
                 if (!result)
                 {
-                    _logger.LogError("SmsBaoSmsSender 发送短信失败：手机号：{0} 内容：{1} 错误号：{2} 错误消息：{3}", mobile, content, sendResult, GetErrorMesssage(sendResult));
+                    _logger.LogError("SmsBaoSmsSender 发送短信失败：手机号：{0} 内容：{1} 错误号：{2} 错误消息：{3}", smsMessage.PhoneNumber, smsMessage.Text, sendResult, GetErrorMesssage(sendResult));
                 }
                 return result;
             }

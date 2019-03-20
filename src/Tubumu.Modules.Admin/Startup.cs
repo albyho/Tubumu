@@ -14,7 +14,7 @@ using Tubumu.Modules.Admin.Services;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Admin.SignalR.Hubs;
 using Tubumu.Modules.Framework.Authorization;
-using Tubumu.Modules.Framework.Services;
+using Tubumu.Modules.Framework.Sms;
 
 namespace Tubumu.Modules.Admin
 {

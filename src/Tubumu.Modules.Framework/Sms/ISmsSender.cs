@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Tubumu.Modules.Framework.Services
+namespace Tubumu.Modules.Framework.Sms
 {
     /// <summary>
     /// ISmsSender
@@ -10,9 +10,8 @@ namespace Tubumu.Modules.Framework.Services
         /// <summary>
         /// SendAsync
         /// </summary>
-        /// <param name="mobile"></param>
-        /// <param name="content"></param>
+        /// <param name="smsMessage"></param>
         /// <returns></returns>
-        Task<bool> SendAsync(string mobile, string content);
+        Task<bool> SendAsync(SmsMessage smsMessage);
     }
 }
