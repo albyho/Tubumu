@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
 
         IPropertyAccessor IFastReflectionFactory<PropertyInfo, IPropertyAccessor>.Create(PropertyInfo key)
         {
-            return this.Create(key);
+            return Create(key);
         }
 
         #endregion

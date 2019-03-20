@@ -11,8 +11,8 @@ namespace Tubumu.Modules.Core.FastLambda
     /// <typeparam name="T"></typeparam>
     public class HashedListCache<T> : IDisposable, IExpressionCache<T> where T : class
     {
-        private Dictionary<int, SortedList<Expression, T>> m_storage = new Dictionary<int, SortedList<Expression, T>>();
-        private ReaderWriterLockSlim m_rwLock = new ReaderWriterLockSlim();
+        private readonly Dictionary<int, SortedList<Expression, T>> _storage = new Dictionary<int, SortedList<Expression, T>>();
+        private readonly ReaderWriterLockSlim _rwLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Get
@@ -26,10 +26,10 @@ namespace Tubumu.Modules.Core.FastLambda
             T value;
 
             int hash = new Hasher().Hash(key);
-            this.m_rwLock.EnterReadLock();
+            _rwLock.EnterReadLock();
             try
             {
-                if (this.m_storage.TryGetValue(hash, out sortedList) &&
+                if (_storage.TryGetValue(hash, out sortedList) &&
                     sortedList.TryGetValue(key, out value))
                 {
                     return value;
@@ -37,16 +37,16 @@ namespace Tubumu.Modules.Core.FastLambda
             }
             finally
             {
-                this.m_rwLock.ExitReadLock();
+                _rwLock.ExitReadLock();
             }
 
-            this.m_rwLock.EnterWriteLock();
+            _rwLock.EnterWriteLock();
             try
             {
-                if (!this.m_storage.TryGetValue(hash, out sortedList))
+                if (!_storage.TryGetValue(hash, out sortedList))
                 {
                     sortedList = new SortedList<Expression, T>(new Comparer());
-                    this.m_storage.Add(hash, sortedList);
+                    _storage.Add(hash, sortedList);
                 }
 
                 if (!sortedList.TryGetValue(key, out value))
@@ -59,7 +59,7 @@ namespace Tubumu.Modules.Core.FastLambda
             }
             finally
             {
-                this.m_rwLock.ExitWriteLock();
+                _rwLock.ExitWriteLock();
             }
         }
 
@@ -94,7 +94,7 @@ namespace Tubumu.Modules.Core.FastLambda
                 if (disposing)
                 {
                     // TODO: 释放托管状态(托管对象)。
-                    m_rwLock.Dispose();
+                    _rwLock.Dispose();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。

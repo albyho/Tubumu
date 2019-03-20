@@ -9,20 +9,20 @@ namespace Tubumu.Modules.Core.FastLambda
     /// </summary>
     public class FastEvaluator : IEvaluator
     {
-        private static IExpressionCache<Func<List<object>, object>> s_cache =
+        private static readonly IExpressionCache<Func<List<object>, object>> Cache =
             new HashedListCache<Func<List<object>, object>>();
 
-        private readonly DelegateGenerator m_delegateGenerator = new DelegateGenerator();
-        private readonly ConstantExtractor m_constantExtrator = new ConstantExtractor();
+        private readonly DelegateGenerator _delegateGenerator = new DelegateGenerator();
+        private readonly ConstantExtractor _constantExtrator = new ConstantExtractor();
 
-        private readonly IExpressionCache<Func<List<object>, object>> m_cache;
-        private readonly Func<Expression, Func<List<object>, object>> m_creatorDelegate;
+        private readonly IExpressionCache<Func<List<object>, object>> _cache;
+        private readonly Func<Expression, Func<List<object>, object>> _creatorDelegate;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public FastEvaluator()
-            : this(s_cache)
+            : this(Cache)
         { }
 
         /// <summary>
@@ -31,8 +31,8 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <param name="cache"></param>
         public FastEvaluator(IExpressionCache<Func<List<object>, object>> cache)
         {
-            this.m_cache = cache;
-            this.m_creatorDelegate = (key) => this.m_delegateGenerator.Generate(key);
+            _cache = cache;
+            _creatorDelegate = (key) => _delegateGenerator.Generate(key);
         }
 
         /// <summary>
@@ -47,8 +47,8 @@ namespace Tubumu.Modules.Core.FastLambda
                 return ((ConstantExpression)exp).Value;
             }
 
-            var parameters = this.m_constantExtrator.Extract(exp);
-            var func = this.m_cache.Get(exp, this.m_creatorDelegate);
+            var parameters = _constantExtrator.Extract(exp);
+            var func = _cache.Get(exp, _creatorDelegate);
             return func(parameters);
         }
     }

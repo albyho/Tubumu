@@ -10,10 +10,10 @@ namespace Tubumu.Modules.Core.FastLambda
     /// </summary>
     public class DelegateGenerator : ExpressionVisitor
     {
-        private static readonly MethodInfo s_indexerInfo = typeof(List<object>).GetMethod("get_Item");
+        private static readonly MethodInfo IndexerInfo = typeof(List<object>).GetMethod("get_Item");
 
-        private int m_parameterCount;
-        private ParameterExpression m_parametersExpression;
+        private int _parameterCount;
+        private ParameterExpression _parametersExpression;
 
         /// <summary>
         /// Generate
@@ -22,8 +22,8 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <returns></returns>
         public Func<List<object>, object> Generate(Expression exp)
         {
-            this.m_parameterCount = 0;
-            this.m_parametersExpression =
+            _parameterCount = 0;
+            _parametersExpression =
                 Expression.Parameter(typeof(List<object>), "parameters");
 
             var body = this.Visit(exp); // normalize
@@ -32,7 +32,7 @@ namespace Tubumu.Modules.Core.FastLambda
                 body = Expression.Convert(body, typeof(object));
             }
 
-            var lambda = Expression.Lambda<Func<List<object>, object>>(body, this.m_parametersExpression);
+            var lambda = Expression.Lambda<Func<List<object>, object>>(body, _parametersExpression);
             return lambda.Compile();
         }
 
@@ -44,9 +44,9 @@ namespace Tubumu.Modules.Core.FastLambda
         protected override Expression VisitConstant(ConstantExpression c)
         {
             Expression exp = Expression.Call(
-                this.m_parametersExpression,
-                s_indexerInfo,
-                Expression.Constant(this.m_parameterCount++));
+                _parametersExpression,
+                IndexerInfo,
+                Expression.Constant(_parameterCount++));
             return c.Type == typeof(object) ? exp : Expression.Convert(exp, c.Type);
         }
     }

@@ -10,11 +10,11 @@ namespace Tubumu.Modules.Core.FastLambda
     {
         private static IExpressionCache<Delegate> s_cache = new HashedListCache<Delegate>();
 
-        private WeakTypeDelegateGenerator m_delegateGenerator = new WeakTypeDelegateGenerator();
-        private ConstantExtractor m_constantExtrator = new ConstantExtractor();
+        private WeakTypeDelegateGenerator _delegateGenerator = new WeakTypeDelegateGenerator();
+        private ConstantExtractor _constantExtrator = new ConstantExtractor();
 
-        private IExpressionCache<Delegate> m_cache;
-        private Func<Expression, Delegate> m_creatorDelegate;
+        private IExpressionCache<Delegate> _cache;
+        private Func<Expression, Delegate> _creatorDelegate;
 
         /// <summary>
         /// Constructor
@@ -29,8 +29,8 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <param name="cache"></param>
         public CacheEvaluator(IExpressionCache<Delegate> cache)
         {
-            this.m_cache = cache;
-            this.m_creatorDelegate = (key) => this.m_delegateGenerator.Generate(key);
+            _cache = cache;
+            _creatorDelegate = (key) => _delegateGenerator.Generate(key);
         }
 
         /// <summary>
@@ -45,8 +45,8 @@ namespace Tubumu.Modules.Core.FastLambda
                 return ((ConstantExpression)exp).Value;
             }
 
-            var parameters = this.m_constantExtrator.Extract(exp);
-            var func = this.m_cache.Get(exp, this.m_creatorDelegate);
+            var parameters = _constantExtrator.Extract(exp);
+            var func = _cache.Get(exp, _creatorDelegate);
             return func.DynamicInvoke(parameters.ToArray());
         }
     }

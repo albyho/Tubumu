@@ -9,7 +9,7 @@ namespace Tubumu.Modules.Core.FastLambda
     /// </summary>
     public class WeakTypeDelegateGenerator : ExpressionVisitor
     {
-        private List<ParameterExpression> m_parameters;
+        private List<ParameterExpression> _parameters;
 
         /// <summary>
         /// Generate
@@ -18,10 +18,10 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <returns></returns>
         public Delegate Generate(Expression exp)
         {
-            this.m_parameters = new List<ParameterExpression>();
+            _parameters = new List<ParameterExpression>();
 
             var body = this.Visit(exp);
-            var lambda = Expression.Lambda(body, this.m_parameters.ToArray());
+            var lambda = Expression.Lambda(body, _parameters.ToArray());
             return lambda.Compile();
         }
 
@@ -32,8 +32,8 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <returns></returns>
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            var p = Expression.Parameter(c.Type, "p" + this.m_parameters.Count);
-            this.m_parameters.Add(p);
+            var p = Expression.Parameter(c.Type, "p" + _parameters.Count);
+            _parameters.Add(p);
             return p;
         }
     }

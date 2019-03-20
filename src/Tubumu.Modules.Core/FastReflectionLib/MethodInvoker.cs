@@ -24,7 +24,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
     /// </summary>
     public class MethodInvoker : IMethodInvoker
     {
-        private Func<object, object[], object> m_invoker;
+        private Func<object, object[], object> _invoker;
 
         /// <summary>
         /// MethodInfo
@@ -42,8 +42,8 @@ namespace Tubumu.Modules.Core.FastReflectionLib
                 throw new ArgumentNullException(nameof(methodInfo));
             }
 
-            this.MethodInfo = methodInfo;
-            this.m_invoker = CreateInvokeDelegate(methodInfo);
+            MethodInfo = methodInfo;
+            _invoker = CreateInvokeDelegate(methodInfo);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <returns></returns>
         public object Invoke(object instance, params object[] parameters)
         {
-            return this.m_invoker(instance, parameters);
+            return _invoker(instance, parameters);
         }
 
         private static Func<object, object[], object> CreateInvokeDelegate(MethodInfo methodInfo)
@@ -113,7 +113,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
 
         object IMethodInvoker.Invoke(object instance, params object[] parameters)
         {
-            return this.Invoke(instance, parameters);
+            return Invoke(instance, parameters);
         }
 
         #endregion

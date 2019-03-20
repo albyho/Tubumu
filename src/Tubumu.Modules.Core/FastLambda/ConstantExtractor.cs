@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Core.FastLambda
     /// </summary>
     public class ConstantExtractor : ExpressionVisitor
     {
-        private List<object> m_constants;
+        private List<object> _constants;
 
         /// <summary>
         /// Extract
@@ -17,9 +17,9 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <returns></returns>
         public List<object> Extract(Expression exp)
         {
-            this.m_constants = new List<object>();
-            this.Visit(exp);
-            return this.m_constants;
+            _constants = new List<object>();
+            Visit(exp);
+            return _constants;
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <returns></returns>
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            this.m_constants.Add(c.Value);
+            _constants.Add(c.Value);
             return c;
         }
     }

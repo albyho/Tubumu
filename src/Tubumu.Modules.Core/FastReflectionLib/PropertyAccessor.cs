@@ -29,8 +29,8 @@ namespace Tubumu.Modules.Core.FastReflectionLib
     /// </summary>
     public class PropertyAccessor : IPropertyAccessor
     {
-        private Func<object, object> m_getter;
-        private MethodInvoker m_setMethodInvoker;
+        private Func<object, object> _getter;
+        private MethodInvoker _setMethodInvoker;
 
         /// <summary>
         /// PropertyInfo
@@ -43,9 +43,9 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <param name="propertyInfo"></param>
         public PropertyAccessor(PropertyInfo propertyInfo)
         {
-            this.PropertyInfo = propertyInfo;
-            this.InitializeGet(propertyInfo);
-            this.InitializeSet(propertyInfo);
+            PropertyInfo = propertyInfo;
+            InitializeGet(propertyInfo);
+            InitializeSet(propertyInfo);
         }
 
         private void InitializeGet(PropertyInfo propertyInfo)
@@ -70,13 +70,13 @@ namespace Tubumu.Modules.Core.FastReflectionLib
             // Lambda expression
             var lambda = Expression.Lambda<Func<object, object>>(castPropertyValue, instance);
 
-            this.m_getter = lambda.Compile();
+            _getter = lambda.Compile();
         }
 
         private void InitializeSet(PropertyInfo propertyInfo)
         {
             if (!propertyInfo.CanWrite) return;
-            this.m_setMethodInvoker = new MethodInvoker(propertyInfo.GetSetMethod(true));
+            _setMethodInvoker = new MethodInvoker(propertyInfo.GetSetMethod(true));
         }
 
         /// <summary>
@@ -86,12 +86,12 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <returns></returns>
         public object GetValue(object o)
         {
-            if (this.m_getter == null)
+            if (_getter == null)
             {
                 throw new NotSupportedException("Get method is not defined for this property.");
             }
 
-            return this.m_getter(o);
+            return _getter(o);
         }
 
         /// <summary>
@@ -101,24 +101,24 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <param name="value"></param>
         public void SetValue(object o, object value)
         {
-            if (this.m_setMethodInvoker == null)
+            if (_setMethodInvoker == null)
             {
                 throw new NotSupportedException("Set method is not defined for this property.");
             }
 
-            this.m_setMethodInvoker.Invoke(o, new object[] { value });
+            _setMethodInvoker.Invoke(o, new object[] { value });
         }
 
         #region IPropertyAccessor Members
 
         object IPropertyAccessor.GetValue(object instance)
         {
-            return this.GetValue(instance);
+            return GetValue(instance);
         }
 
         void IPropertyAccessor.SetValue(object instance, object value)
         {
-            this.SetValue(instance, value);
+            SetValue(instance, value);
         }
 
         #endregion

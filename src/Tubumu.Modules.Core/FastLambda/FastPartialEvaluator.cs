@@ -10,6 +10,7 @@
         /// </summary>
         public FastPartialEvaluator()
             : base(new FastEvaluator())
-        { }
+        {
+        }
     }
 }

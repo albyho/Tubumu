@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
 
         IFieldAccessor IFastReflectionFactory<FieldInfo, IFieldAccessor>.Create(FieldInfo key)
         {
-            return this.Create(key);
+            return Create(key);
         }
 
         #endregion

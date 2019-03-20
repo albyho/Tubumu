@@ -9,7 +9,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
     /// <typeparam name="TValue"></typeparam>
     public abstract class FastReflectionCache<TKey, TValue> : IFastReflectionCache<TKey, TValue>
     {
-        private Dictionary<TKey, TValue> m_cache = new Dictionary<TKey, TValue>();
+        private readonly Dictionary<TKey, TValue> _cache = new Dictionary<TKey, TValue>();
 
         /// <summary>
         /// Get
@@ -18,18 +18,13 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <returns></returns>
         public TValue Get(TKey key)
         {
-            TValue value = default(TValue);
-            if (m_cache.TryGetValue(key, out value))
-            {
-                return value;
-            }
-
+            TValue value;
             lock (key)
             {
-                if (!m_cache.TryGetValue(key, out value))
+                if (!_cache.TryGetValue(key, out value))
                 {
-                    value = this.Create(key);
-                    m_cache[key] = value;
+                    value = Create(key);
+                    _cache[key] = value;
                 }
             }
 

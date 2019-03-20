@@ -9,8 +9,8 @@ namespace Tubumu.Modules.Core.FastLambda
     /// </summary>
     public abstract class PartialEvaluatorBase : ExpressionVisitor
     {
-        private IEvaluator m_evaluator;
-        private HashSet<Expression> m_candidates;
+        private readonly IEvaluator _evaluator;
+        private HashSet<Expression> _candidates;
 
         /// <summary>
         /// Constructor
@@ -18,7 +18,7 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <param name="evaluator"></param>
         protected PartialEvaluatorBase(IEvaluator evaluator)
         {
-            this.m_evaluator = evaluator;
+            _evaluator = evaluator;
         }
 
         /// <summary>
@@ -28,8 +28,8 @@ namespace Tubumu.Modules.Core.FastLambda
         /// <returns></returns>
         public Expression Eval(Expression exp)
         {
-            this.m_candidates = new Nominator().Nominate(exp);
-            return this.m_candidates.Count > 0 ? this.Visit(exp) : exp;
+            _candidates = new Nominator().Nominate(exp);
+            return _candidates.Count > 0 ? this.Visit(exp) : exp;
         }
 
         /// <summary>
@@ -44,10 +44,10 @@ namespace Tubumu.Modules.Core.FastLambda
                 return null;
             }
 
-            if (this.m_candidates.Contains(exp))
+            if (_candidates.Contains(exp))
             {
                 return exp.NodeType == ExpressionType.Constant ? exp :
-                    Expression.Constant(this.m_evaluator.Eval(exp), exp.Type);
+                    Expression.Constant(_evaluator.Eval(exp), exp.Type);
             }
 
             return base.Visit(exp);
@@ -59,9 +59,9 @@ namespace Tubumu.Modules.Core.FastLambda
         /// </summary>
         private class Nominator : ExpressionVisitor
         {
-            private Func<Expression, bool> m_fnCanBeEvaluated;
-            private HashSet<Expression> m_candidates;
-            private bool m_cannotBeEvaluated;
+            private Func<Expression, bool> _fnCanBeEvaluated;
+            private HashSet<Expression> _candidates;
+            private bool _cannotBeEvaluated;
 
             public Nominator()
                 : this(CanBeEvaluatedLocally)
@@ -69,7 +69,7 @@ namespace Tubumu.Modules.Core.FastLambda
 
             public Nominator(Func<Expression, bool> fnCanBeEvaluated)
             {
-                this.m_fnCanBeEvaluated = fnCanBeEvaluated ?? CanBeEvaluatedLocally;
+                _fnCanBeEvaluated = fnCanBeEvaluated ?? CanBeEvaluatedLocally;
             }
 
             private static bool CanBeEvaluatedLocally(Expression exp)
@@ -79,33 +79,33 @@ namespace Tubumu.Modules.Core.FastLambda
 
             internal HashSet<Expression> Nominate(Expression expression)
             {
-                this.m_candidates = new HashSet<Expression>();
+                _candidates = new HashSet<Expression>();
                 this.Visit(expression);
-                return this.m_candidates;
+                return _candidates;
             }
 
             protected override Expression Visit(Expression expression)
             {
                 if (expression != null)
                 {
-                    bool saveCannotBeEvaluated = this.m_cannotBeEvaluated;
-                    this.m_cannotBeEvaluated = false;
+                    bool saveCannotBeEvaluated = _cannotBeEvaluated;
+                    _cannotBeEvaluated = false;
 
                     base.Visit(expression);
 
-                    if (!this.m_cannotBeEvaluated)
+                    if (!_cannotBeEvaluated)
                     {
-                        if (this.m_fnCanBeEvaluated(expression))
+                        if (_fnCanBeEvaluated(expression))
                         {
-                            this.m_candidates.Add(expression);
+                            _candidates.Add(expression);
                         }
                         else
                         {
-                            this.m_cannotBeEvaluated = true;
+                            _cannotBeEvaluated = true;
                         }
                     }
 
-                    this.m_cannotBeEvaluated |= saveCannotBeEvaluated;
+                    _cannotBeEvaluated |= saveCannotBeEvaluated;
                 }
 
                 return expression;

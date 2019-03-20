@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
 
         IMethodInvoker IFastReflectionFactory<MethodInfo, IMethodInvoker>.Create(MethodInfo key)
         {
-            return this.Create(key);
+            return Create(key);
         }
 
         #endregion

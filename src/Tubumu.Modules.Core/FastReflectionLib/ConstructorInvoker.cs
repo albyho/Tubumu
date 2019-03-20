@@ -23,12 +23,12 @@ namespace Tubumu.Modules.Core.FastReflectionLib
     /// </summary>
     public class ConstructorInvoker : IConstructorInvoker
     {
-        private Func<object[], object> m_invoker;
+        private readonly Func<object[], object> _invoker;
 
         /// <summary>
         /// ConstructorInfo
         /// </summary>
-        public ConstructorInfo ConstructorInfo { get; private set; }
+        public ConstructorInfo ConstructorInfo { get; }
 
         /// <summary>
         /// Constructor
@@ -36,8 +36,8 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <param name="constructorInfo"></param>
         public ConstructorInvoker(ConstructorInfo constructorInfo)
         {
-            this.ConstructorInfo = constructorInfo;
-            this.m_invoker = InitializeInvoker(constructorInfo);
+            ConstructorInfo = constructorInfo;
+            _invoker = InitializeInvoker(constructorInfo);
         }
 
         private Func<object[], object> InitializeInvoker(ConstructorInfo constructorInfo)
@@ -77,14 +77,14 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <returns></returns>
         public object Invoke(params object[] parameters)
         {
-            return this.m_invoker(parameters);
+            return _invoker(parameters);
         }
 
         #region IConstructorInvoker Members
 
         object IConstructorInvoker.Invoke(params object[] parameters)
         {
-            return this.Invoke(parameters);
+            return Invoke(parameters);
         }
 
         #endregion

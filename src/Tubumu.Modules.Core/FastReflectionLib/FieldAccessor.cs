@@ -22,7 +22,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
     /// </summary>
     public class FieldAccessor : IFieldAccessor
     {
-        private Func<object, object> m_getter;
+        private Func<object, object> _getter;
 
         /// <summary>
         /// FieldInfo
@@ -35,7 +35,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <param name="fieldInfo"></param>
         public FieldAccessor(FieldInfo fieldInfo)
         {
-            this.FieldInfo = fieldInfo;
+            FieldInfo = fieldInfo;
         }
 
         private void InitializeGet(FieldInfo fieldInfo)
@@ -58,7 +58,7 @@ namespace Tubumu.Modules.Core.FastReflectionLib
             // Lambda expression
             var lambda = Expression.Lambda<Func<object, object>>(castFieldValue, instance);
 
-            this.m_getter = lambda.Compile();
+            _getter = lambda.Compile();
         }
 
         /// <summary>
@@ -68,14 +68,14 @@ namespace Tubumu.Modules.Core.FastReflectionLib
         /// <returns></returns>
         public object GetValue(object instance)
         {
-            return this.m_getter(instance);
+            return _getter(instance);
         }
 
         #region IFieldAccessor Members
 
         object IFieldAccessor.GetValue(object instance)
         {
-            return this.GetValue(instance);
+            return GetValue(instance);
         }
 
         #endregion
