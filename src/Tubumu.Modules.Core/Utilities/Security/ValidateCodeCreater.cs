@@ -74,14 +74,20 @@ namespace Tubumu.Modules.Core.Utilities.Security
 
                     var chars = ValidationCode.ToCharArray();
                     var colors = new[] { SKColors.Black, SKColors.Red, SKColors.DarkBlue, SKColors.Green, SKColors.Orange, SKColors.Brown, SKColors.DarkCyan, SKColors.Purple };
-                    string[] font = { "Verdana", "Microsoft Sans Serif", "Comic Sans MS", "Arial" };
+                    var fonts = new[]
+                    {
+                        SKTypeface.FromFamilyName("Verdana"),
+                        SKTypeface.FromFamilyName("Microsoft Sans Serif"),
+                        SKTypeface.FromFamilyName("Comic Sans MS"),
+                        SKTypeface.FromFamilyName("Arial")
+                    };
 
                     canvas.Translate(-4, 0);
 
                     for (int i = 0; i < chars.Length; i++)
                     {
                         int colorIndex = rand.Next(7);
-                        int fontIndex = rand.Next(5);
+                        int fontIndex = rand.Next(4);
 
                         var fontColor = colors[colorIndex];
                         var foneSize = rand.Next(18, 25);
@@ -99,6 +105,7 @@ namespace Tubumu.Modules.Core.Utilities.Security
                             TextSize = foneSize,
                             IsVerticalText = true,
                             IsAntialias = true,
+                            Typeface = fonts[fontIndex],
 
                             //IsAntialias = rand.Next(1) == 1 ? true : false,
                             //FakeBoldText = true,
