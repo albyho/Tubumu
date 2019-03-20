@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 
 namespace Tubumu.Modules.Framework.Extensions
 {

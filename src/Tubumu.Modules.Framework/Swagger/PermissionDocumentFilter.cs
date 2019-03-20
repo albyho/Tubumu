@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
 
 namespace Tubumu.Modules.Framework.Swagger

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Modules.Admin.Repositories.Entities;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Repositories

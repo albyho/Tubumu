@@ -15,7 +15,7 @@ using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Services;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Core.Utilities.Security;
+using Tubumu.Core.Utilities.Security;
 using SignatureHelper = Tubumu.Modules.Framework.Authorization.SignatureHelper;
 
 namespace Tubumu.Modules.Admin.Controllers

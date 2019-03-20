@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
-using Tubumu.Modules.Core.Extensions.Object;
+using Tubumu.Core.Extensions.Object;
 
 namespace Tubumu.Modules.Framework.Extensions
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 
 namespace Tubumu.Modules.Admin.Models
 {
@@ -57,7 +57,7 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 角色
         /// </summary>
-        [JsonConverter(typeof(Core.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
+        [JsonConverter(typeof(Tubumu.Core.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
         [JsonProperty(PropertyName = "role")]
         public RoleInfo Role { get; set; }
     }
@@ -250,7 +250,7 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 主要角色
         /// </summary>
-        [JsonConverter(typeof(Core.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
+        [JsonConverter(typeof(Tubumu.Core.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
         public RoleInfo Role { get; set; }
 
         /// <summary>

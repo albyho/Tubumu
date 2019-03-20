@@ -7,8 +7,8 @@ using Microsoft.Extensions.Caching.Distributed;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Repositories;
-using Tubumu.Modules.Core.Extensions;
-using Tubumu.Modules.Core.Utilities.Cryptography;
+using Tubumu.Core.Extensions;
+using Tubumu.Core.Utilities.Cryptography;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 

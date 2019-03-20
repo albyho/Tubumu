@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tubumu.Modules.Admin", "src
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tubumu.Web", "src\Tubumu.Web\Tubumu.Web.csproj", "{D2545BE8-EB54-4FD0-B226-736B42E5A673}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tubumu.Modules.Core", "src\Tubumu.Modules.Core\Tubumu.Modules.Core.csproj", "{EA92EA73-89BC-48DB-9265-8279596BE3FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tubumu.Core", "src\Tubumu.Core\Tubumu.Core.csproj", "{68E339B8-9477-4D3C-AC45-7C68FC5846D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{D2545BE8-EB54-4FD0-B226-736B42E5A673}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2545BE8-EB54-4FD0-B226-736B42E5A673}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2545BE8-EB54-4FD0-B226-736B42E5A673}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EA92EA73-89BC-48DB-9265-8279596BE3FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA92EA73-89BC-48DB-9265-8279596BE3FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA92EA73-89BC-48DB-9265-8279596BE3FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA92EA73-89BC-48DB-9265-8279596BE3FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68E339B8-9477-4D3C-AC45-7C68FC5846D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68E339B8-9477-4D3C-AC45-7C68FC5846D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68E339B8-9477-4D3C-AC45-7C68FC5846D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68E339B8-9477-4D3C-AC45-7C68FC5846D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

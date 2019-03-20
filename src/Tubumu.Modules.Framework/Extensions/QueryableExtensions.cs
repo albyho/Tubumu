@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Framework.Extensions

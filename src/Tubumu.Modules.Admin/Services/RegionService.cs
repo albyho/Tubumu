@@ -7,7 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Api;
 using Tubumu.Modules.Admin.Repositories;
-using Tubumu.Modules.Core.Extensions.Object;
+using Tubumu.Core.Extensions.Object;
 using Tubumu.Modules.Framework.Extensions;
 
 namespace Tubumu.Modules.Admin.Services

@@ -25,7 +25,7 @@ using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;

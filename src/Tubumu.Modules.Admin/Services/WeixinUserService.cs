@@ -7,7 +7,7 @@ using Senparc.Weixin.WxOpen.AdvancedAPIs.Sns;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Admin.Settings;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Extensions;
 
 namespace Tubumu.Modules.Admin.Services

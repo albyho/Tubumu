@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {

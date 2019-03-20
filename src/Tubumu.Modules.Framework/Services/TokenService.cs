@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.IdentityModel.Tokens;
-using Tubumu.Modules.Core.Extensions;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
 
 namespace Tubumu.Modules.Framework.Services
