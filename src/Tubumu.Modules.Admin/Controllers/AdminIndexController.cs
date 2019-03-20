@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
@@ -83,12 +82,6 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> ChangePassword([FromBody]UserChangePasswordInput input)
         {
             var result = new ApiResult();
-            if (!int.TryParse(HttpContext.User.Identity.Name, out var value))
-            {
-                result.Code = 400;
-                result.Message = "修改资料失败: 获取用户信息失败";
-            }
-
             if (!await _adminUserService.ChangePasswordAsync(HttpContext.User.GetUserId(), input, ModelState))
             {
                 result.Code = 400;

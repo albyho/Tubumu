@@ -120,10 +120,11 @@ namespace Tubumu.Modules.Admin.Services
     /// </summary>
     public class GroupService : IGroupService
     {
-        private readonly IGroupRepository _repository;
-        private readonly IDistributedCache _cache;
         private const string ListCacheKey = "GroupList";
         private const string TreeCacheKey = "GroupTree";
+
+        private readonly IGroupRepository _repository;
+        private readonly IDistributedCache _cache;
 
         /// <summary>
         /// Constructor

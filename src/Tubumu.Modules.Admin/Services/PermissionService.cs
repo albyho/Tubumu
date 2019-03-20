@@ -17,23 +17,33 @@ namespace Tubumu.Modules.Admin.Services
     public interface IPermissionService
     {
         Task<Permission> GetItemAsync(Guid permissionId);
+
         Task<Permission> GetItemAsync(string name);
+
         Task<List<Permission>> GetListInCacheAsync();
+
         Task<List<PermissionTreeNode>> GetTreeInCacheAsync();
+
         Task<PermissionTreeNode> GetSubTreeInCacheAsync(Guid permissionId);
+
         Task<bool> SaveAsync(PermissionInput permissionInput, ModelStateDictionary modelState);
+
         Task<bool> SaveAsync(IEnumerable<PermissionInput> permissions, ModelStateDictionary modelState);
+
         Task<bool> RemoveAsync(Guid permissionId);
+
         Task<bool> RemoveAsync(IEnumerable<Guid> ids);
+
         Task<bool> MoveAsync(Guid permissionId, MovingTarget target);
     }
 
     public class PermissionService : IPermissionService
     {
-        private readonly IPermissionRepository _repository;
-        private readonly IDistributedCache _cache;
         private const string ListCacheKey = "PermissionList";
         private const string TreeCacheKey = "PermissionTree";
+
+        private readonly IPermissionRepository _repository;
+        private readonly IDistributedCache _cache;
 
         public PermissionService(IPermissionRepository repository, IDistributedCache cache)
         {

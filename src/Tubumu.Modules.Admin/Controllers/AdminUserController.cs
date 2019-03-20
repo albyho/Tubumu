@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Api;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
@@ -121,7 +120,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiListResult<Group>> GetGroupList()
         {
             var groups = await _groupService.GetListInCacheAsync();
-            ProjectGroups(groups);
+            ProjectGroups(ref groups);
             var result = new ApiListResult<Group>
             {
                 Code = 200,
@@ -492,7 +491,7 @@ namespace Tubumu.Modules.Admin.Controllers
 
         #region Private Methods
 
-        private void ProjectPermissions(List<Permission> permissions)
+        private void ProjectPermissions(ref List<Permission> permissions)
         {
             if (permissions == null)
             {
@@ -508,7 +507,7 @@ namespace Tubumu.Modules.Admin.Controllers
             }
         }
 
-        private void ProjectGroups(List<Group> groups)
+        private void ProjectGroups(ref List<Group> groups)
         {
             if (groups == null)
             {

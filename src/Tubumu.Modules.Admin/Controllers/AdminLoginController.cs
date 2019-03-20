@@ -1,28 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Tubumu.Modules.Admin.Models;
+using Tubumu.Core.Utilities.Security;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Services;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Core.Utilities.Security;
-using SignatureHelper = Tubumu.Modules.Framework.Authorization.SignatureHelper;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
     public partial class AdminController
     {
-
         #region  Login
 
         /// <summary>

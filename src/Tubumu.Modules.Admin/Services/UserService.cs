@@ -221,13 +221,14 @@ namespace Tubumu.Modules.Admin.Services
 
     public class UserService : IUserService
     {
-        private readonly IUserRepository _repository;
-        private readonly IDistributedCache _cache;
-        private readonly IGroupService _groupService;
         /// <summary>
         /// 用户信息缓存 Key
         /// </summary>
         public const string UserCacheKeyFormat = "User:{0}";
+
+        private readonly IUserRepository _repository;
+        private readonly IDistributedCache _cache;
+        private readonly IGroupService _groupService;
 
         /// <summary>
         /// Constructor

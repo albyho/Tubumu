@@ -11,10 +11,15 @@ namespace Tubumu.Modules.Admin.Services
     public interface INotificationService
     {
         Task<Page<NotificationUser>> GetPageAsync(NotificationPageSearchCriteria criteria);
+
         Task<bool> SaveAsync(NotificationInput notificationInput, ModelStateDictionary modelState);
+
         Task<bool> RemoveAsync(int notificationId, ModelStateDictionary modelState);
+
         Task<bool> ReadAsync(int userId, int[] notificationIds, ModelStateDictionary modelState);
+
         Task<bool> DeleteAsync(int userId, int[] notificationIds, ModelStateDictionary modelState);
+
         Task<NotificationUser> GetNewestAsync(int userId, int? currentNotificationId = null);
     }
 

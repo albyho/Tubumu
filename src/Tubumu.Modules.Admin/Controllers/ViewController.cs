@@ -3,8 +3,8 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Tubumu.Modules.Admin.Frontend;
 using Tubumu.Core.Extensions;
+using Tubumu.Modules.Admin.Frontend;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -157,7 +157,7 @@ namespace Tubumu.Modules.Admin.Controllers
                             componentScripts.AppendFormat("<script type = \"text/javascript\" src=\"{0}/lib/signalr/dist/browser/signalr.js\"></script>", productionHost);
                             break;
                         default:
-                            break;
+                            throw new NotImplementedException(compent);
                     }
                 }
             }

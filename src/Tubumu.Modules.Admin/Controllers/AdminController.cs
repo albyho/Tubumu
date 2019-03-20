@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Frontend;

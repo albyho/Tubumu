@@ -30,9 +30,10 @@ namespace Tubumu.Modules.Admin.Services
 
     public class RoleService : IRoleService
     {
+        private const string RoleListCacheKey = "RoleList";
+
         private readonly IRoleRepository _repository;
         private readonly IDistributedCache _cache;
-        private const string RoleListCacheKey = "RoleList";
 
         public RoleService(IRoleRepository repository, IDistributedCache cache)
         {

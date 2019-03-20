@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Tubumu.Modules.Admin.Frontend;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Admin.ModuleMenus;
 using Tubumu.Modules.Admin.Services;
 using Tubumu.Modules.Admin.Settings;
-using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Authorization;
+using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Swagger;
-using Senparc.Weixin.Open;
 using Tubumu.Modules.Framework.Services;
 
 namespace Tubumu.Modules.Admin.Controllers
@@ -34,9 +23,7 @@ namespace Tubumu.Modules.Admin.Controllers
     [Authorize]
     public class AuthenticationController : ControllerBase
     {
-        private readonly JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
         private readonly AuthenticationSettings _authenticationSettings;
-        private readonly TokenValidationSettings _tokenValidationSettings;
         private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
         private readonly IMobileUserService _mobileUserService;
@@ -46,14 +33,12 @@ namespace Tubumu.Modules.Admin.Controllers
         /// Constructor
         /// </summary>
         /// <param name="authenticationSettingsOptions"></param>
-        /// <param name="tokenValidationSettings"></param>
         /// <param name="userService"></param>
         /// <param name="tokenService"></param>
         /// <param name="mobileUserService"></param>
         /// <param name="weixinUserService"></param>
         public AuthenticationController(
             IOptions<AuthenticationSettings> authenticationSettingsOptions,
-            TokenValidationSettings tokenValidationSettings,
             IUserService userService,
             ITokenService tokenService,
             IMobileUserService mobileUserService,
@@ -61,7 +46,6 @@ namespace Tubumu.Modules.Admin.Controllers
             )
         {
             _authenticationSettings = authenticationSettingsOptions.Value;
-            _tokenValidationSettings = tokenValidationSettings;
             _userService = userService;
             _tokenService = tokenService;
             _mobileUserService = mobileUserService;
@@ -109,13 +93,13 @@ namespace Tubumu.Modules.Admin.Controllers
             if (!getResult)
             {
                 returnResult.Code = 400;
-                returnResult.Message = $"获取手机验证码失败: {ModelState.FirstErrorMessage()}";
+                returnResult.Message = $"获取手机验证码失败: { ModelState.FirstErrorMessage() }";
             }
             else
             {
                 returnResult.Code = 200;
                 returnResult.Message = "获取手机验证码成功";
-            };
+            }
             return returnResult;
         }
 

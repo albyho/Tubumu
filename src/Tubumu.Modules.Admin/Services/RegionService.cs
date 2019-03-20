@@ -29,11 +29,12 @@ namespace Tubumu.Modules.Admin.Services
 
     public class RegionService : IRegionService
     {
+        private const string ListCacheKey = "RegionList";
+        private const string TreeCacheKey = "RegionTree";
+
         private readonly IRegionRepository _repository;
         private readonly IDistributedCache _distributedCache;
         private readonly IMemoryCache _memoryCache;
-        private const string ListCacheKey = "RegionList";
-        private const string TreeCacheKey = "RegionTree";
 
         public RegionService(IRegionRepository repository, IDistributedCache distributedCache, IMemoryCache memoryCache)
         {

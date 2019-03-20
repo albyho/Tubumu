@@ -22,7 +22,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiItemResult<MetaDataItem>> GetModuleMetaDatas()
         {
             var permissions = await _permissionService.GetListInCacheAsync();
-            ProjectPermissions(permissions);
+            ProjectPermissions(ref permissions);
 
             var roles = await _roleService.GetListInCacheAsync();
             var groups = await _groupService.GetListInCacheAsync();

@@ -3,7 +3,7 @@
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
     /// <summary>
-    /// ChineseMobileAttribute
+    /// 手机号
     /// </summary>
     public class ChineseMobileAttribute : RegularExpressionAttribute
     {
