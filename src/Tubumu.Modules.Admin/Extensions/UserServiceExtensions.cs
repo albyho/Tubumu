@@ -10,7 +10,7 @@ namespace Tubumu.Modules.Admin.Services
     /// <summary>
     /// UserServiceExtensions
     /// </summary>
-    public static class IUserServiceExtensions
+    public static class UserServiceExtensions
     {
         /// <summary>
         /// GetNormalUserAsync
