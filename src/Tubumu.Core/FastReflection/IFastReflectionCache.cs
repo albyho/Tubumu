@@ -1,17 +1,17 @@
-﻿namespace Tubumu.Core.FastReflectionLib
+﻿namespace Tubumu.Core.FastReflection
 {
     /// <summary>
-    /// IFastReflectionFactory
+    /// IFastReflectionCache
     /// </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
-    public interface IFastReflectionFactory<TKey, TValue>
+    public interface IFastReflectionCache<TKey, TValue>
     {
         /// <summary>
-        /// Create
+        /// Get
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        TValue Create(TKey key);
+        TValue Get(TKey key);
     }
 }

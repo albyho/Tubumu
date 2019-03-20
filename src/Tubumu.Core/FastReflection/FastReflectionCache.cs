@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Tubumu.Core.FastReflectionLib
+namespace Tubumu.Core.FastReflection
 {
     /// <summary>
     /// FastReflectionCache

@@ -8,7 +8,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
-using Tubumu.Core.FastReflectionLib;
+using Tubumu.Core.FastReflection;
 
 namespace Tubumu.Core.Extensions.Object
 {

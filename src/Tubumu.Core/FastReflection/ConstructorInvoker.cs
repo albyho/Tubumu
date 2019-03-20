@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Tubumu.Core.FastReflectionLib
+namespace Tubumu.Core.FastReflection
 {
     /// <summary>
     /// IConstructorInvoker

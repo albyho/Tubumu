@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Tubumu.Core.FastReflectionLib
+namespace Tubumu.Core.FastReflection
 {
     /// <summary>
     /// FieldAccessorFactory

@@ -1,6 +1,6 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Tubumu.Core.FastReflectionLib;
+using Tubumu.Core.FastReflection;
 
 namespace Tubumu.Core.Json
 {
