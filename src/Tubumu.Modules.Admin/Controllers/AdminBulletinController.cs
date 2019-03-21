@@ -10,7 +10,7 @@ using Tubumu.Modules.Framework.Models;
 namespace Tubumu.Modules.Admin.Controllers
 {
     /// <summary>
-    /// 后台 Controller
+    /// 后台：系统公告
     /// </summary>
     public partial class AdminController
     {

@@ -16,6 +16,9 @@ using Role = Tubumu.Modules.Admin.Models.Role;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// 后台：用户管理
+    /// </summary>
     public partial class AdminController
     {
         #region 用户管理

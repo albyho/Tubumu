@@ -7,6 +7,9 @@ using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// 后台：通知
+    /// </summary>
     public partial class AdminController
     {
         #region 通知

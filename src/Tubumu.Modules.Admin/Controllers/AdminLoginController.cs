@@ -11,6 +11,9 @@ using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// 后台：登录注销
+    /// </summary>
     public partial class AdminController
     {
         #region  Login

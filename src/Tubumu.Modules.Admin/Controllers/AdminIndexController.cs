@@ -12,9 +12,11 @@ using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// 后台：首页
+    /// </summary>
     public partial class AdminController
     {
-
         #region Index
 
         /// <summary>
@@ -227,6 +229,5 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         #endregion
-
     }
 }

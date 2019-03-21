@@ -10,12 +10,15 @@ using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
+    /// <summary>
+    /// 后台：模块元数据
+    /// </summary>
     public partial class AdminController
     {
         #region 模块权限管理
 
         /// <summary>
-        /// 获取模块权限列表
+        /// 获取模块元数据
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetModuleMetaDatas")]
@@ -30,7 +33,7 @@ namespace Tubumu.Modules.Admin.Controllers
             var result = new ApiItemResult<MetaDataItem>
             {
                 Code = 200,
-                Message = "获取权限列表成功",
+                Message = "获取模块元数据成功",
                 Item = new MetaDataItem
                 {
                     Permissions = permissions,
@@ -43,7 +46,7 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 提取模块权限
+        /// 提取模块元数据
         /// </summary>
         /// <returns></returns>
         [HttpGet("ExtractModuleMetaDatas")]
@@ -124,7 +127,7 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 清理模块权限
+        /// 清理模块元数据
         /// </summary>
         /// <returns></returns>
         [HttpGet("ClearModulePermissions")]
@@ -155,7 +158,7 @@ namespace Tubumu.Modules.Admin.Controllers
             await _permissionService.RemoveAsync(perToClear);
 
             result.Code = 200;
-            result.Message = "清理模块权限成功";
+            result.Message = "清理模块元数据成功";
             return result;
         }
 
