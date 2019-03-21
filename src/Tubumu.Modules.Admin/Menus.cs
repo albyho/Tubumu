@@ -19,9 +19,9 @@ namespace Tubumu.Modules.Admin
         /// 获取模块菜单
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<ModuleMenu> GetModuleMenus()
+        public IEnumerable<Menu> GetModuleMenus()
         {
-            return new List<ModuleMenu>
+            return new List<Menu>
             {
                 /*
                 new ModuleMenu
@@ -52,37 +52,37 @@ namespace Tubumu.Modules.Admin
                         },
                     }
                 },*/
-                new ModuleMenu
+                new Menu
                 {
                     Title = "系统管理",
-                    Type = ModuleMenuType.Sub,
-                    Children = new List<ModuleMenu> {
-                         new ModuleMenu{
-                             Type = ModuleMenuType.Group,
+                    Type = MenuType.Sub,
+                    Children = new List<Menu> {
+                         new Menu{
+                             Type = MenuType.Group,
                              Title ="系统管理",
-                             Children = new List<ModuleMenu> {
-                                new ModuleMenu{ Title="系统公告", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "系统公告", Name = "bulletin" }, Validator = u => u.HasPermission("系统公告")},
-                                new ModuleMenu{ Title="通知管理", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "通知管理", Name = "notificationmanage", Components = "ckfinder" }, Validator = u => u.HasPermission("通知管理")},
+                             Children = new List<Menu> {
+                                new Menu{ Title="系统公告", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "系统公告", Name = "bulletin" }, Validator = u => u.HasPermission("系统公告")},
+                                new Menu{ Title="通知管理", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "通知管理", Name = "notificationmanage", Components = "ckfinder" }, Validator = u => u.HasPermission("通知管理")},
                              }
                          },
-                         new ModuleMenu{
-                             Type = ModuleMenuType.Group,
+                         new Menu{
+                             Type = MenuType.Group,
                              Title ="模块管理",
-                             Children = new List<ModuleMenu> {
-                                new ModuleMenu{ Title="模块元数据", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "模块元数据", Name = "modulemetadatas" }, Validator = u => u.HasPermission("模块元数据")},
+                             Children = new List<Menu> {
+                                new Menu{ Title="模块元数据", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "模块元数据", Name = "modulemetadatas" }, Validator = u => u.HasPermission("模块元数据")},
                              }
                          },
                     },
                 },
-                new ModuleMenu
+                new Menu
                 {
                     Title = "组织架构管理",
-                    Type = ModuleMenuType.Sub,
-                    Children = new List<ModuleMenu> {
-                         new ModuleMenu{ Title="用户列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "用户列表", Name = "user", Components = "ckfinder" }, Validator = u => u.HasPermission("用户管理")},
-                         new ModuleMenu{ Title="分组列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "分组列表", Name = "group" }, Validator = u => u.HasPermission("分组管理")},
-                         new ModuleMenu{ Title="角色列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "角色列表", Name = "role" }, Validator = u => u.HasPermission("角色管理")},
-                         new ModuleMenu{ Title="权限列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "权限列表", Name = "permission" }, Validator = u => u.HasPermission("权限管理")},
+                    Type = MenuType.Sub,
+                    Children = new List<Menu> {
+                         new Menu{ Title="用户列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "用户列表", Name = "user", Components = "ckfinder" }, Validator = u => u.HasPermission("用户管理")},
+                         new Menu{ Title="分组列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "分组列表", Name = "group" }, Validator = u => u.HasPermission("分组管理")},
+                         new Menu{ Title="角色列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "角色列表", Name = "role" }, Validator = u => u.HasPermission("角色管理")},
+                         new Menu{ Title="权限列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "权限列表", Name = "permission" }, Validator = u => u.HasPermission("权限管理")},
                     }
                 },
             };

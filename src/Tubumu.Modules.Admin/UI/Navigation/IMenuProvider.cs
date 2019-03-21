@@ -17,6 +17,6 @@ namespace Tubumu.Modules.Admin.UI.Navigation
         /// 获取模块菜单
         /// </summary>
         /// <returns></returns>
-        IEnumerable<ModuleMenu> GetModuleMenus();
+        IEnumerable<Menu> GetModuleMenus();
     }
 }

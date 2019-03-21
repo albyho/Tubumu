@@ -101,9 +101,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetMenus")]
-        public ApiListResult<ModuleMenu> GetMenus()
+        public ApiListResult<Menu> GetMenus()
         {
-            var list = new List<ModuleMenu>();
+            var list = new List<Menu>();
             var menuProviders = _menuProviders.OrderBy(m => m.Order);
             foreach (var menuProvider in menuProviders)
             {
@@ -114,7 +114,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 }
             }
 
-            var result = new ApiListResult<ModuleMenu>
+            var result = new ApiListResult<Menu>
             {
                 Code = 200,
                 Message = "获取菜单成功",
@@ -127,7 +127,7 @@ namespace Tubumu.Modules.Admin.Controllers
 
         #region Private Methods 
 
-        private void AddMenuToList(List<ModuleMenu> list, ModuleMenu item)
+        private void AddMenuToList(List<Menu> list, Menu item)
         {
             if (!ValidateMenu(item)) return;
 
@@ -137,19 +137,19 @@ namespace Tubumu.Modules.Admin.Controllers
                 item.Directly = null;
             }
 
-            if (item.Type == ModuleMenuType.Item && !item.Children.IsNullOrEmpty())
+            if (item.Type == MenuType.Item && !item.Children.IsNullOrEmpty())
             {
                 throw new Exception("菜单项【{0}】不能包含子项".FormatWith(item.Title));
             }
-            if (item.Type == ModuleMenuType.Sub || item.Type == ModuleMenuType.Group)
+            if (item.Type == MenuType.Sub || item.Type == MenuType.Group)
             {
                 if (!item.LinkRouteName.IsNullOrWhiteSpace())
                 {
-                    throw new Exception("{0}【{1}】不能设置路由".FormatWith(item.Type == ModuleMenuType.Sub ? "子菜单" : "菜单组", item.Title));
+                    throw new Exception("{0}【{1}】不能设置路由".FormatWith(item.Type == MenuType.Sub ? "子菜单" : "菜单组", item.Title));
                 }
                 if (item.Directly.HasValue && item.Directly.Value)
                 {
-                    throw new Exception("{0}【{1}】不能设置为直接访问".FormatWith(item.Type == ModuleMenuType.Sub ? "子菜单" : "菜单组", item.Title));
+                    throw new Exception("{0}【{1}】不能设置为直接访问".FormatWith(item.Type == MenuType.Sub ? "子菜单" : "菜单组", item.Title));
                 }
 
                 if (item.Children.IsNullOrEmpty())
@@ -158,7 +158,7 @@ namespace Tubumu.Modules.Admin.Controllers
                     return;
                 }
 
-                var newChildren = new List<ModuleMenu>();
+                var newChildren = new List<Menu>();
                 item.Children.ForEach(m => AddMenuToList(newChildren, m));
                 if (newChildren.IsNullOrEmpty())
                 {
@@ -168,7 +168,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 item.Children = newChildren;
             }
 
-            if (item.Type == ModuleMenuType.Item && ValidateMenu(item))
+            if (item.Type == MenuType.Item && ValidateMenu(item))
             {
                 item.Link = Url.RouteUrl(item.LinkRouteName, item.LinkRouteValues);
             }
@@ -176,7 +176,7 @@ namespace Tubumu.Modules.Admin.Controllers
 
         }
 
-        private bool ValidateMenu(ModuleMenu item)
+        private bool ValidateMenu(Menu item)
         {
             if (item.Permission.IsNullOrWhiteSpace() && item.Role.IsNullOrWhiteSpace() && item.Group.IsNullOrWhiteSpace() && item.Validator == null)
             {

@@ -8,7 +8,7 @@ namespace Tubumu.Modules.Admin.Models
     /// <summary>
     /// 菜单类型
     /// </summary>
-    public enum ModuleMenuType
+    public enum MenuType
     {
         /// <summary>
         /// 菜单项(不能包含Children)
@@ -28,7 +28,7 @@ namespace Tubumu.Modules.Admin.Models
     /// 模块菜单
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
-    public class ModuleMenu
+    public class Menu
     {
         /// <summary>
         /// 标题
@@ -40,13 +40,13 @@ namespace Tubumu.Modules.Admin.Models
         /// 类型
         /// </summary>
         [JsonProperty(PropertyName = "type")]
-        public ModuleMenuType Type { get; set; }
+        public MenuType Type { get; set; }
 
         /// <summary>
         /// 子菜单
         /// </summary>
         [JsonProperty(PropertyName = "children", NullValueHandling = NullValueHandling.Ignore)]
-        public List<ModuleMenu> Children { get; set; }
+        public List<Menu> Children { get; set; }
 
         /// <summary>
         /// 链接
