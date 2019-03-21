@@ -109,5 +109,4 @@ namespace Tubumu.Core.Extensions
             return endDate.DateDiff(interval, startDate);
         }
     }
-
 }

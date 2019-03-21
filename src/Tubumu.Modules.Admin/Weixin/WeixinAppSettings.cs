@@ -1,4 +1,4 @@
-﻿namespace Tubumu.Modules.Admin.Settings
+﻿namespace Tubumu.Modules.Admin.Weixin
 {
     /// <summary>
     /// WeixinAppSettings

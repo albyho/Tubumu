@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Tubumu.Modules.Admin.Models;
-using Tubumu.Modules.Admin.ModuleMenus;
+using Tubumu.Modules.Admin.UI.Navigation;
 using Tubumu.Modules.Framework.Authorization;
 
 namespace Tubumu.Modules.Admin

@@ -6,13 +6,16 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Modules;
-using Tubumu.Modules.Admin.Frontend;
-using Tubumu.Modules.Admin.ModuleMenus;
+using Tubumu.Modules.Admin.Authorization;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Admin.Repositories.Entities;
 using Tubumu.Modules.Admin.Services;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Admin.SignalR.Hubs;
+using Tubumu.Modules.Admin.Sms;
+using Tubumu.Modules.Admin.UI.Frontend;
+using Tubumu.Modules.Admin.UI.Navigation;
+using Tubumu.Modules.Admin.Weixin;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Sms;
 

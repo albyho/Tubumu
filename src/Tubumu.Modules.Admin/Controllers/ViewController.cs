@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Tubumu.Core.Extensions;
-using Tubumu.Modules.Admin.Frontend;
+using Tubumu.Modules.Admin.UI.Frontend;
 
 namespace Tubumu.Modules.Admin.Controllers
 {

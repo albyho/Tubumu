@@ -1,9 +1,9 @@
-﻿namespace Tubumu.Modules.Admin.Settings
+﻿namespace Tubumu.Modules.Admin.Weixin
 {
     /// <summary>
-    /// WeixinWebSettings
+    /// WeixinMobileEndSettings
     /// </summary>
-    public class WeixinWebSettings
+    public class WeixinMobileEndSettings
     {
         /// <summary>
         /// AppId
