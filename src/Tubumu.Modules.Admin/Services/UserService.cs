@@ -261,7 +261,9 @@ namespace Tubumu.Modules.Admin.Services
             {
                 return await GetNormalItemByUserIdInCacheInternalAsync(userId);
             }
-            return await _repository.GetItemByUserIdAsync(userId, status);
+            var userInfo = await _repository.GetItemByUserIdAsync(userId, status);
+            await CacheNormalUser(userInfo);
+            return userInfo;
         }
 
         /// <summary>
@@ -274,10 +276,7 @@ namespace Tubumu.Modules.Admin.Services
         {
             if (username.IsNullOrWhiteSpace()) return null;
             var userInfo = await _repository.GetItemByUsernameAsync(username, status);
-            if (userInfo != null && userInfo.Status == UserStatus.Normal)
-            {
-                await CacheUser(userInfo);
-            }
+            await CacheNormalUser(userInfo);
             return userInfo;
         }
 
@@ -292,10 +291,7 @@ namespace Tubumu.Modules.Admin.Services
         {
             if (email.IsNullOrWhiteSpace()) return null;
             var userInfo = await _repository.GetItemByEmailAsync(email, emailIsValid, status);
-            if (userInfo != null && userInfo.Status == UserStatus.Normal)
-            {
-                await CacheUser(userInfo);
-            }
+            await CacheNormalUser(userInfo);
             return userInfo;
         }
 
@@ -310,10 +306,7 @@ namespace Tubumu.Modules.Admin.Services
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
             var userInfo = await _repository.GetItemByMobileAsync(mobile, mobileIsValid, status);
-            if (userInfo != null && userInfo.Status == UserStatus.Normal)
-            {
-                await CacheUser(userInfo);
-            }
+            await CacheNormalUser(userInfo);
             return userInfo;
         }
 
@@ -450,9 +443,9 @@ namespace Tubumu.Modules.Admin.Services
             }
             //保存实体
             var userInfo = await _repository.SaveAsync(userInput, modelState);
-            if (userInfo != null && userInfo.Status == UserStatus.Normal)
+            if (userInput is UserInputEdit userInputEdit)
             {
-                await CacheUser(userInfo);
+                await CleanCache(userInputEdit.UserId);
             }
             return userInfo;
         }
@@ -690,8 +683,9 @@ namespace Tubumu.Modules.Admin.Services
             return tmpstr;
         }
 
-        private async Task CacheUser(UserInfo userInfo)
+        private async Task CacheNormalUser(UserInfo userInfo)
         {
+            if(userInfo == null || userInfo.Status != UserStatus.Normal) return;
             var cacheKey = UserCacheKeyFormat.FormatWith(userInfo.UserId);
             await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {

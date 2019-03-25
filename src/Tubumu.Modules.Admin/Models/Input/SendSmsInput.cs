@@ -14,7 +14,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         [Required(ErrorMessage = "请输入手机号码")]
         [ChineseMobilePeriod(ErrorMessage = "请输入以半角逗号分隔的手机号码")]
-        public string PhoneNumber { get; }
+        public string PhoneNumber { get; set; }
 
         /// <summary>
         /// 内容
@@ -22,6 +22,6 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         [Required(ErrorMessage = "请输入内容")]
         [StringLength(70, ErrorMessage = "短信内容请保持在 70 个字符以内")]
-        public string Text { get; }
+        public string Text { get; set; }
     }
 }

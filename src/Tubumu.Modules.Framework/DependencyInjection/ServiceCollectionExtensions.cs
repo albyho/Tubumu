@@ -26,19 +26,19 @@ namespace Microsoft.Extensions.DependencyInjection
                 if (interfaceTypeInfos.Length > 1)
                 {
                     // 将类注册为其实现的所有非 ITransientDependency、ISingletonDependency 和 IScopedDependency 的接口的服务
-                    foreach (var handlerType in interfaceTypeInfos.Where(m => m != typeof(ITransientDependency) && m != typeof(ISingletonDependency) && m != typeof(IScopedDependency)))
+                    foreach (var handlerTypeInfo in interfaceTypeInfos.Where(m => m != typeof(ITransientDependency) && m != typeof(ISingletonDependency) && m != typeof(IScopedDependency)))
                     {
                         if (typeof(ITransientDependency).IsAssignableFrom(type))
                         {
-                            services.AddTransient(handlerType.AsType(), type.AsType());
+                            services.AddTransient(handlerTypeInfo.AsType(), type.AsType());
                         }
                         else if (typeof(ISingletonDependency).IsAssignableFrom(type))
                         {
-                            services.AddSingleton(handlerType.AsType(), type.AsType());
+                            services.AddSingleton(handlerTypeInfo.AsType(), type.AsType());
                         }
                         else if (typeof(IScopedDependency).IsAssignableFrom(type))
                         {
-                            services.AddScoped(handlerType.AsType(), type.AsType());
+                            services.AddScoped(handlerTypeInfo.AsType(), type.AsType());
                         }
                     }
                 }

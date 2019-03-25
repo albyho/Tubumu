@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using Newtonsoft.Json;
 
-namespace Tubumu.Modules.Admin.Models
+namespace Tubumu.Modules.Admin.UI.Navigation
 {
     /// <summary>
     /// 菜单类型

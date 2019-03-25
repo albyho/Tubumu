@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
+using Tubumu.Modules.Admin.UI.Navigation;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
@@ -31,7 +32,7 @@ namespace Tubumu.Modules.Admin.Controllers
             if (userInfo == null)
             {
                 result.Code = 400;
-                result.Message = "获取用户失败: 获取用户信息失败";
+                result.Message = "获取用户信息失败";
                 return result;
             }
             var profile = new Profile
@@ -46,7 +47,7 @@ namespace Tubumu.Modules.Admin.Controllers
             };
 
             result.Code = 200;
-            result.Message = "获取用户成功";
+            result.Message = "获取用户信息成功";
             result.Item = profile;
             return result;
         }
