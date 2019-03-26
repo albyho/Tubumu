@@ -21,21 +21,21 @@ namespace Tubumu.Modules.Framework.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<string> GenerateRefreshToken(int userId);
+        Task<string> GenerateRefreshTokenAsync(int userId);
 
         /// <summary>
         /// 获取 Refresh Token
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<string> GetRefreshToken(int userId);
+        Task<string> GetRefreshTokenAsync(int userId);
 
         /// <summary>
         /// 废弃 Refresh Token
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task RevokeRefreshToken(int userId);
+        Task RevokeRefreshTokenAsync(int userId);
 
         /// <summary>
         /// 通过过期 Token 获取 ClaimsPrincipal

@@ -59,7 +59,7 @@ namespace Tubumu.Modules.Framework.Services
         /// 生成 Refresh Token
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GenerateRefreshToken(int userId)
+        public async Task<string> GenerateRefreshTokenAsync(int userId)
         {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create())
@@ -80,7 +80,7 @@ namespace Tubumu.Modules.Framework.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GetRefreshToken(int userId)
+        public async Task<string> GetRefreshTokenAsync(int userId)
         {
             var cacheKey = CacheKeyFormat.FormatWith(userId);
             return await _cache.GetStringAsync(cacheKey);
@@ -91,7 +91,7 @@ namespace Tubumu.Modules.Framework.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task RevokeRefreshToken(int userId)
+        public async Task RevokeRefreshTokenAsync(int userId)
         {
             var cacheKey = CacheKeyFormat.FormatWith(userId);
             await _cache.RemoveAsync(cacheKey);

@@ -61,21 +61,15 @@ namespace Tubumu.Modules.Admin.Controllers
 
             HttpContext.Session.Remove(ValidationCodeKey);
 
-            var user = await _userService.GetNormalUserAsync(input.Account, input.Password);
-            if (user == null)
+            var userInfo = await _userService.GetNormalUserAsync(input.Account, input.Password);
+            if (userInfo == null)
             {
                 result.Code = 400;
                 result.Message = "账号或密码错误，或用户状态不允许登录";
                 return result;
             }
 
-            var token = _tokenService.GenerateAccessToken(user);
-            var refreshToken = await _tokenService.GenerateRefreshToken(user.UserId);
-            result.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            result.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             result.Url = _frontendSettings.CoreEnvironment.IsDevelopment ? _frontendSettings.CoreEnvironment.DevelopmentHost + "/modules/index.html" : Url.Action("Index", "View");
             result.Code = 200;
             result.Message = "登录成功";
@@ -97,7 +91,7 @@ namespace Tubumu.Modules.Admin.Controllers
             var userId = HttpContext.User.GetUserId();
             if (userId >= 0)
             {
-                await _tokenService.RevokeRefreshToken(userId);
+                await _tokenService.RevokeRefreshTokenAsync(userId);
                 await _userService.SignOutAsync(userId);
             }
             var result = new ApiResultUrl
@@ -128,7 +122,7 @@ namespace Tubumu.Modules.Admin.Controllers
             var principal = _tokenService.GetPrincipalFromExpiredToken(input.Token);
             var userId = principal.GetUserId(); //this is mapped to the Name claim by default
 
-            var storeRefreshToken = await _tokenService.GetRefreshToken(userId);
+            var storeRefreshToken = await _tokenService.GetRefreshTokenAsync(userId);
             if (storeRefreshToken != input.RefreshToken)
             {
                 result.Code = 200;
@@ -138,7 +132,7 @@ namespace Tubumu.Modules.Admin.Controllers
             }
 
             var newToken = _tokenService.GenerateAccessToken(principal.Claims);
-            var newRefreshToken = await _tokenService.GenerateRefreshToken(userId);
+            var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(userId);
             result.Data = new ApiResultTokenData
             {
                 Token = newToken,

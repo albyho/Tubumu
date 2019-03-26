@@ -70,13 +70,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return result;
             }
 
-            var token = _tokenService.GenerateAccessToken(userInfo);
-            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            result.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            result.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             result.Code = 200;
             result.Message = "登录成功";
             return result;
@@ -144,13 +138,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var token = _tokenService.GenerateAccessToken(userInfo);
-            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "注册成功";
             return returnResult;
@@ -174,13 +162,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var token = _tokenService.GenerateAccessToken(userInfo);
-            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -262,13 +244,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var token = _tokenService.GenerateAccessToken(userInfo);
-            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -308,13 +284,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var token = _tokenService.GenerateAccessToken(userInfo);
-            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -354,13 +324,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var token = _tokenService.GenerateAccessToken(userInfo);
-            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -400,13 +364,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var token = _tokenService.GenerateAccessToken(userInfo);
-            var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Data = new ApiResultTokenData
-            {
-                Token = token,
-                RefreshToken = refreshToken,
-            };
+            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
