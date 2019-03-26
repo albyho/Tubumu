@@ -748,12 +748,12 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             if (userInput.RoleId.HasValue && group.GroupAvailableRole.All(m => m.RoleId != userInput.RoleId.Value))
             {
-                modelState.AddModelError("GroupId", "分组【{0}】不允许使用该角色".FormatWith(group.Name));
+                modelState.AddModelError("GroupId", $"分组【{group.Name}】不允许使用该角色");
                 return null;
             }
             if (!group.IsContainsUser)
             {
-                modelState.AddModelError("GroupId", "分组【{0}】不允许包含用户".FormatWith(group.Name));
+                modelState.AddModelError("GroupId", $"分组【{group.Name}】不允许包含用户");
                 return null;
             }
 
@@ -921,7 +921,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             if (_context.User.Any(m => m.UserId != userId && m.Username == newUsername))
             {
-                modelState.AddModelError("UserId", "用户名[{0}]已经被使用".FormatWith(newUsername));
+                modelState.AddModelError("UserId", $"用户名[{newUsername}]已经被使用");
                 return false;
             }
             user.Username = newUsername;

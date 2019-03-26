@@ -399,7 +399,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                         sql = "Update [Group] Set Level = Level - @Level,DisplayOrder = DisplayOrder + @NextItemCount Where 1<>1 ";
                         foreach (var id in currTreeIds)
-                            sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
+                            sql += $" Or GroupId = '{id}'";
 
                         await _context.Database.ExecuteSqlCommandAsync(sql
                             , new SqlParameter("Level", xLevel)
@@ -431,7 +431,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         {
                             sql = "Update [Group] Set Level = Level - @Level Where 1<>1 ";
                             foreach (var id in currTreeIds)
-                                sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
+                                sql += $" Or GroupId = '{id}'";
 
                             await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("Level", xLevel - 1)
@@ -449,7 +449,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                             sql = "Update [Group] Set DisplayOrder = DisplayOrder-@XCount,Level = Level - @Level Where 1<>1 ";
                             foreach (var id in currTreeIds)
-                                sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
+                                sql += $" Or GroupId = '{id}'";
                             await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("XCount", xDisplayOrder - 1)//也就是新节点和本节点之间的节点的数量
                                 , new SqlParameter("Level", xLevel - 1)
@@ -482,7 +482,7 @@ namespace Tubumu.Modules.Admin.Repositories
                         int nextItemCount = newParent.DisplayOrder - displayOrderOfNextParentOrNextBrother + 1;
                         sql = "Update [Group] Set DisplayOrder = DisplayOrder+ @XCount,Level = Level - @Level Where 1<>1 ";
                         foreach (var id in currTreeIds)
-                            sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
+                            sql += $" Or GroupId = '{id}'";
                         await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("XCount", nextItemCount)
                             , new SqlParameter("Level", xLevel - 1)
@@ -763,7 +763,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder - @TargetTreeCount Where 1 <> 1 ";
                     foreach (var id in currTreeIds)
-                        sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
+                        sql += $" Or GroupId = '{id}'";
                     await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("TargetTreeCount", targetTreeCount)
                         );
@@ -813,7 +813,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder + @TargetTreeCount Where 1 <> 1 ";
                     foreach (var id in currTreeIds)
-                        sql += " Or GroupId = '{0}'".FormatWith(id.ToString());
+                        sql += $" Or GroupId = '{id}'";
 
                     await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("TargetTreeCount", targetTreeCount)

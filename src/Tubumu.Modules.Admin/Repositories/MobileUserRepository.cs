@@ -283,7 +283,7 @@ namespace Tubumu.Modules.Admin.Repositories
             }
             if (_context.User.Any(m => m.UserId != userId && m.Mobile == newMobile))
             {
-                modelState.AddModelError("UserId", "手机号[{0}]已经被使用".FormatWith(newMobile));
+                modelState.AddModelError("UserId", $"手机号[{newMobile}]已经被使用");
                 return false;
             }
             user.MobileIsValid = mobileIsValid;

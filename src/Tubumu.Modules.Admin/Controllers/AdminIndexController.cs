@@ -142,7 +142,7 @@ namespace Tubumu.Modules.Admin.Controllers
 
             if (item.Type == MenuType.Item && !item.Children.IsNullOrEmpty())
             {
-                throw new Exception("菜单项【{0}】不能包含子项".FormatWith(item.Title));
+                throw new Exception($"菜单项【{item.Title}】不能包含子项");
             }
             if (item.Type == MenuType.Sub || item.Type == MenuType.Group)
             {
