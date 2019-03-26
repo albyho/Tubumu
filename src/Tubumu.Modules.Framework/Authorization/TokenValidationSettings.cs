@@ -36,6 +36,11 @@
         public int ExpiresSeconds { get; set; }
 
         /// <summary>
+        /// RefreshTokenExpiresSeconds
+        /// </summary>
+        public int RefreshTokenExpiresSeconds { get; set; }
+
+        /// <summary>
         /// LoginUrl
         /// </summary>
         public string LoginUrl { get; set; }

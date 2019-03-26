@@ -69,7 +69,7 @@ namespace Tubumu.Modules.Framework.Services
                 var cacheKey = CacheKeyFormat.FormatWith(userId);
                 await _cache.SetStringAsync(cacheKey, refreshToken, new DistributedCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_tokenValidationSettings.ExpiresSeconds + _tokenValidationSettings.ClockSkewSeconds * 2)
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_tokenValidationSettings.ExpiresSeconds + _tokenValidationSettings.ClockSkewSeconds + _tokenValidationSettings.RefreshTokenExpiresSeconds)
                 });
                 return refreshToken;
             }

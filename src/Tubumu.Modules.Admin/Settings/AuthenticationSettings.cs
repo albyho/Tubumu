@@ -1,7 +1,7 @@
 ﻿using System;
 using Tubumu.Modules.Admin.Models;
 
-namespace Tubumu.Modules.Admin.Authorization
+namespace Tubumu.Modules.Admin.Settings
 {
     /// <summary>
     /// AuthenticationSettings

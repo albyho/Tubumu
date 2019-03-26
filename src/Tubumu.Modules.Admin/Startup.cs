@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Modules;
-using Tubumu.Modules.Admin.Authorization;
 using Tubumu.Modules.Admin.Repositories;
 using Tubumu.Modules.Admin.Repositories.Entities;
 using Tubumu.Modules.Admin.Services;
