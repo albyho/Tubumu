@@ -20,6 +20,7 @@ namespace Tubumu.Modules.Admin.Models.Input
 
         /// <summary>
         /// 密码
+        /// <remark>客户端请进行 MD5 加密(小写)</remark>
         /// </summary>
         [Required(ErrorMessage = "请输入密码")]
         [StringLength(32, MinimumLength = 6, ErrorMessage = "密码请保持在6-32个字符之间")]
@@ -51,6 +52,7 @@ namespace Tubumu.Modules.Admin.Models.Input
 
         /// <summary>
         /// 密码
+        /// <remark>客户端请进行 MD5 加密(小写)</remark>
         /// </summary>
         [Required(ErrorMessage = "请输入密码")]
         [StringLength(32, MinimumLength = 6, ErrorMessage = "密码请保持在6-32个字符之间")]
@@ -95,6 +97,7 @@ namespace Tubumu.Modules.Admin.Models.Input
 
         /// <summary>
         /// 密码
+        /// <remark>客户端请进行 MD5 加密(小写)</remark>
         /// </summary>
         [Required(ErrorMessage = "请输入密码")]
         [StringLength(32, MinimumLength = 6, ErrorMessage = "密码请保持在6-32个字符之间")]

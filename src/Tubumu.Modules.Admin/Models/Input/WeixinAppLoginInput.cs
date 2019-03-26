@@ -14,5 +14,4 @@ namespace Tubumu.Modules.Admin.Models.Input
         [Required(ErrorMessage = "微信登录 Code")]
         public string Code { get; set; }
     }
-
 }

@@ -9,12 +9,14 @@ namespace Tubumu.Modules.Admin.Models.Input
     {
         /// <summary>
         /// 登录密码
+        /// <remark>客户端请进行 MD5 加密(小写)</remark>
         /// </summary>
         [Required(ErrorMessage = "登录密码不能为空")]
         public override string Password { get; set; }
 
         /// <summary>
         /// 确认密码
+        /// <remark>客户端请进行 MD5 加密(小写)</remark>
         /// </summary>
         [Required(ErrorMessage = "确认密码不能为空")]
         public override string PasswordConfirm { get; set; }

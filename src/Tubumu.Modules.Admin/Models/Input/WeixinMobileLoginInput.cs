@@ -18,7 +18,6 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 回传数据
         /// 第三方程序发送时用来标识其请求的唯一性的标志，由第三方程序调用sendReq时传入，由微信终端回传，state字符串长度不能超过1K
         /// </summary>
-        public string State {get;set;}
-
+        public string State { get; set; }
     }
 }
