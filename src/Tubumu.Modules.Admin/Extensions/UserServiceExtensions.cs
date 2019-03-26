@@ -120,7 +120,6 @@ namespace Tubumu.Modules.Admin.Services
             string userPassword = splitData[1];
 
             return userPassword == SHA256.Encrypt(password, userPasswordSalt) ? userInfo : null;
-
         }
 
         #endregion

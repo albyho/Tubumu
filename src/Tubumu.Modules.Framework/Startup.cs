@@ -177,7 +177,7 @@ namespace Tubumu.Modules.Framework
                             _logger.LogError($"Authentication Challenge(OnChallenge): {context.Request.Path}");
 
                             // TODO: (alby)为不同客户端返回不同的内容
-                            var result = new ApiUrlResult()
+                            var result = new ApiResultUrl()
                             {
                                 Code = 400,
                                 Message = "Authentication Challenge",

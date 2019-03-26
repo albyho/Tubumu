@@ -59,9 +59,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTokenResult> Login(AccountPasswordLoginInput input)
+        public async Task<ApiResultData<ApiResultTokenData>> Login(AccountPasswordLoginInput input)
         {
-            var result = new ApiTokenResult();
+            var result = new ApiResultData<ApiResultTokenData>();
             var userInfo = await _userService.GetNormalUserAsync(input.Account, input.Password);
             if (userInfo == null)
             {
@@ -72,8 +72,11 @@ namespace Tubumu.Modules.Admin.Controllers
 
             var token = _tokenService.GenerateAccessToken(userInfo);
             var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            result.Token = token;
-            result.RefreshToken = refreshToken;
+            result.Data = new ApiResultTokenData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+            };
             result.Code = 200;
             result.Message = "登录成功";
             return result;
@@ -110,9 +113,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTokenResult> MobilePassswordRegister(MobilePassswordValidationCodeRegisterInput input)
+        public async Task<ApiResultData<ApiResultTokenData>> MobilePassswordRegister(MobilePassswordValidationCodeRegisterInput input)
         {
-            var returnResult = new ApiTokenResult();
+            var returnResult = new ApiResultData<ApiResultTokenData>();
             var verifyMobileValidationCodeInput = new VerifyMobileValidationCodeInput
             {
                 Mobile = input.Mobile,
@@ -143,8 +146,11 @@ namespace Tubumu.Modules.Admin.Controllers
 
             var token = _tokenService.GenerateAccessToken(userInfo);
             var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Token = token;
-            returnResult.RefreshToken = refreshToken;
+            returnResult.Data = new ApiResultTokenData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+            };
             returnResult.Code = 200;
             returnResult.Message = "注册成功";
             return returnResult;
@@ -157,9 +163,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTokenResult> MobilePasswordLogin(MobilePasswordLoginInput input)
+        public async Task<ApiResultData<ApiResultTokenData>> MobilePasswordLogin(MobilePasswordLoginInput input)
         {
-            var returnResult = new ApiTokenResult();
+            var returnResult = new ApiResultData<ApiResultTokenData>();
             var userInfo = await _userService.GetNormalUserAsync(input.Mobile, input.Password);
             if (userInfo == null)
             {
@@ -170,8 +176,11 @@ namespace Tubumu.Modules.Admin.Controllers
 
             var token = _tokenService.GenerateAccessToken(userInfo);
             var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Token = token;
-            returnResult.RefreshToken = refreshToken;
+            returnResult.Data = new ApiResultTokenData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+            };
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -219,9 +228,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTokenResult> MobileLogin(MobileValidationCodeLoginInput input)
+        public async Task<ApiResultData<ApiResultTokenData>> MobileLogin(MobileValidationCodeLoginInput input)
         {
-            var returnResult = new ApiTokenResult();
+            var returnResult = new ApiResultData<ApiResultTokenData>();
             var verifyMobileValidationCodeInput = new VerifyMobileValidationCodeInput
             {
                 Mobile = input.Mobile,
@@ -255,8 +264,11 @@ namespace Tubumu.Modules.Admin.Controllers
 
             var token = _tokenService.GenerateAccessToken(userInfo);
             var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Token = token;
-            returnResult.RefreshToken = refreshToken;
+            returnResult.Data = new ApiResultTokenData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+            };
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -269,9 +281,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTokenResult> WeixinAppLogin(WeixinAppLoginInput input)
+        public async Task<ApiResultData<ApiResultTokenData>> WeixinAppLogin(WeixinAppLoginInput input)
         {
-            var returnResult = new ApiTokenResult();
+            var returnResult = new ApiResultData<ApiResultTokenData>();
             var openId = await _weixinUserService.GetWeixinAppOpenIdAsync(input.Code);
             if (openId == null)
             {
@@ -298,8 +310,11 @@ namespace Tubumu.Modules.Admin.Controllers
 
             var token = _tokenService.GenerateAccessToken(userInfo);
             var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Token = token;
-            returnResult.RefreshToken = refreshToken;
+            returnResult.Data = new ApiResultTokenData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+            };
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -312,9 +327,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTokenResult> WeixinMobileEndLogin(WeixinMobileEndLoginInput input)
+        public async Task<ApiResultData<ApiResultTokenData>> WeixinMobileEndLogin(WeixinMobileEndLoginInput input)
         {
-            var returnResult = new ApiTokenResult();
+            var returnResult = new ApiResultData<ApiResultTokenData>();
             var openId = await _weixinUserService.GetWeixinMobileEndOpenIdAsync(input.Code);
             if (openId == null)
             {
@@ -341,8 +356,11 @@ namespace Tubumu.Modules.Admin.Controllers
 
             var token = _tokenService.GenerateAccessToken(userInfo);
             var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Token = token;
-            returnResult.RefreshToken = refreshToken;
+            returnResult.Data = new ApiResultTokenData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+            };
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -355,9 +373,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTokenResult> WeixinWebLogin(WeixinWebLoginInput input)
+        public async Task<ApiResultData<ApiResultTokenData>> WeixinWebLogin(WeixinWebLoginInput input)
         {
-            var returnResult = new ApiTokenResult();
+            var returnResult = new ApiResultData<ApiResultTokenData>();
             var openId = await _weixinUserService.GetWeixinWebOpenIdAsync(input.Code);
             if (openId == null)
             {
@@ -384,8 +402,11 @@ namespace Tubumu.Modules.Admin.Controllers
 
             var token = _tokenService.GenerateAccessToken(userInfo);
             var refreshToken = await _tokenService.GenerateRefreshToken(userInfo.UserId);
-            returnResult.Token = token;
-            returnResult.RefreshToken = refreshToken;
+            returnResult.Data = new ApiResultTokenData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+            };
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;

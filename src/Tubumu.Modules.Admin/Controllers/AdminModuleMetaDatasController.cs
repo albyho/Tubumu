@@ -22,7 +22,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetModuleMetaDatas")]
-        public async Task<ApiItemResult<MetaDataItem>> GetModuleMetaDatas()
+        public async Task<ApiResultItem<MetaDataItem>> GetModuleMetaDatas()
         {
             var permissions = await _permissionService.GetListInCacheAsync();
             ProjectPermissions(ref permissions);
@@ -30,7 +30,7 @@ namespace Tubumu.Modules.Admin.Controllers
             var roles = await _roleService.GetListInCacheAsync();
             var groups = await _groupService.GetListInCacheAsync();
 
-            var result = new ApiItemResult<MetaDataItem>
+            var result = new ApiResultItem<MetaDataItem>
             {
                 Code = 200,
                 Message = "获取模块元数据成功",

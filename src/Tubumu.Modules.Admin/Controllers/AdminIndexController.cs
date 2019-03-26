@@ -25,9 +25,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetProfile")]
-        public async Task<ApiItemResult<Profile>> GetProfile()
+        public async Task<ApiResultItem<Profile>> GetProfile()
         {
-            var result = new ApiItemResult<Profile>();
+            var result = new ApiResultItem<Profile>();
             var userInfo = await _userService.GetItemByUserIdAsync(HttpContext.User.GetUserId(), UserStatus.Normal);
             if (userInfo == null)
             {
@@ -104,7 +104,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetMenus")]
-        public ApiListResult<Menu> GetMenus()
+        public ApiResultList<Menu> GetMenus()
         {
             var list = new List<Menu>();
             var menuProviders = _menuProviders.OrderBy(m => m.Order);
@@ -117,7 +117,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 }
             }
 
-            var result = new ApiListResult<Menu>
+            var result = new ApiResultList<Menu>
             {
                 Code = 200,
                 Message = "获取菜单成功",

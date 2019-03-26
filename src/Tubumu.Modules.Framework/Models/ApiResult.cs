@@ -27,8 +27,8 @@ namespace Tubumu.Modules.Framework.Models
     {
         /// <summary>
         /// 错误码
-        /// </summary>
         /// <remarks>code: 200 表示成功 其他如无特别提示表示失败</remarks>
+        /// </summary>
         [JsonProperty(PropertyName = "code")]
         public int Code { get; set; }
 
@@ -40,39 +40,9 @@ namespace Tubumu.Modules.Framework.Models
     }
 
     /// <summary>
-    /// ApiUrlResult
+    /// Url ApiResult
     /// </summary>
-    public class ApiUrlResult : ApiResult
-    {
-        /// <summary>
-        /// Url
-        /// </summary>
-        [JsonProperty(PropertyName = "url", NullValueHandling = NullValueHandling.Ignore)]
-        public string Url { get; set; }
-    }
-
-    /// <summary>
-    /// Token ApiResult
-    /// </summary>
-    public class ApiTokenResult : ApiResult
-    {
-        /// <summary>
-        /// Token
-        /// </summary>
-        [JsonProperty(PropertyName = "token", NullValueHandling = NullValueHandling.Ignore)]
-        public string Token { get; set; }
-
-        /// <summary>
-        /// RefreshToken
-        /// </summary>
-        [JsonProperty(PropertyName = "refreshToken", NullValueHandling = NullValueHandling.Ignore)]
-        public string RefreshToken { get; set; }
-    }
-
-    /// <summary>
-    /// Token ApiResult
-    /// </summary>
-    public class ApiTokenUrlResult : ApiTokenResult
+    public class ApiResultUrl : ApiResult
     {
         /// <summary>
         /// Url
@@ -84,7 +54,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// List ApiResult
     /// </summary>
-    public class ApiListResult<T> : ApiResult
+    public class ApiResultList<T> : ApiResult
     {
         /// <summary>
         /// List
@@ -96,7 +66,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Page ApiResult
     /// </summary>
-    public class ApiPageResult<T> : ApiResult where T : class
+    public class ApiResultPage<T> : ApiResult where T : class
     {
         /// <summary>
         /// Page
@@ -108,7 +78,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Tree ApiResult
     /// </summary>
-    public class ApiTreeResult<T> : ApiResult
+    public class ApiResultTree<T> : ApiResult
     {
         /// <summary>
         /// Tree
@@ -120,7 +90,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Item ApiResult
     /// </summary>
-    public class ApiItemResult<T> : ApiResult
+    public class ApiResultItem<T> : ApiResult
     {
         /// <summary>
         /// Item
@@ -132,7 +102,7 @@ namespace Tubumu.Modules.Framework.Models
     /// <summary>
     /// Data ApiResult
     /// </summary>
-    public class ApiDataResult<T> : ApiResult
+    public class ApiResultData<T> : ApiResult
     {
         /// <summary>
         /// Data
@@ -142,9 +112,27 @@ namespace Tubumu.Modules.Framework.Models
     }
 
     /// <summary>
+    /// Data and Url ApiResult
+    /// </summary>
+    public class ApiResultDataUrl<T> : ApiResult
+    {
+        /// <summary>
+        /// Data
+        /// </summary>
+        [JsonProperty(PropertyName = "data", NullValueHandling = NullValueHandling.Ignore)]
+        public T Data { get; set; }
+
+        /// <summary>
+        /// Url
+        /// </summary>
+        [JsonProperty(PropertyName = "url", NullValueHandling = NullValueHandling.Ignore)]
+        public string Url { get; set; }
+    }
+
+    /// <summary>
     /// Html ApiResult
     /// </summary>
-    public class ApiHtmlResult : ApiResult
+    public class ApiResultHtml : ApiResult
     {
         /// <summary>
         /// Html

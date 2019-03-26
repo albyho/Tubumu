@@ -37,9 +37,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiListResult<RegionInfo>> GetRegionInfoList(ParentIdNullableInput parentIdInput)
+        public async Task<ApiResultList<RegionInfo>> GetRegionInfoList(ParentIdNullableInput parentIdInput)
         {
-            var returnResult = new ApiListResult<RegionInfo>();
+            var returnResult = new ApiResultList<RegionInfo>();
             var list = await _regionService.GetRegionInfoListAsync(parentIdInput.ParentId);
             returnResult.List = list;
             returnResult.Code = 200;
@@ -70,9 +70,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ApiTreeResult<RegionTreeNode>> GetRegionTree()
+        public async Task<ApiResultTree<RegionTreeNode>> GetRegionTree()
         {
-            var returnResult = new ApiTreeResult<RegionTreeNode>();
+            var returnResult = new ApiResultTree<RegionTreeNode>();
             var tree = await _regionService.GetRegiontTreeAsync();
             returnResult.Tree = tree;
             returnResult.Code = 200;
@@ -86,9 +86,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTreeResult<RegionTreeNode>> GetRegiontParentTreeByParentIdPath(ParentIdPathInput parentIdPath)
+        public async Task<ApiResultTree<RegionTreeNode>> GetRegiontParentTreeByParentIdPath(ParentIdPathInput parentIdPath)
         {
-            var returnResult = new ApiTreeResult<RegionTreeNode>();
+            var returnResult = new ApiResultTree<RegionTreeNode>();
             var tree = await _regionService.GetRegiontParentTreeAsync(parentIdPath.ParentIdPath);
             returnResult.Tree = tree;
             returnResult.Code = 200;
@@ -102,9 +102,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiTreeResult<RegionTreeNode>> GetRegiontParentTree(RegionIdInput regionIdInput)
+        public async Task<ApiResultTree<RegionTreeNode>> GetRegiontParentTree(RegionIdInput regionIdInput)
         {
-            var returnResult = new ApiTreeResult<RegionTreeNode>();
+            var returnResult = new ApiResultTree<RegionTreeNode>();
             var tree = await _regionService.GetRegiontParentTreeAsync(regionIdInput.RegionId);
             returnResult.Tree = tree;
             returnResult.Code = 200;
@@ -119,9 +119,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiListResult<RegionTreeNode>> GetRegiontTreeChildNodeList(ParentIdNullableInput parentIdInput)
+        public async Task<ApiResultList<RegionTreeNode>> GetRegiontTreeChildNodeList(ParentIdNullableInput parentIdInput)
         {
-            var returnResult = new ApiListResult<RegionTreeNode>();
+            var returnResult = new ApiResultList<RegionTreeNode>();
             var list = await _regionService.GetRegiontTreeChildNodeListAsync(parentIdInput.ParentId);
             returnResult.List = list;
             returnResult.Code = 200;

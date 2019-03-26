@@ -32,9 +32,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetUserPage")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiPageResult<UserInfo>> GetUserPage([FromBody]UserPageSearchCriteria criteria)
+        public async Task<ApiResultPage<UserInfo>> GetUserPage([FromBody]UserPageSearchCriteria criteria)
         {
-            var result = new ApiPageResult<UserInfo>();
+            var result = new ApiResultPage<UserInfo>();
             var page = await _userService.GetPageAsync(criteria);
             result.Code = 200;
             result.Message = "获取用户列表成功";
@@ -120,11 +120,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpGet("GetGroupList")]
         [AllowAnonymous]
-        public async Task<ApiListResult<Group>> GetGroupList()
+        public async Task<ApiResultList<Group>> GetGroupList()
         {
             var groups = await _groupService.GetListInCacheAsync();
             ProjectGroups(ref groups);
-            var result = new ApiListResult<Group>
+            var result = new ApiResultList<Group>
             {
                 Code = 200,
                 Message = "获取分组列表成功",
@@ -140,10 +140,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpGet("GetGroupTree")]
         [AllowAnonymous]
-        public async Task<ApiTreeResult<GroupTreeNode>> GetGroupTree()
+        public async Task<ApiResultTree<GroupTreeNode>> GetGroupTree()
         {
             var tree = await _groupService.GetTreeInCacheAsync();
-            var result = new ApiTreeResult<GroupTreeNode>
+            var result = new ApiResultTree<GroupTreeNode>
             {
                 Code = 200,
                 Message = "获取分组树成功",
@@ -271,10 +271,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetRoleList")]
-        public async Task<ApiListResult<Role>> GetRoleList()
+        public async Task<ApiResultList<Role>> GetRoleList()
         {
             var roles = await _roleService.GetListInCacheAsync();
-            var result = new ApiListResult<Role>
+            var result = new ApiResultList<Role>
             {
                 Code = 200,
                 Message = "获取角色列表成功",
@@ -289,10 +289,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetRoleBaseList")]
-        public async Task<ApiListResult<RoleBase>> GetRoleBaseList()
+        public async Task<ApiResultList<RoleBase>> GetRoleBaseList()
         {
             var roles = await _roleService.GetBaseListInCacheAsync();
-            var result = new ApiListResult<RoleBase>
+            var result = new ApiResultList<RoleBase>
             {
                 Code = 200,
                 Message = "获取角色列表成功",
@@ -333,9 +333,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("AddRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiItemResult<Role>> AddRole([FromBody]RoleInput roleInput)
+        public async Task<ApiResultItem<Role>> AddRole([FromBody]RoleInput roleInput)
         {
-            var result = new ApiItemResult<Role>();
+            var result = new ApiResultItem<Role>();
             if (roleInput.RoleId.HasValue)
             {
                 // Guid.Empty 也不允许
@@ -368,9 +368,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("EditRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiItemResult<Role>> EditRole([FromBody]RoleInput roleInput)
+        public async Task<ApiResultItem<Role>> EditRole([FromBody]RoleInput roleInput)
         {
-            var result = new ApiItemResult<Role>();
+            var result = new ApiResultItem<Role>();
             if (roleInput.RoleId.IsNullOrEmpty())
             {
                 result.Code = 400;
@@ -453,10 +453,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetPermissionTree")]
-        public async Task<ApiTreeResult<PermissionTreeNode>> GetPermissionTree()
+        public async Task<ApiResultTree<PermissionTreeNode>> GetPermissionTree()
         {
             var tree = await _permissionService.GetTreeInCacheAsync();
-            var result = new ApiTreeResult<PermissionTreeNode>
+            var result = new ApiResultTree<PermissionTreeNode>
             {
                 Code = 200,
                 Message = "获取权限树成功",
@@ -475,10 +475,10 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetUserStatuList")]
-        public ApiListResult<KeyValuePair<UserStatus, string>> GetUserStatuList()
+        public ApiResultList<KeyValuePair<UserStatus, string>> GetUserStatuList()
         {
             var list = typeof(UserStatus).GetEnumDictionary<UserStatus>();
-            var result = new ApiListResult<KeyValuePair<UserStatus, string>>
+            var result = new ApiResultList<KeyValuePair<UserStatus, string>>
             {
                 Code = 200,
                 Message = "获取用户状态列表成功",
