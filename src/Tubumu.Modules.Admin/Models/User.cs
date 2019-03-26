@@ -267,7 +267,7 @@ namespace Tubumu.Modules.Admin.Models
             {
                 if (!DisplayName.IsNullOrWhiteSpace() && !RealName.IsNullOrWhiteSpace())
                 {
-                    return "{0}({1})".FormatWith(DisplayName, RealName);
+                    return $"{DisplayName}({RealName})";
                 }
                 else if (!DisplayName.IsNullOrWhiteSpace())
                 {

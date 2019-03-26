@@ -103,7 +103,7 @@ namespace Tubumu.Modules.Admin.Services
                 }
                 if (!await _repository.SaveAsync(item, modelState))
                 {
-                    throw new InvalidOperationException("{0} 角色添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
+                    throw new InvalidOperationException($"{item.Name} 角色添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
             await _cache.RemoveAsync(RoleListCacheKey);
@@ -174,7 +174,7 @@ namespace Tubumu.Modules.Admin.Services
 
             if (foundRole != null && roleInput.RoleId != foundRole.RoleId)
             {
-                modelState.AddModelError("Name", "角色名称【" + roleInput.Name + "】已经被使用");
+                modelState.AddModelError("Name", $"角色名称【{roleInput.Name}】已经被使用");
                 return false;
             }
             return true;

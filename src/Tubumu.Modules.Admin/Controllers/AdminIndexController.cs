@@ -148,11 +148,11 @@ namespace Tubumu.Modules.Admin.Controllers
             {
                 if (!item.LinkRouteName.IsNullOrWhiteSpace())
                 {
-                    throw new Exception("{0}【{1}】不能设置路由".FormatWith(item.Type == MenuType.Sub ? "子菜单" : "菜单组", item.Title));
+                    throw new Exception($"{(item.Type == MenuType.Sub ? "子菜单" : "菜单组")}【{item.Title}】不能设置路由");
                 }
                 if (item.Directly.HasValue && item.Directly.Value)
                 {
-                    throw new Exception("{0}【{1}】不能设置为直接访问".FormatWith(item.Type == MenuType.Sub ? "子菜单" : "菜单组", item.Title));
+                    throw new Exception($"{(item.Type == MenuType.Sub ? "子菜单" : "菜单组")}【{item.Title}】不能设置为直接访问");
                 }
 
                 if (item.Children.IsNullOrEmpty())

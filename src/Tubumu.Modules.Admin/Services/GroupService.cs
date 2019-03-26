@@ -242,7 +242,7 @@ namespace Tubumu.Modules.Admin.Services
 
                 if (!await _repository.SaveAsync(item, modelState))
                 {
-                    throw new InvalidOperationException("{0} 分组添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
+                    throw new InvalidOperationException($"{item.Name} 分组添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
             await RemoveCacheAsync();
@@ -332,7 +332,7 @@ namespace Tubumu.Modules.Admin.Services
 
             if (foundGroup != null && groupInput.GroupId != foundGroup.GroupId)
             {
-                modelState.AddModelError("Name", "分组名称【" + groupInput.Name + "】已经被使用");
+                modelState.AddModelError("Name", $"分组名称【{groupInput.Name}】已经被使用");
                 return false;
             }
             return true;

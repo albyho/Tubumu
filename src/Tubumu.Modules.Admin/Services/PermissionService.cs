@@ -115,7 +115,7 @@ namespace Tubumu.Modules.Admin.Services
             {
                 if (!await _repository.SaveAsync(item, modelState))
                 {
-                    throw new InvalidOperationException("{0} 权限添加失败: ".FormatWith(item.Name, modelState.FirstErrorMessage()));
+                    throw new InvalidOperationException($"{item.Name} 权限添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
             await RemoveCacheAsync();

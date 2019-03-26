@@ -904,7 +904,7 @@ namespace Tubumu.Modules.Admin.Repositories
 
             if (sourceGroup.DisplayOrder == targetGroup.DisplayOrder)
             {
-                modelState.AddModelError("SourceGroupId", "源DisplayOrder和目标DisplayOrder不能相同".FormatWith(sourceGroup.Name, targetGroup.Name));
+                modelState.AddModelError("SourceGroupId", "源DisplayOrder和目标DisplayOrder不能相同");
                 return false;
             }
             // 不允许移动两个系统节点

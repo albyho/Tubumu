@@ -662,7 +662,7 @@ namespace Tubumu.Modules.Admin.Services
             if (rawPassword.IsNullOrWhiteSpace()) return String.Empty;
             string passwordSalt = Guid.NewGuid().ToString("N");
             string data = SHA256.Encrypt(rawPassword, passwordSalt);
-            return "{0}|{1}".FormatWith(passwordSalt, data);
+            return $"{passwordSalt}|{data}";
         }
 
         /// <summary>
