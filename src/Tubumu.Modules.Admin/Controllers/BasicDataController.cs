@@ -14,7 +14,7 @@ namespace Tubumu.Modules.Admin.Controllers
     /// BasicData Controller
     /// </summary>
     /// <remarks>基础数据</remarks>
-    [Route("api/[controller]/[action]")]
+    [Route("Api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
     public class BasicDataController : ControllerBase

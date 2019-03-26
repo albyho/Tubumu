@@ -12,7 +12,7 @@ namespace Tubumu.Modules.Admin.Controllers
     /// Sms Controller
     /// </summary>
     /// <remarks>短信</remarks>
-    [Route("api/[controller]/[action]")]
+    [Route("Api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
     [Authorize]
