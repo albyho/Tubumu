@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Framework.Extensions
@@ -33,7 +32,7 @@ namespace Tubumu.Modules.Framework.Extensions
             var page = new Page<T>();
 
             // 跳过记录集无记录
-            if (topQuery.IsNullOrEmpty())
+            if (topQuery == null || topQuery.Count == 0)
             {
                 page.List = await sourceQuery.Skip(pagingInfo.PageIndex * pagingInfo.PageSize).Take(pagingInfo.PageSize).ToListAsync();
                 if (!pagingInfo.IsExcludeMetaData)

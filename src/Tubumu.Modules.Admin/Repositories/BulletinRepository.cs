@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +51,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<XM.Bulletin> GetItemAsync()
         {
-            var item = await _context.Bulletin.AsNoTracking().FirstOrDefaultAsync();
+            var item = await _context.Bulletin.OrderByDescending(m => m.BulletinId).AsNoTracking().FirstOrDefaultAsync();
             return item.MapTo<XM.Bulletin>();
         }
 
@@ -62,7 +63,7 @@ namespace Tubumu.Modules.Admin.Repositories
         /// <returns></returns>
         public async Task<bool> SaveAsync(BulletinInput bulletinInput, ModelStateDictionary modelState)
         {
-            var dbBulletin = await _context.Bulletin.FirstOrDefaultAsync();
+            var dbBulletin = await _context.Bulletin.OrderByDescending(m => m.BulletinId).FirstOrDefaultAsync();
             if (dbBulletin == null) return false;
 
             Mapper.Map(bulletinInput, dbBulletin);
