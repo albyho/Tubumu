@@ -3,11 +3,11 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Tubumu.Modules.Admin.Services;
+using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.UI.Frontend;
 using Tubumu.Modules.Admin.UI.Navigation;
 using Tubumu.Modules.Framework.Authorization;
-using Tubumu.Modules.Framework.Services;
+using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers

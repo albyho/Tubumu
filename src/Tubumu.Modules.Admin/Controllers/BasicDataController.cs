@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Api;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Admin.Services;
+using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Controllers

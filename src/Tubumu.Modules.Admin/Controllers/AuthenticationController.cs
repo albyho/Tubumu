@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Admin.Services;
+using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Services;
+using Tubumu.Modules.Framework.Application.Services;
 
 namespace Tubumu.Modules.Admin.Controllers
 {

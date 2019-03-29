@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Modules;
-using Tubumu.Modules.Admin.Repositories;
-using Tubumu.Modules.Admin.Repositories.Entities;
-using Tubumu.Modules.Admin.Services;
+using Tubumu.Modules.Admin.Domain.Services;
+using Tubumu.Modules.Admin.Domain.Entities;
+using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Admin.SignalR.Hubs;
 using Tubumu.Modules.Admin.Sms;
@@ -57,18 +57,18 @@ namespace Tubumu.Modules.Admin
                     //warnings.Throw(RelationalEventId.QueryClientEvaluationWarning);
                 }));
 
-            // Repositories
-            services.AddScoped<IRegionRepository, RegionRepository>();
-            services.AddScoped<IBulletinRepository, BulletinRepository>();
-            services.AddScoped<INotificationRepository, NotificationRepository>();
-            services.AddScoped<IPermissionRepository, PermissionRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IGroupRepository, GroupRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IMobileUserRepository, MobileUserRepository>();
-            services.AddScoped<IWeixinUserRepository, WeixinUserRepository>();
+            // Domain Services
+            services.AddScoped<IRegionManager, RegionManager>();
+            services.AddScoped<IBulletinManager, BulletinManager>();
+            services.AddScoped<INotificationManager, NotificationManager>();
+            services.AddScoped<IPermissionManager, PermissionManager>();
+            services.AddScoped<IRoleManager, RoleManager>();
+            services.AddScoped<IGroupManager, GroupManager>();
+            services.AddScoped<IUserManager, UserManager>();
+            services.AddScoped<IMobileUserManager, MobileUserManager>();
+            services.AddScoped<IWeixinUserManager, WeixinUserManager>();
 
-            // Services
+            // Application Services
             services.AddScoped<IRegionService, RegionService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IBulletinService, BulletinService>();

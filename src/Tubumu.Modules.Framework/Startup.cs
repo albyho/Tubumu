@@ -31,7 +31,7 @@ using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Mappings;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Services;
+using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;

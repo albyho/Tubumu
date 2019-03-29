@@ -5,7 +5,7 @@ using Tubumu.Core.Extensions;
 using Tubumu.Core.Utilities.Cryptography;
 using Tubumu.Modules.Admin.Models;
 
-namespace Tubumu.Modules.Admin.Services
+namespace Tubumu.Modules.Admin.Application.Services
 {
     /// <summary>
     /// UserServiceExtensions
