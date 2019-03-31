@@ -223,7 +223,6 @@ namespace Tubumu.Modules.Framework
                 c.AddSecurityRequirement(security);
                 c.DescribeAllEnumsAsStrings();
                 c.DocumentFilter<HiddenApiDocumentFilter>();
-                c.DocumentFilter<PermissionDocumentFilter>();
                 IncludeXmlCommentsForModules(c);
                 c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
             });
@@ -261,7 +260,7 @@ namespace Tubumu.Modules.Framework
             {
                 var commentsFileName = m + ".XML";
                 var commentsFilePath = Path.Combine(baseDirectory, commentsFileName);
-                swaggerGenOptions.IncludeXmlComments(commentsFilePath);
+                swaggerGenOptions.IncludeAuthorizationXmlComments(commentsFilePath, true);
             });
         }
     }

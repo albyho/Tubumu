@@ -9,7 +9,7 @@
 5. [Swagger](https://swagger.io/)
 6. [SignalR](https://docs.microsoft.com/zh-cn/aspnet/core/signalr/introduction?view=aspnetcore-2.2)
 7. [AutoMapper](http://automapper.org/)
-8. [NLog](https://www.nuget.org/packages/NLog.Web.AspNetCore/) (Base on OrchardCore.Logging.NLog)
+8. [NLog](https://www.nuget.org/packages/NLog.Web.AspNetCore/) (Based on OrchardCore.Logging.NLog)
 9. [Vue](https://cn.vuejs.org/) ([Element-UI](http://element-cn.eleme.io/#/zh-CN))
 
 ## 安装

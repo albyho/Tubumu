@@ -231,7 +231,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> SaveAsync(IEnumerable<GroupInput> groups, ModelStateDictionary modelState)
         {
-            // TODO: (alby)事务处理
+            // TODO: (alby)事务
             foreach (var item in groups)
             {
                 if (!await ValidateExistsAsync(item, modelState))
