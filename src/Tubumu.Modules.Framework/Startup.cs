@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
@@ -26,12 +27,12 @@ using OrchardCore.Modules.Manifest;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Tubumu.Core.Extensions;
+using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Mappings;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -181,7 +182,7 @@ namespace Tubumu.Modules.Framework
                             {
                                 Code = 400,
                                 Message = "Authentication Challenge",
-                                Url = tokenValidationSettings.LoginUrl,
+                                Url = _environment.IsProduction() ? tokenValidationSettings.LoginUrl : null,
                             };
                             var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result));
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -260,7 +261,7 @@ namespace Tubumu.Modules.Framework
             {
                 var commentsFileName = m + ".XML";
                 var commentsFilePath = Path.Combine(baseDirectory, commentsFileName);
-                swaggerGenOptions.IncludeAuthorizationXmlComments(commentsFilePath, true);
+                swaggerGenOptions.IncludeAuthorizationXmlComments(commentsFilePath);
             });
         }
     }

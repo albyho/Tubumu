@@ -22,15 +22,15 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpGet("GetBulletin")]
         [PermissionAuthorize(Permissions = "系统公告")]
-        public async Task<ApiResultItem<BulletinInput>> GetBulletin()
+        public async Task<ApiResultData<BulletinInput>> GetBulletin()
         {
             var bulletin = await _bulletinService.GetItemInCacheAsync();
             var bulletinInput = bulletin.MapTo<BulletinInput>();
-            var result = new ApiResultItem<BulletinInput>
+            var result = new ApiResultData<BulletinInput>
             {
                 Code = 200,
                 Message = "获取系统公告成功",
-                Item = bulletinInput,
+                Data = bulletinInput,
             };
 
             return result;

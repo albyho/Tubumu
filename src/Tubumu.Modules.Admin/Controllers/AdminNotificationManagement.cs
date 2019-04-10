@@ -21,14 +21,14 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetNotificationsForManager")]
         [PermissionAuthorize(Permissions = "通知管理")]
-        public async Task<ApiResultPage<NotificationUser>> GetNotificationsForManager([FromBody]NotificationPageSearchCriteria criteria)
+        public async Task<ApiResultData<Page<NotificationUser>>> GetNotificationsForManager([FromBody]NotificationPageSearchCriteria criteria)
         {
             var page = await _notificationService.GetPageAsync(criteria);
-            var result = new ApiResultPage<NotificationUser>
+            var result = new ApiResultData<Page<NotificationUser>>
             {
                 Code = 200,
                 Message = "获取通知列表成功",
-                Page = page,
+                Data = page,
             };
             return result;
         }

@@ -9,4 +9,12 @@ namespace Tubumu.Modules.Framework.Swagger
     public class HiddenApiAttribute : Attribute
     {
     }
+
+    /// <summary>
+    /// IgnoreHiddenApiAttribute
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
+    public class IgnoreHiddenApiAttribute : Attribute
+    {
+    }
 }

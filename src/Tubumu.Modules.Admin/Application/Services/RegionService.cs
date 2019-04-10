@@ -76,8 +76,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             // 父级及同级
             var tree = await GetTreeInCacheInternalAsync();
-            CleanTree(tree, parentIdPath, 0);
-            return tree;
+            var newTree = new List<RegionTreeNode>();
+            CleanTree(tree, newTree, parentIdPath, 0);
+            return newTree;
         }
 
         public async Task<List<RegionTreeNode>> GetRegiontParentTreeAsync(int regionId)
@@ -86,8 +87,9 @@ namespace Tubumu.Modules.Admin.Application.Services
             var tree = await GetTreeInCacheInternalAsync();
             var self = FindRegion(tree, regionId);
             if (self == null) return new List<RegionTreeNode>(0);
-            CleanTree(tree, self.ParentIdPath?.ToArray(), 0);
-            return tree;
+            var newTree = new List<RegionTreeNode>();
+            CleanTree(tree, newTree, self.ParentIdPath?.ToArray(), 0);
+            return newTree;
         }
 
         public async Task<List<RegionTreeNode>> GetRegiontTreeChildNodeListAsync(int? parentId)
@@ -205,6 +207,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 // Save data in cache.
                 _memoryCache.Set(TreeCacheKey, tree, cacheEntryOptions);
             }
+
             return tree;
         }
 
@@ -248,7 +251,27 @@ namespace Tubumu.Modules.Admin.Application.Services
             };
         }
 
-        private void CleanTree(List<RegionTreeNode> source, int[] parentIdPath, int index)
+        private RegionTreeNode RegionTreeNodeClone(RegionTreeNode node)
+        {
+            return new RegionTreeNode
+            {
+                Id = node.Id,
+                ParentId = node.ParentId,
+                Name = node.Name,
+                DisplayOrder = node.DisplayOrder,
+                Initial = node.Initial,
+                Initials = node.Initials,
+                Pinyin = node.Pinyin,
+                Extra = node.Extra,
+                Suffix = node.Suffix,
+                ZipCode = node.ZipCode,
+                RegionCode = node.RegionCode,
+                HasChildren = node.HasChildren,
+                Children = node.Children,
+            };
+        }
+
+        private void CleanTree(List<RegionTreeNode> source, List<RegionTreeNode> newTree, int[] parentIdPath, int index)
         {
             if (parentIdPath != null && index > parentIdPath.Length - 1)
             {
@@ -256,15 +279,18 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             foreach (var node in source)
             {
+                var newNode = RegionTreeNodeClone(node);
+                newTree.Add(newNode);
                 if (parentIdPath == null || node.Id != parentIdPath[index])
                 {
                     // 顶级节点或非本父节点
-                    node.Children = null;
+                    newNode.Children = null;
                 }
                 else if (index < parentIdPath.Length - 1)
                 {
+                    newNode.Children = new List<RegionTreeNode>();
                     // 继续清理下一层
-                    CleanTree(node.Children, parentIdPath, index + 1);
+                    CleanTree(node.Children, newNode.Children, parentIdPath, index + 1);
                 }
             }
         }

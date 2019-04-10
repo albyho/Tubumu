@@ -21,6 +21,11 @@ namespace Tubumu.Modules.Framework.Swagger
         {
             foreach (var apiDescription in context.ApiDescriptions)
             {
+                var ignoreHiddenApiAttribute = GetCustomAttribute<IgnoreHiddenApiAttribute>(apiDescription, true);
+                if (ignoreHiddenApiAttribute != null)
+                {
+                    continue;
+                }
                 var hiddenApiAttribute = GetCustomAttribute<HiddenApiAttribute>(apiDescription, true);
                 if (hiddenApiAttribute != null)
                 {

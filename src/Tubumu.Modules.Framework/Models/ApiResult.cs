@@ -52,54 +52,6 @@ namespace Tubumu.Modules.Framework.Models
     }
 
     /// <summary>
-    /// List ApiResult
-    /// </summary>
-    public class ApiResultList<T> : ApiResult
-    {
-        /// <summary>
-        /// List
-        /// </summary>
-        [JsonProperty(PropertyName = "list", NullValueHandling = NullValueHandling.Ignore)]
-        public IEnumerable<T> List { get; set; }
-    }
-
-    /// <summary>
-    /// Page ApiResult
-    /// </summary>
-    public class ApiResultPage<T> : ApiResult where T : class
-    {
-        /// <summary>
-        /// Page
-        /// </summary>
-        [JsonProperty(PropertyName = "page", NullValueHandling = NullValueHandling.Ignore)]
-        public Page<T> Page { get; set; }
-    }
-
-    /// <summary>
-    /// Tree ApiResult
-    /// </summary>
-    public class ApiResultTree<T> : ApiResult
-    {
-        /// <summary>
-        /// Tree
-        /// </summary>
-        [JsonProperty(PropertyName = "tree")]
-        public IEnumerable<T> Tree { get; set; }
-    }
-
-    /// <summary>
-    /// Item ApiResult
-    /// </summary>
-    public class ApiResultItem<T> : ApiResult
-    {
-        /// <summary>
-        /// Item
-        /// </summary>
-        [JsonProperty(PropertyName = "item", NullValueHandling = NullValueHandling.Ignore)]
-        public T Item { get; set; }
-    }
-
-    /// <summary>
     /// Data ApiResult
     /// </summary>
     public class ApiResultData<T> : ApiResult
@@ -127,18 +79,6 @@ namespace Tubumu.Modules.Framework.Models
         /// </summary>
         [JsonProperty(PropertyName = "url", NullValueHandling = NullValueHandling.Ignore)]
         public string Url { get; set; }
-    }
-
-    /// <summary>
-    /// Html ApiResult
-    /// </summary>
-    public class ApiResultHtml : ApiResult
-    {
-        /// <summary>
-        /// Html
-        /// </summary>
-        [JsonProperty(PropertyName = "html", NullValueHandling = NullValueHandling.Ignore)]
-        public string Html { get; set; }
     }
 
     /// <summary>

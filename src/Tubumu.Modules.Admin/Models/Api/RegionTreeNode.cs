@@ -1,9 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Tubumu.Modules.Admin.Models.Api
 {
@@ -95,6 +91,5 @@ namespace Tubumu.Modules.Admin.Models.Api
         /// </summary>
         [JsonProperty(PropertyName = "regionCode")]
         public string RegionCode { get; set; }
-
     }
 }

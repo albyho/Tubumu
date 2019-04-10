@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,11 +38,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResultList<RegionInfo>> GetRegionInfoList(ParentIdNullableInput parentIdInput)
+        public async Task<ApiResultData<List<RegionInfo>>> GetRegionInfoList(ParentIdNullableInput parentIdInput)
         {
-            var returnResult = new ApiResultList<RegionInfo>();
+            var returnResult = new ApiResultData<List<RegionInfo>>();
             var list = await _regionService.GetRegionInfoListAsync(parentIdInput.ParentId);
-            returnResult.List = list;
+            returnResult.Data = list;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";
             return returnResult;
@@ -70,11 +71,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ApiResultTree<RegionTreeNode>> GetRegionTree()
+        public async Task<ApiResultData<List<RegionTreeNode>>> GetRegionTree()
         {
-            var returnResult = new ApiResultTree<RegionTreeNode>();
+            var returnResult = new ApiResultData<List<RegionTreeNode>>();
             var tree = await _regionService.GetRegiontTreeAsync();
-            returnResult.Tree = tree;
+            returnResult.Data = tree;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";
             return returnResult;
@@ -86,11 +87,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResultTree<RegionTreeNode>> GetRegiontParentTreeByParentIdPath(ParentIdPathInput parentIdPath)
+        public async Task<ApiResultData<List<RegionTreeNode>>> GetRegiontParentTreeByParentIdPath(ParentIdPathInput parentIdPath)
         {
-            var returnResult = new ApiResultTree<RegionTreeNode>();
+            var returnResult = new ApiResultData<List<RegionTreeNode>>();
             var tree = await _regionService.GetRegiontParentTreeAsync(parentIdPath.ParentIdPath);
-            returnResult.Tree = tree;
+            returnResult.Data = tree;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";
             return returnResult;
@@ -102,11 +103,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResultTree<RegionTreeNode>> GetRegiontParentTree(RegionIdInput regionIdInput)
+        public async Task<ApiResultData<List<RegionTreeNode>>> GetRegiontParentTree(RegionIdInput regionIdInput)
         {
-            var returnResult = new ApiResultTree<RegionTreeNode>();
+            var returnResult = new ApiResultData<List<RegionTreeNode>>();
             var tree = await _regionService.GetRegiontParentTreeAsync(regionIdInput.RegionId);
-            returnResult.Tree = tree;
+            returnResult.Data = tree;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";
             return returnResult;
@@ -119,11 +120,11 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ApiResultList<RegionTreeNode>> GetRegiontTreeChildNodeList(ParentIdNullableInput parentIdInput)
+        public async Task<ApiResultData<List<RegionTreeNode>>> GetRegiontTreeChildNodeList(ParentIdNullableInput parentIdInput)
         {
-            var returnResult = new ApiResultList<RegionTreeNode>();
+            var returnResult = new ApiResultData<List<RegionTreeNode>>();
             var list = await _regionService.GetRegiontTreeChildNodeListAsync(parentIdInput.ParentId);
-            returnResult.List = list;
+            returnResult.Data = list;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";
             return returnResult;

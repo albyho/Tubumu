@@ -10,6 +10,7 @@ using Tubumu.Modules.Admin.UI.Navigation;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
+using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -25,9 +26,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetProfile")]
-        public async Task<ApiResultItem<Profile>> GetProfile()
+        public async Task<ApiResultData<Profile>> GetProfile()
         {
-            var result = new ApiResultItem<Profile>();
+            var result = new ApiResultData<Profile>();
             var userInfo = await _userService.GetItemByUserIdAsync(HttpContext.User.GetUserId(), UserStatus.Normal);
             if (userInfo == null)
             {
@@ -48,7 +49,7 @@ namespace Tubumu.Modules.Admin.Controllers
 
             result.Code = 200;
             result.Message = "获取用户信息成功";
-            result.Item = profile;
+            result.Data = profile;
             return result;
         }
 
@@ -104,7 +105,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetMenus")]
-        public ApiResultList<Menu> GetMenus()
+        public ApiResultData<List<Menu>> GetMenus()
         {
             var list = new List<Menu>();
             var menuProviders = _menuProviders.OrderBy(m => m.Order);
@@ -117,11 +118,11 @@ namespace Tubumu.Modules.Admin.Controllers
                 }
             }
 
-            var result = new ApiResultList<Menu>
+            var result = new ApiResultData<List<Menu>>
             {
                 Code = 200,
                 Message = "获取菜单成功",
-                List = list
+                Data = list
             };
             return result;
         }

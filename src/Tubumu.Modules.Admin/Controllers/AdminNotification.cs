@@ -20,15 +20,15 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="criteria"></param>
         /// <returns></returns>
         [HttpPost("GetNotifications")]
-        public async Task<ApiResultPage<NotificationUser>> GetNotifications([FromBody]NotificationPageSearchCriteria criteria)
+        public async Task<ApiResultData<Page<NotificationUser>>> GetNotifications([FromBody]NotificationPageSearchCriteria criteria)
         {
             criteria.ToUserId = HttpContext.User.GetUserId();
             var page = await _notificationService.GetPageAsync(criteria);
-            var result = new ApiResultPage<NotificationUser>
+            var result = new ApiResultData<Page<NotificationUser>>
             {
                 Code = 200,
                 Message = "获取通知列表成功",
-                Page = page,
+                Data = page,
             };
             return result;
         }
@@ -82,14 +82,14 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="currentNotificationId"></param>
         /// <returns></returns>
         [HttpPost("GetNewestNotification")]
-        public async Task<ApiResultItem<NotificationUser>> GetNewestNotification(int? currentNotificationId)
+        public async Task<ApiResultData<NotificationUser>> GetNewestNotification(int? currentNotificationId)
         {
             int userId = int.Parse(HttpContext.User.Identity.Name);
-            var result = new ApiResultItem<NotificationUser>
+            var result = new ApiResultData<NotificationUser>
             {
                 Code = 200,
                 Message = "获取最新消息成功",
-                Item = await _notificationService.GetNewestAsync(userId, currentNotificationId),
+                Data = await _notificationService.GetNewestAsync(userId, currentNotificationId),
             };
 
             return result;

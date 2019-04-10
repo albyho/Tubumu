@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml.XPath;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -44,6 +42,5 @@ namespace Tubumu.Modules.Framework.Swagger
         {
             swaggerGenOptions.IncludeAuthorizationXmlComments((Func<XPathDocument>)(() => new XPathDocument(filePath)), includeControllerXmlComments);
         }
-
     }
 }

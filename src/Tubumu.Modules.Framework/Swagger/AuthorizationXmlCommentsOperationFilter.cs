@@ -62,8 +62,9 @@ namespace Tubumu.Modules.Framework.Swagger
         private void ApplyMethodXmlToOperation(Operation operation, XPathNavigator methodNode, ApiDescription apiDescription)
         {
             XPathNavigator xpathNavigator1 = methodNode.SelectSingleNode("summary");
-            if (xpathNavigator1 != null) {}
-                operation.Summary = XmlCommentsTextHelper.Humanize(xpathNavigator1.InnerXml) + GetMemberPermission(apiDescription);
+            operation.Summary = GetMemberPermission(apiDescription);
+            if (xpathNavigator1 != null)
+                operation.Summary += XmlCommentsTextHelper.Humanize(xpathNavigator1.InnerXml);
             XPathNavigator xpathNavigator2 = methodNode.SelectSingleNode("remarks");
             if (xpathNavigator2 == null)
                 return;
@@ -169,7 +170,7 @@ namespace Tubumu.Modules.Framework.Swagger
                 }
             }
 
-            return !extension.IsNullOrWhiteSpace() ? " " + extension : "";
+            return !extension.IsNullOrWhiteSpace() ? extension + " ": "";
         }
 
         private static T GetCustomAttribute<T>(ApiDescription apiDescription, bool inherit) where T : Attribute

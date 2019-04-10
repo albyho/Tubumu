@@ -22,12 +22,12 @@
     public enum MovingLocation
     {
         /// <summary>
-        /// 之上
+        /// 之下
         /// </summary>
         Under,
 
         /// <summary>
-        /// 之下
+        /// 之上
         /// </summary>
         Above
     }
