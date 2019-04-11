@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Tubumu.Modules.Admin.Models.Input;
+using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.Sms;
+using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -15,7 +16,7 @@ namespace Tubumu.Modules.Admin.Controllers
     [Route("Api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
-    [Authorize]
+    [HiddenApi]
     public class SmsController : ControllerBase
     {
         private readonly ISmsSender _smsSender;
@@ -37,6 +38,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
+        [PermissionAuthorize(Permissions = "短信发送")]
         public async Task<ApiResult> Send(SendSmsInput input)
         {
             var returnResult = new ApiResult();
