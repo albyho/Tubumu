@@ -33,6 +33,7 @@ using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Mappings;
 using Tubumu.Modules.Framework.Models;
+using Tubumu.Modules.Framework.RabbitMQ;
 using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
@@ -205,6 +206,10 @@ namespace Tubumu.Modules.Framework
             // AutoMapper
             services.AddAutoMapper();
             Initalizer.Initialize();
+
+            // RabbitMQ
+            services.AddSingleton<IConnectionPool, ConnectionPool>();
+            services.AddSingleton<IChannelPool, ChannelPool>();
 
             // Swagger
             services.AddSwaggerGen(c =>

@@ -153,7 +153,6 @@ namespace Tubumu.Modules.Framework.Swagger
                 {
                     extension = extension.IsNullOrEmpty() ? groups : (!roles.IsNullOrEmpty() ? $"{extension}&&({groups})" : $"({extension})&&({groups})");
                 }
-
                 if (!extension.IsNullOrEmpty())
                 {
                     extension = extension.Replace(",", "||");
