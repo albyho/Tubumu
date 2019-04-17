@@ -1,8 +1,5 @@
 ﻿using System.Text;
-using System.Threading;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Tubumu.Modules.Framework.RabbitMQ;
 using RabbitMQ.Client;
 
 namespace Tubumu.Modules.Framework.RabbitMQ

@@ -10,6 +10,8 @@ namespace Tubumu.Modules.Framework.RabbitMQ
     public class ConnectionPool : IConnectionPool
     {
         private const string DefaultHostName = "localhost";
+        private const string DefaultUserName = "guest";
+        private const string DefaultPassword = "guest";
         private const string DefaultConnectionName = "Default";
         private readonly ConnectionFactory _connectionFactory;
         private readonly ConcurrentDictionary<string, IConnection> _connections;
@@ -22,6 +24,8 @@ namespace Tubumu.Modules.Framework.RabbitMQ
             _connectionFactory = new ConnectionFactory()
             {
                 HostName = DefaultHostName,
+                UserName = DefaultUserName,
+                Password = DefaultPassword,
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
                 RequestedHeartbeat = 10,

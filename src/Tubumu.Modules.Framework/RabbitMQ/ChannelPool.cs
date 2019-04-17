@@ -125,7 +125,7 @@ namespace Tubumu.Modules.Framework.RabbitMQ
 
                 _logger.LogInformation($"Disposed RabbitMQ Channel Pool ({_channels.Count} channels in {poolDisposeStopwatch.Elapsed.TotalMilliseconds:0.00} ms).");
 
-                if(poolDisposeStopwatch.Elapsed.TotalSeconds > 5.0)
+                if (poolDisposeStopwatch.Elapsed.TotalSeconds > 5.0)
                 {
                     _logger.LogWarning($"Disposing RabbitMQ Channel Pool got time greather than expected: {poolDisposeStopwatch.Elapsed.TotalMilliseconds:0.00} ms.");
                 }
