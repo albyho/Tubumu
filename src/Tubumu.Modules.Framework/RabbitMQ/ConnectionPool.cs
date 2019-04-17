@@ -24,7 +24,7 @@ namespace Tubumu.Modules.Framework.RabbitMQ
                 HostName = DefaultHostName,
                 AutomaticRecoveryEnabled = true,
                 NetworkRecoveryInterval = TimeSpan.FromSeconds(10),
-                HandshakeContinuationTimeout = TimeSpan.FromSeconds(60),
+                RequestedHeartbeat = 10,
             };
             _connections = new ConcurrentDictionary<string, IConnection>();
         }
