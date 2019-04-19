@@ -43,7 +43,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("EditBulletin")]
         [PermissionAuthorize(Permissions = "系统公告")]
-        public async Task<ApiResult> EditBulletin([FromBody]BulletinInput bulletinInput)
+        public async Task<ApiResult> EditBulletin(BulletinInput bulletinInput)
         {
             var result = new ApiResult();
             if (bulletinInput.IsShow && (bulletinInput.Title.IsNullOrWhiteSpace() || bulletinInput.Content.IsNullOrWhiteSpace()))

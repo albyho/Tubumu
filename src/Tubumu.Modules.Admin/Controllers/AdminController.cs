@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.UI.Frontend;
@@ -22,6 +23,7 @@ namespace Tubumu.Modules.Admin.Controllers
     [HiddenApi]
     public partial class AdminController : ControllerBase
     {
+        private readonly IHostingEnvironment _environment;
         private readonly JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
         private readonly TokenValidationSettings _tokenValidationSettings;
         private readonly ITokenService _tokenService;
@@ -41,6 +43,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="environment"></param>
         /// <param name="tokenValidationSettings"></param>
         /// <param name="tokenService"></param>
         /// <param name="frontendSettingsOptions"></param>
@@ -54,6 +57,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="moduleMetaDataProviders"></param>
         /// <param name="menuProviders"></param>
         public AdminController(
+            IHostingEnvironment environment,
             TokenValidationSettings tokenValidationSettings,
             ITokenService tokenService,
             IOptions<FrontendSettings> frontendSettingsOptions,
@@ -67,6 +71,7 @@ namespace Tubumu.Modules.Admin.Controllers
             IEnumerable<IModuleMetaDataProvider> moduleMetaDataProviders,
             IEnumerable<IMenuProvider> menuProviders)
         {
+            _environment = environment;
             _tokenValidationSettings = tokenValidationSettings;
             _tokenService = tokenService;
             _frontendSettings = frontendSettingsOptions.Value;

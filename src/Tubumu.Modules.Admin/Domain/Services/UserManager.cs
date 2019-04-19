@@ -55,11 +55,11 @@ namespace Tubumu.Modules.Admin.Domain.Services
         Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, XM.UserStatus? status = null);
 
         /// <summary>
-        /// GetHeadUrlAsync
+        /// GetAvatarUrlAsync
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<string> GetHeadUrlAsync(int userId);
+        Task<string> GetAvatarUrlAsync(int userId);
 
         /// <summary>
         /// GetUserInfoWarpperListAsync
@@ -175,9 +175,9 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// ChangeHeadAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newHeadUrl"></param>
+        /// <param name="newAvatarUrl"></param>
         /// <returns></returns>
-        Task<bool> ChangeHeadAsync(int userId, string newHeadUrl);
+        Task<bool> ChangeAvatarAsync(int userId, string newAvatarUrl);
 
         /// <summary>
         /// ChangePasswordAsync
@@ -249,7 +249,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 CreationTime = u.CreationTime,
                 Description = u.Description,
                 Status = u.Status,
-                HeadUrl = u.HeadUrl,
+                AvatarUrl = u.AvatarUrl,
                 IsDeveloper = u.IsDeveloper,
                 IsTester = u.IsTester,
                 Group = new XM.GroupInfo
@@ -435,13 +435,13 @@ namespace Tubumu.Modules.Admin.Domain.Services
         }
 
         /// <summary>
-        /// GetHeadUrlAsync
+        /// GetAvatarUrlAsync
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GetHeadUrlAsync(int userId)
+        public async Task<string> GetAvatarUrlAsync(int userId)
         {
-            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.HeadUrl).FirstOrDefaultAsync();
+            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.AvatarUrl).FirstOrDefaultAsync();
             return head;
         }
 
@@ -460,7 +460,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 UserId = m.UserId,
                 Username = m.Username,
                 DisplayName = m.DisplayName,
-                HeadUrl = m.HeadUrl,
+                AvatarUrl = m.AvatarUrl,
             }).AsNoTracking().ToListAsync();
 
             return list;
@@ -630,6 +630,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 CreationTime = u.CreationTime,
                 Description = u.Description,
                 Status = u.Status,
+                AvatarUrl = u.AvatarUrl,
+                LogoUrl = u.LogoUrl,
                 IsDeveloper = u.IsDeveloper,
                 IsTester = u.IsTester,
                 Group = new XM.GroupInfo
@@ -761,7 +763,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             userToSave.RoleId = userInput.RoleId;
             userToSave.Username = userInput.Username;
             userToSave.DisplayName = userInput.DisplayName;
-            userToSave.HeadUrl = userInput.HeadUrl;
+            userToSave.AvatarUrl = userInput.AvatarUrl;
             userToSave.LogoUrl = userInput.LogoUrl;
             userToSave.RealName = userInput.RealName;
             userToSave.RealNameIsValid = userInput.RealNameIsValid;
@@ -1019,8 +1021,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 return false;
 
             user.DisplayName = userChangeProfileInput.DisplayName;
-            user.HeadUrl = userChangeProfileInput.HeadUrl;
-            user.LogoUrl = userChangeProfileInput.LogoUrl;
             await _context.SaveChangesAsync();
 
             return true;
@@ -1052,15 +1052,15 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// ChangeHeadAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="headUrl"></param>
+        /// <param name="avatarUrl"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeHeadAsync(int userId, string headUrl)
+        public async Task<bool> ChangeAvatarAsync(int userId, string avatarUrl)
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
                 return false;
 
-            user.HeadUrl = headUrl;
+            user.AvatarUrl = avatarUrl;
             await _context.SaveChangesAsync();
 
             return true;

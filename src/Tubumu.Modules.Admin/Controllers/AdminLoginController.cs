@@ -41,7 +41,7 @@ namespace Tubumu.Modules.Admin.Controllers
         [HttpPost]
         [Route("Login")]
         [AllowAnonymous]
-        public async Task<ApiResultDataUrl<ApiResultTokenData>> Login([FromBody]AccountPasswordValidationCodeLoginInput input)
+        public async Task<ApiResultDataUrl<ApiResultTokenData>> Login(AccountPasswordValidationCodeLoginInput input)
         {
             var result = new ApiResultDataUrl<ApiResultTokenData>();
             var validationCode = HttpContext.Session.GetString(ValidationCodeKey);
@@ -116,7 +116,7 @@ namespace Tubumu.Modules.Admin.Controllers
         [HttpPost]
         [Route("RefreshToken")]
         [AllowAnonymous]
-        public async Task<ApiResultDataUrl<ApiResultTokenData>> RefreshToken([FromBody]RefreshTokenInput input)
+        public async Task<ApiResultDataUrl<ApiResultTokenData>> RefreshToken(RefreshTokenInput input)
         {
             var result = new ApiResultDataUrl<ApiResultTokenData>();
             var principal = _tokenService.GetPrincipalFromExpiredToken(input.Token);

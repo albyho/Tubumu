@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetNotificationsForManager")]
         [PermissionAuthorize(Permissions = "通知管理")]
-        public async Task<ApiResultData<Page<NotificationUser>>> GetNotificationsForManager([FromBody]NotificationPageSearchCriteria criteria)
+        public async Task<ApiResultData<Page<NotificationUser>>> GetNotificationsForManager(NotificationPageSearchCriteria criteria)
         {
             var page = await _notificationService.GetPageAsync(criteria);
             var result = new ApiResultData<Page<NotificationUser>>
@@ -40,7 +40,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("AddNotification")]
         [PermissionAuthorize(Permissions = "通知管理")]
-        public async Task<ApiResult> AddNotification([FromBody]NotificationInput notificationInput)
+        public async Task<ApiResult> AddNotification(NotificationInput notificationInput)
         {
             notificationInput.FromUserId = HttpContext.User.GetUserId();
             var result = new ApiResult();
@@ -69,7 +69,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("EditNotification")]
         [PermissionAuthorize(Permissions = "通知管理")]
-        public async Task<object> EditNotification([FromBody]NotificationInput notificationInput)
+        public async Task<object> EditNotification(NotificationInput notificationInput)
         {
             notificationInput.FromUserId = HttpContext.User.GetUserId();
             var result = new ApiResult();
@@ -98,7 +98,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("RemoveNotification")]
         [PermissionAuthorize(Permissions = "通知管理")]
-        public async Task<ApiResult> RemoveNotification([FromBody]NotificationIdInput notificationIdInput)
+        public async Task<ApiResult> RemoveNotification(NotificationIdInput notificationIdInput)
         {
             var result = new ApiResult();
             if (!await _notificationService.RemoveAsync(notificationIdInput.NotificationId, ModelState))

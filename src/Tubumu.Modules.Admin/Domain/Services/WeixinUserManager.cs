@@ -180,7 +180,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 CreationTime = u.CreationTime,
                 Description = u.Description,
                 Status = u.Status,
-                HeadUrl = u.HeadUrl,
+                AvatarUrl = u.AvatarUrl,
                 IsDeveloper = u.IsDeveloper,
                 IsTester = u.IsTester,
                 Group = new XM.GroupInfo

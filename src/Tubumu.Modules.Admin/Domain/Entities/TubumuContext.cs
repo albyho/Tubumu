@@ -238,7 +238,7 @@ namespace Tubumu.Modules.Admin.Domain.Entities
 
                 entity.Property(e => e.Email).HasMaxLength(100);
 
-                entity.Property(e => e.HeadUrl).HasMaxLength(200);
+                entity.Property(e => e.AvatarUrl).HasMaxLength(200);
 
                 entity.Property(e => e.LogoUrl).HasMaxLength(200);
 

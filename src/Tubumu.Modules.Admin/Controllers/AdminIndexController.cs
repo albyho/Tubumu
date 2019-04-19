@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Models;
@@ -10,7 +12,6 @@ using Tubumu.Modules.Admin.UI.Navigation;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -19,6 +20,8 @@ namespace Tubumu.Modules.Admin.Controllers
     /// </summary>
     public partial class AdminController
     {
+        private readonly string[] _imageExtensions = new[] { ".jpg", ".png" };
+
         #region Index
 
         /// <summary>
@@ -41,7 +44,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 UserId = userInfo.UserId,
                 Username = userInfo.Username,
                 DisplayName = userInfo.DisplayName,
-                HeadUrl = userInfo.HeadUrl,
+                AvatarUrl = userInfo.AvatarUrl,
                 LogoUrl = userInfo.LogoUrl,
                 Groups = await _groupService.GetInfoPathAsync(userInfo.Group.GroupId),
                 Role = userInfo.Role,
@@ -59,7 +62,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("ChangeProfile")]
-        public async Task<ApiResult> ChangeProfile([FromBody]UserChangeProfileInput input)
+        public async Task<ApiResult> ChangeProfile(UserChangeProfileInput input)
         {
             var result = new ApiResult();
             var changeProfileResult = await _adminUserService.ChangeProfileAsync(HttpContext.User.GetUserId(), input, ModelState);
@@ -78,12 +81,106 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
+        /// 修改用户头像
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost("ChangeAvatar")]
+        public async Task<ApiResultUrl> ChangeAvatar(IFormFile file)
+        {
+            var result = new ApiResultUrl();
+            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            if (!_imageExtensions.Contains(extension))
+            {
+                result.Code = 400;
+                result.Message = "修改头像失败：图片格式错误(仅支持 jpg 或 png)";
+                return result;
+            }
+
+            if (file.Length > 1024 * 1024)
+            {
+                result.Code = 400;
+                result.Message = "修改头像失败：请保持在 1M 以内";
+                return result;
+            }
+            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Avatar");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            var userId = HttpContext.User.GetUserId();
+            var fileName =  userId + extension;
+            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
+            {
+                file.CopyTo(stream);
+            }
+            var webUrl = $"/Upload/Avatar/{fileName}";
+            if (!await _userService.ChangeAvatarAsync(userId, webUrl, ModelState))
+            {
+                result.Code = 400;
+                result.Message = "修改头像失败：" + ModelState.FirstErrorMessage();
+            }
+
+            result.Url = webUrl;
+            result.Code = 200;
+            result.Message = "修改头像成功";
+            return result;
+        }
+
+        /// <summary>
+        /// 修改用户 Logo
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpPost("ChangeLogo")]
+        public async Task<ApiResultUrl> ChangeLogo(IFormFile file)
+        {
+            var result = new ApiResultUrl();
+            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            if (!_imageExtensions.Contains(extension))
+            {
+                result.Code = 400;
+                result.Message = "修改 Logo 失败：图片格式错误(仅支持 jpg 或 png)";
+                return result;
+            }
+
+            if (file.Length > 1024 * 1024)
+            {
+                result.Code = 400;
+                result.Message = "修改 Logo 失败：请保持在 1M 以内";
+                return result;
+            }
+            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Logo");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            var userId = HttpContext.User.GetUserId();
+            var fileName =  userId + extension;
+            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
+            {
+                file.CopyTo(stream);
+            }
+            var webUrl = $"/Upload/Logo/{fileName}";
+            if (!await _userService.ChangeLogoAsync(userId, webUrl, ModelState))
+            {
+                result.Code = 400;
+                result.Message = "修改 Logo 失败：" + ModelState.FirstErrorMessage();
+            }
+
+            result.Url = webUrl;
+            result.Code = 200;
+            result.Message = "修改 Logo 成功";
+            return result;
+        }
+
+        /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost("ChangePassword")]
-        public async Task<ApiResult> ChangePassword([FromBody]UserChangePasswordInput input)
+        public async Task<ApiResult> ChangePassword(UserChangePasswordInput input)
         {
             var result = new ApiResult();
             if (!await _adminUserService.ChangePasswordAsync(HttpContext.User.GetUserId(), input, ModelState))

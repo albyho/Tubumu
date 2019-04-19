@@ -20,7 +20,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="criteria"></param>
         /// <returns></returns>
         [HttpPost("GetNotifications")]
-        public async Task<ApiResultData<Page<NotificationUser>>> GetNotifications([FromBody]NotificationPageSearchCriteria criteria)
+        public async Task<ApiResultData<Page<NotificationUser>>> GetNotifications(NotificationPageSearchCriteria criteria)
         {
             criteria.ToUserId = HttpContext.User.GetUserId();
             var page = await _notificationService.GetPageAsync(criteria);
@@ -39,7 +39,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="notificationIdListInput"></param>
         /// <returns></returns>
         [HttpPost("ReadNotifications")]
-        public async Task<ApiResult> ReadNotifications([FromBody]NotificationIdListInput notificationIdListInput)
+        public async Task<ApiResult> ReadNotifications(NotificationIdListInput notificationIdListInput)
         {
             int userId = int.Parse(HttpContext.User.Identity.Name);
             var result = new ApiResult();
@@ -61,7 +61,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="notificationIdListInput"></param>
         /// <returns></returns>
         [HttpPost("DeleteNotifications")]
-        public async Task<ApiResult> DeleteNotifications([FromBody]NotificationIdListInput notificationIdListInput)
+        public async Task<ApiResult> DeleteNotifications(NotificationIdListInput notificationIdListInput)
         {
             var result = new ApiResult();
             if (!await _notificationService.DeleteAsync(HttpContext.User.GetUserId(), notificationIdListInput.NotificationIds, ModelState))

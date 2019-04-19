@@ -30,7 +30,7 @@ namespace Tubumu.Modules.Admin.Domain.Entities
         public string Password { get; set; }
         public XM.UserStatus Status { get; set; }
         public DateTime CreationTime { get; set; }
-        public string HeadUrl { get; set; }
+        public string AvatarUrl { get; set; }
         public string LogoUrl { get; set; }
         public string Description { get; set; }
         public string WeixinUnionId {get;set;}

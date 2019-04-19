@@ -18,19 +18,5 @@ namespace Tubumu.Modules.Admin.Models.Input
         [SlugWithChinese(ErrorMessage = "以字母或中文开头的中文字母数字_和-组成")]
         [DisplayName("昵称")]
         public string DisplayName { get; set; }
-
-        /// <summary>
-        /// HeadUrl
-        /// </summary>
-        [StringLength(200, ErrorMessage = "HeadUrl 请保持在200个字符以内")]
-        [DisplayName("头像")]
-        public string HeadUrl { get; set; }
-
-        /// <summary>
-        /// LogoUrl
-        /// </summary>
-        [StringLength(200, ErrorMessage = "LogoUrl 请保持在200个字符以内")]
-        [DisplayName("Logo")]
-        public string LogoUrl { get; set; }
     }
 }

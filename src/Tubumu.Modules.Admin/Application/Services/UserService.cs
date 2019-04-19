@@ -58,11 +58,11 @@ namespace Tubumu.Modules.Admin.Application.Services
         Task<List<UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds);
 
         /// <summary>
-        /// 获取 HeadUrl
+        /// 获取 AvatarUrl
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        Task<string> GetHeadUrlAsync(int userId);
+        Task<string> GetAvatarUrlAsync(int userId);
 
         /// <summary>
         /// 通过用户 Id 判断用户是否存在
@@ -144,12 +144,13 @@ namespace Tubumu.Modules.Admin.Application.Services
         Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState);
 
         /// <summary>
-        /// 修改 HeadUrl
+        /// 修改 AvatarUrl
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="headUrl"></param>
+        /// <param name="avatarUrl"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeHeadAsync(int userId, string headUrl);
+        Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState);
 
         /// <summary>
         /// 修改 LogoUrl
@@ -321,13 +322,13 @@ namespace Tubumu.Modules.Admin.Application.Services
         }
 
         /// <summary>
-        /// 获取 HeadUrl
+        /// 获取 AvatarUrl
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GetHeadUrlAsync(int userId)
+        public async Task<string> GetAvatarUrlAsync(int userId)
         {
-            return await _manager.GetHeadUrlAsync(userId);
+            return await _manager.GetAvatarUrlAsync(userId);
         }
 
         /// <summary>
@@ -493,15 +494,20 @@ namespace Tubumu.Modules.Admin.Application.Services
         }
 
         /// <summary>
-        /// 修改 HeadUrl
+        /// 修改 AvatarUrl
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="headUrl"></param>
+        /// <param name="avatarUrl"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeHeadAsync(int userId, string headUrl)
+        public async Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState)
         {
-            var result = await _manager.ChangeHeadAsync(userId, headUrl);
-            if (result)
+            var result = await _manager.ChangeAvatarAsync(userId, avatarUrl);
+            if (!result)
+            {
+                modelState.AddModelError("UserId", "修改头像失败");
+            }
+            else
             {
                 await CleanCache(userId);
             }
@@ -520,7 +526,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             bool result = await _manager.ChangeLogoAsync(userId, logoUrl);
             if (!result)
             {
-                modelState.AddModelError("UserId", "修改头像失败");
+                modelState.AddModelError("UserId", "修改 Logo 失败");
             }
             else
             {

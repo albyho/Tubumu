@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ using Tubumu.Modules.Framework.Models;
 using Group = Tubumu.Modules.Admin.Models.Group;
 using Permission = Tubumu.Modules.Admin.Models.Permission;
 using Role = Tubumu.Modules.Admin.Models.Role;
+using System.Linq;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -32,7 +34,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("GetUserPage")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiResultData<Page<UserInfo>>> GetUserPage([FromBody]UserPageSearchCriteria criteria)
+        public async Task<ApiResultData<Page<UserInfo>>> GetUserPage(UserPageSearchCriteria criteria)
         {
             var result = new ApiResultData<Page<UserInfo>>();
             var page = await _userService.GetPageAsync(criteria);
@@ -50,7 +52,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("AddUser")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiResult> AddUser([FromBody]UserInputAdd userInput)
+        public async Task<ApiResult> AddUser(UserInputAdd userInput)
         {
             var result = new ApiResult();
 
@@ -73,7 +75,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("EditUser")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiResult> EditUser([FromBody]UserInputEdit userInput)
+        public async Task<ApiResult> EditUser(UserInputEdit userInput)
         {
             var result = new ApiResult();
             if (await _userService.SaveAsync(userInput, ModelState) == null)
@@ -95,7 +97,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("RemoveUser")]
         [PermissionAuthorize(Permissions = "用户管理")]
-        public async Task<ApiResult> RemoveUser([FromBody]UserIdInput userIdInput)
+        public async Task<ApiResult> RemoveUser(UserIdInput userIdInput)
         {
             var result = new ApiResult();
             if (!await _userService.RemoveAsync(userIdInput.UserId, ModelState))
@@ -107,6 +109,114 @@ namespace Tubumu.Modules.Admin.Controllers
 
             result.Code = 200;
             result.Message = "删除成功";
+            return result;
+        }
+
+        /// <summary>
+        /// 修改用户头像
+        /// </summary>
+        /// <param name="userImageInput"></param>
+        /// <returns></returns>
+        [HttpPost("ChangeUserAvatar")]
+        [PermissionAuthorize(Permissions = "用户管理")]
+        public async Task<ApiResultUrl> ChangeUserAvatar([FromForm]UserImageInput userImageInput)
+        {
+            var result = new ApiResultUrl();
+            if (userImageInput.FileCollection.Files.Count == 0)
+            {
+                result.Code = 400;
+                result.Message = "修改用户头像失败：请选择图片";
+                return result;
+            }
+            var file = userImageInput.FileCollection.Files[0];
+            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            if (!_imageExtensions.Contains(extension))
+            {
+                result.Code = 400;
+                result.Message = "修改用户头像失败：图片格式错误(仅支持 jpg 或 png)";
+                return result;
+            }
+
+            if (file.Length > 1024 * 1024)
+            {
+                result.Code = 400;
+                result.Message = "修改用户头像失败：请保持在 1M 以内";
+                return result;
+            }
+            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Avatar");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            var fileName = userImageInput.UserId + extension;
+            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
+            {
+                file.CopyTo(stream);
+            }
+            var webUrl = $"/Upload/Avatar/{fileName}";
+            if (!await _userService.ChangeAvatarAsync(userImageInput.UserId, webUrl, ModelState))
+            {
+                result.Code = 400;
+                result.Message = "修改用户头像失败：" + ModelState.FirstErrorMessage();
+            }
+
+            result.Url = webUrl;
+            result.Code = 200;
+            result.Message = "修改用户头像成功";
+            return result;
+        }
+
+        /// <summary>
+        /// 修改用户 Logo
+        /// </summary>
+        /// <param name="userImageInput"></param>
+        /// <returns></returns>
+        [HttpPost("ChangeUserLogo")]
+        [PermissionAuthorize(Permissions = "用户管理")]
+        public async Task<ApiResultUrl> ChangeUserLogo([FromForm]UserImageInput userImageInput)
+        {
+            var result = new ApiResultUrl();
+            if (userImageInput.FileCollection.Files.Count == 0)
+            {
+                result.Code = 400;
+                result.Message = "修改用户 Logo 失败：请选择图片";
+                return result;
+            }
+            var file = userImageInput.FileCollection.Files[0];
+            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            if (!_imageExtensions.Contains(extension))
+            {
+                result.Code = 400;
+                result.Message = "修改用户 Logo 失败：图片格式错误(仅支持 jpg 或 png)";
+                return result;
+            }
+
+            if (file.Length > 1024 * 1024)
+            {
+                result.Code = 400;
+                result.Message = "修改用户 Logo 失败：请保持在 1M 以内";
+                return result;
+            }
+            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Logo");
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            var fileName = userImageInput.UserId + extension;
+            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
+            {
+                file.CopyTo(stream);
+            }
+            var webUrl = $"/Upload/Logo/{fileName}";
+            if (!await _userService.ChangeLogoAsync(userImageInput.UserId, webUrl, ModelState))
+            {
+                result.Code = 400;
+                result.Message = "修改用户 Logo 失败：" + ModelState.FirstErrorMessage();
+            }
+
+            result.Url = webUrl;
+            result.Code = 200;
+            result.Message = "修改用户 Logo 成功";
             return result;
         }
 
@@ -160,7 +270,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("AddGroup")]
         [PermissionAuthorize(Permissions = "分组管理")]
-        public async Task<ApiResult> AddGroup([FromBody]GroupInput groupInput)
+        public async Task<ApiResult> AddGroup(GroupInput groupInput)
         {
             var result = new ApiResult();
             if (groupInput.GroupId.HasValue)
@@ -190,7 +300,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("EditGroup")]
         [PermissionAuthorize(Permissions = "分组管理")]
-        public async Task<ApiResult> EditGroup([FromBody]GroupInput groupInput)
+        public async Task<ApiResult> EditGroup(GroupInput groupInput)
         {
             var result = new ApiResult();
             if (groupInput.GroupId.IsNullOrEmpty())
@@ -219,7 +329,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("RemoveGroup")]
         [PermissionAuthorize(Permissions = "分组管理")]
-        public async Task<ApiResult> RemoveGroup([FromBody]GroupIdInput groupIdInput)
+        public async Task<ApiResult> RemoveGroup(GroupIdInput groupIdInput)
         {
             var result = new ApiResult();
 
@@ -309,7 +419,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("SaveRoleName")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiResult> SaveRoleName([FromBody]RoleNameInput saveRoleNameInput)
+        public async Task<ApiResult> SaveRoleName(RoleNameInput saveRoleNameInput)
         {
             var result = new ApiResult();
             if (!await _roleService.EditNameAsync(saveRoleNameInput, ModelState))
@@ -333,7 +443,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("AddRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiResultData<Role>> AddRole([FromBody]RoleInput roleInput)
+        public async Task<ApiResultData<Role>> AddRole(RoleInput roleInput)
         {
             var result = new ApiResultData<Role>();
             if (roleInput.RoleId.HasValue)
@@ -368,7 +478,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("EditRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiResultData<Role>> EditRole([FromBody]RoleInput roleInput)
+        public async Task<ApiResultData<Role>> EditRole(RoleInput roleInput)
         {
             var result = new ApiResultData<Role>();
             if (roleInput.RoleId.IsNullOrEmpty())
@@ -401,7 +511,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("RemoveRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiResult> RemoveRole([FromBody]RoleIdInput roleIdInput)
+        public async Task<ApiResult> RemoveRole(RoleIdInput roleIdInput)
         {
             var result = new ApiResult();
 
@@ -426,7 +536,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         [HttpPost("MoveRole")]
         [PermissionAuthorize(Permissions = "角色管理")]
-        public async Task<ApiResult> MoveRole([FromBody]MoveRoleInput moveRoleInput)
+        public async Task<ApiResult> MoveRole(MoveRoleInput moveRoleInput)
         {
             var result = new ApiResult();
 

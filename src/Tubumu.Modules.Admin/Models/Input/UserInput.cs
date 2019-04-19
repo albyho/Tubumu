@@ -70,9 +70,9 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// <summary>
         /// 头像
         /// </summary>
-        [StringLength(200, ErrorMessage = "HeadUrl 请保持在200个字符以内")]
-        [DisplayName("HeadUrl")]
-        public string HeadUrl { get; set; }
+        [StringLength(200, ErrorMessage = "AvatarUrl 请保持在200个字符以内")]
+        [DisplayName("AvatarUrl")]
+        public string AvatarUrl { get; set; }
 
         /// <summary>
         /// Logo

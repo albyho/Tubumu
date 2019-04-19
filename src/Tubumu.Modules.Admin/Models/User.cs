@@ -31,10 +31,10 @@ namespace Tubumu.Modules.Admin.Models
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// HeadUrl
+        /// AvatarUrl
         /// </summary>
-        [JsonProperty(PropertyName = "headUrl")]
-        public string HeadUrl { get; set; }
+        [JsonProperty(PropertyName = "avatarUrl")]
+        public string AvatarUrl { get; set; }
 
         /// <summary>
         /// LogoUrl
@@ -83,9 +83,9 @@ namespace Tubumu.Modules.Admin.Models
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// HeadUrl
+        /// AvatarUrl
         /// </summary>
-        public string HeadUrl { get; set; }
+        public string AvatarUrl { get; set; }
 
         /// <summary>
         /// LogoUrl
@@ -203,9 +203,9 @@ namespace Tubumu.Modules.Admin.Models
         public DateTime CreationTime { get; set; }
 
         /// <summary>
-        /// HeadUrl
+        /// AvatarUrl
         /// </summary>
-        public string HeadUrl { get; set; }
+        public string AvatarUrl { get; set; }
 
         /// <summary>
         /// WeixinMobileEndOpenId
