@@ -12,12 +12,13 @@ namespace Tubumu.Modules.Framework.RabbitMQ
             {
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
             };
-            var bodyValue = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(body, Formatting.None, serializerSettings));
+            var bodyJson = JsonConvert.SerializeObject(body, Formatting.None, serializerSettings);
+            var bodyValue = Encoding.UTF8.GetBytes(bodyJson);
             model.BasicPublish(
                 exchange: exchange,
                 routingKey: routingKey,
-                mandatory: false,
-                basicProperties: null,
+                mandatory: mandatory,
+                basicProperties: basicProperties,
                 body: bodyValue
             );
         }

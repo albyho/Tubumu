@@ -1,14 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
-using Tubumu.Modules.Admin.Models;
-using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Admin.Domain.Services;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Tubumu.Core.Extensions;
 using Tubumu.Core.Utilities.Cryptography;
+using Tubumu.Modules.Admin.Domain.Services;
+using Tubumu.Modules.Admin.Models;
+using Tubumu.Modules.Admin.Models.Input;
+using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 
@@ -162,6 +167,40 @@ namespace Tubumu.Modules.Admin.Application.Services
         Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState);
 
         /// <summary>
+        /// 修改头像
+        /// </summary>
+        /// <param name="userImageInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<string> ChangeAvatarAsync(UserImageInput userImageInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改 Logo
+        /// </summary>
+        /// <param name="userImageInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<string> ChangeLogoAsync(UserImageInput userImageInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改头像
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="file"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<string> ChangeAvatarAsync(int userId, IFormFile file, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// 修改 Logo
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="file"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<string> ChangeLogoAsync(int userId, IFormFile file, ModelStateDictionary modelState);
+
+        /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="userId"></param>
@@ -201,8 +240,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="status"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeStatusAsync(int userId, UserStatus status);
+        Task<bool> ChangeStatusAsync(int userId, UserStatus status, ModelStateDictionary modelState);
 
         /// <summary>
         /// 用户登录
@@ -227,6 +267,8 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         public const string UserCacheKeyFormat = "User:{0}";
 
+        private readonly IHostingEnvironment _environment;
+        private readonly AvatarSettings _avatarSettings;
         private readonly IUserManager _manager;
         private readonly IDistributedCache _cache;
         private readonly IGroupService _groupService;
@@ -234,15 +276,21 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="environment"></param>
+        /// <param name="avatarSettingsOptions"></param>
         /// <param name="cache"></param>
         /// <param name="manager"></param>
         /// <param name="groupService"></param>
         public UserService(
+            IHostingEnvironment environment,
+            IOptions<AvatarSettings> avatarSettingsOptions,
             IUserManager manager,
             IDistributedCache cache,
             IGroupService groupService
             )
         {
+            _environment = environment;
+            _avatarSettings = avatarSettingsOptions.Value;
             _manager = manager;
             _cache = cache;
             _groupService = groupService;
@@ -481,7 +529,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState)
         {
-            bool result = await _manager.ChangeDisplayNameAsync(userId, displayName);
+            bool result = await _manager.ChangeDisplayNameAsync(userId, displayName, modelState);
             if (!result)
             {
                 modelState.AddModelError("UserId", "修改昵称失败");
@@ -502,12 +550,8 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState)
         {
-            var result = await _manager.ChangeAvatarAsync(userId, avatarUrl);
-            if (!result)
-            {
-                modelState.AddModelError("UserId", "修改头像失败");
-            }
-            else
+            var result = await _manager.ChangeAvatarAsync(userId, avatarUrl, modelState);
+            if (result)
             {
                 await CleanCache(userId);
             }
@@ -523,16 +567,78 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState)
         {
-            bool result = await _manager.ChangeLogoAsync(userId, logoUrl);
-            if (!result)
-            {
-                modelState.AddModelError("UserId", "修改 Logo 失败");
-            }
-            else
+            bool result = await _manager.ChangeLogoAsync(userId, logoUrl, modelState);
+            if (result)
             {
                 await CleanCache(userId);
             }
             return result;
+        }
+
+        /// <summary>
+        /// 修改头像
+        /// </summary>
+        /// <param name="userImageInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<string> ChangeAvatarAsync(UserImageInput userImageInput, ModelStateDictionary modelState)
+        {
+            var url = await ChangeUserImageAsync("Avatar", userImageInput, modelState, _manager.ChangeAvatarAsync);
+            if (modelState.IsValid)
+            {
+                await CleanCache(userImageInput.UserId);
+            }
+            return url;
+        }
+
+        /// <summary>
+        /// 修改 Logo
+        /// </summary>
+        /// <param name="userImageInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<string> ChangeLogoAsync(UserImageInput userImageInput, ModelStateDictionary modelState)
+        {
+            var url = await ChangeUserImageAsync("Logo", userImageInput, modelState, _manager.ChangeLogoAsync);
+            if (modelState.IsValid)
+            {
+                await CleanCache(userImageInput.UserId);
+            }
+            return url;
+        }
+
+        /// <summary>
+        /// 修改头像
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="file"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<string> ChangeAvatarAsync(int userId, IFormFile file, ModelStateDictionary modelState)
+        {
+            var url = await ChangeUserImageAsync("Avatar", userId, file, modelState, _manager.ChangeAvatarAsync);
+            if (modelState.IsValid)
+            {
+                await CleanCache(userId);
+            }
+            return url;
+        }
+
+        /// <summary>
+        /// 修改 Logo
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="file"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<string> ChangeLogoAsync(int userId, IFormFile file, ModelStateDictionary modelState)
+        {
+            var url = await ChangeUserImageAsync("Logo", userId, file, modelState, _manager.ChangeLogoAsync);
+            if (modelState.IsValid)
+            {
+                await CleanCache(userId);
+            }
+            return url;
         }
 
         /// <summary>
@@ -562,7 +668,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState)
         {
-            bool result = await _manager.ChangeProfileAsync(userId, userChangeProfileInput);
+            bool result = await _manager.ChangeProfileAsync(userId, userChangeProfileInput, modelState);
             if (!result)
             {
                 modelState.AddModelError("UserId", "修改资料失败，可能当前用户不存在");
@@ -616,10 +722,11 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="status"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeStatusAsync(int userId, UserStatus status)
+        public async Task<bool> ChangeStatusAsync(int userId, UserStatus status, ModelStateDictionary modelState)
         {
-            var result = await _manager.ChangeStatusAsync(userId, status);
+            var result = await _manager.ChangeStatusAsync(userId, status, modelState);
             if (result)
             {
                 await CleanCache(userId);
@@ -691,7 +798,7 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         private async Task CacheNormalUser(UserInfo userInfo)
         {
-            if(userInfo == null || userInfo.Status != UserStatus.Normal) return;
+            if (userInfo == null || userInfo.Status != UserStatus.Normal) return;
             var cacheKey = UserCacheKeyFormat.FormatWith(userInfo.UserId);
             await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {
@@ -750,6 +857,49 @@ namespace Tubumu.Modules.Admin.Application.Services
 
             return userInfo;
             */
+        }
+
+        private async Task<string> ChangeUserImageAsync(string subFolder, UserImageInput userImageInput, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
+        {
+            if (userImageInput.FileCollection.Files.Count == 0)
+            {
+                modelState.AddModelError("Error", "请选择图片");
+                return null;
+            }
+            var file = userImageInput.FileCollection.Files[0];
+            return await ChangeUserImageAsync(subFolder, userImageInput.UserId, file, modelState, action);
+        }
+
+        private async Task<string> ChangeUserImageAsync(string subFolder, int userId, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
+        {
+            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            if (extension == null || !_avatarSettings.ImageExtensions.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(extension))
+            {
+                modelState.AddModelError("Error", $"图片格式错误(仅支持 {_avatarSettings.ImageExtensions})");
+                return null;
+            }
+            if (file.Length > _avatarSettings.ImageSizeMax)
+            {
+                modelState.AddModelError("Error", $"请保持在 {_avatarSettings.ImageSizeMax} 字节以内");
+                return null;
+            }
+            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", subFolder);
+            if (!Directory.Exists(uploadFolder))
+            {
+                Directory.CreateDirectory(uploadFolder);
+            }
+            var fileName = userId + extension;
+            using (var stream = File.Create(Path.Combine(uploadFolder, fileName)))
+            {
+                file.CopyTo(stream);
+            }
+            var url = $"/Upload/{subFolder}/{fileName}";
+            if (!await action(userId, url, modelState))
+            {
+                return null;
+            }
+
+            return url;
         }
     }
 }

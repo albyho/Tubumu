@@ -94,6 +94,9 @@ namespace Tubumu.Modules.Admin
             // 认证设置
             services.Configure<AuthenticationSettings>(_configuration.GetSection("AuthenticationSettings"));
 
+            // 头像设置
+            services.Configure<AvatarSettings>(_configuration.GetSection("AvatarSettings"));
+
             // 手机验证码设置
             services.Configure<MobileValidationCodeSettings>(_configuration.GetSection("MobileValidationCodeSettings"));
 

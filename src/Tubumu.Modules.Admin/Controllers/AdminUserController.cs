@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +13,6 @@ using Tubumu.Modules.Framework.Models;
 using Group = Tubumu.Modules.Admin.Models.Group;
 using Permission = Tubumu.Modules.Admin.Models.Permission;
 using Role = Tubumu.Modules.Admin.Models.Role;
-using System.Linq;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
@@ -122,47 +120,17 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeUserAvatar([FromForm]UserImageInput userImageInput)
         {
             var result = new ApiResultUrl();
-            if (userImageInput.FileCollection.Files.Count == 0)
+            var url =  await _userService.ChangeAvatarAsync(userImageInput, ModelState);
+            if (!ModelState.IsValid)
             {
                 result.Code = 400;
-                result.Message = "修改用户头像失败：请选择图片";
-                return result;
-            }
-            var file = userImageInput.FileCollection.Files[0];
-            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (!_imageExtensions.Contains(extension))
-            {
-                result.Code = 400;
-                result.Message = "修改用户头像失败：图片格式错误(仅支持 jpg 或 png)";
+                result.Message = $"修改头像失败:{ModelState.FirstErrorMessage()}";
                 return result;
             }
 
-            if (file.Length > 1024 * 1024)
-            {
-                result.Code = 400;
-                result.Message = "修改用户头像失败：请保持在 1M 以内";
-                return result;
-            }
-            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Avatar");
-            if (!Directory.Exists(uploadFolder))
-            {
-                Directory.CreateDirectory(uploadFolder);
-            }
-            var fileName = userImageInput.UserId + extension;
-            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
-            {
-                file.CopyTo(stream);
-            }
-            var webUrl = $"/Upload/Avatar/{fileName}";
-            if (!await _userService.ChangeAvatarAsync(userImageInput.UserId, webUrl, ModelState))
-            {
-                result.Code = 400;
-                result.Message = "修改用户头像失败：" + ModelState.FirstErrorMessage();
-            }
-
-            result.Url = webUrl;
+            result.Url = url;
             result.Code = 200;
-            result.Message = "修改用户头像成功";
+            result.Message = "修改头像成功";
             return result;
         }
 
@@ -176,47 +144,17 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeUserLogo([FromForm]UserImageInput userImageInput)
         {
             var result = new ApiResultUrl();
-            if (userImageInput.FileCollection.Files.Count == 0)
+            var url =  await _userService.ChangeLogoAsync(userImageInput, ModelState);
+            if (!ModelState.IsValid)
             {
                 result.Code = 400;
-                result.Message = "修改用户 Logo 失败：请选择图片";
-                return result;
-            }
-            var file = userImageInput.FileCollection.Files[0];
-            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (!_imageExtensions.Contains(extension))
-            {
-                result.Code = 400;
-                result.Message = "修改用户 Logo 失败：图片格式错误(仅支持 jpg 或 png)";
+                result.Message = $"修改 Logo 失败:{ModelState.FirstErrorMessage()}";
                 return result;
             }
 
-            if (file.Length > 1024 * 1024)
-            {
-                result.Code = 400;
-                result.Message = "修改用户 Logo 失败：请保持在 1M 以内";
-                return result;
-            }
-            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Logo");
-            if (!Directory.Exists(uploadFolder))
-            {
-                Directory.CreateDirectory(uploadFolder);
-            }
-            var fileName = userImageInput.UserId + extension;
-            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
-            {
-                file.CopyTo(stream);
-            }
-            var webUrl = $"/Upload/Logo/{fileName}";
-            if (!await _userService.ChangeLogoAsync(userImageInput.UserId, webUrl, ModelState))
-            {
-                result.Code = 400;
-                result.Message = "修改用户 Logo 失败：" + ModelState.FirstErrorMessage();
-            }
-
-            result.Url = webUrl;
+            result.Url = url;
             result.Code = 200;
-            result.Message = "修改用户 Logo 成功";
+            result.Message = "修改 Logo 成功";
             return result;
         }
 

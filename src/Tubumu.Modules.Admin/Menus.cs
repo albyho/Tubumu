@@ -61,7 +61,7 @@ namespace Tubumu.Modules.Admin
                              Title ="系统管理",
                              Children = new List<Menu> {
                                 new Menu{ Title="系统公告", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "系统公告", Name = "bulletin" }, Validator = u => u.HasPermission("系统公告")},
-                                new Menu{ Title="通知管理", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "通知管理", Name = "notificationmanage", Components = "ckfinder" }, Validator = u => u.HasPermission("通知管理")},
+                                new Menu{ Title="通知管理", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "通知管理", Name = "notificationmanage" }, Validator = u => u.HasPermission("通知管理")},
                              }
                          },
                          new Menu{
@@ -78,7 +78,7 @@ namespace Tubumu.Modules.Admin
                     Title = "组织架构管理",
                     Type = MenuType.Sub,
                     Children = new List<Menu> {
-                         new Menu{ Title="用户列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "用户列表", Name = "user", Components = "ckfinder" }, Validator = u => u.HasPermission("用户管理")},
+                         new Menu{ Title="用户列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "用户列表", Name = "user" }, Validator = u => u.HasPermission("用户管理")},
                          new Menu{ Title="分组列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "分组列表", Name = "group" }, Validator = u => u.HasPermission("分组管理")},
                          new Menu{ Title="角色列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "角色列表", Name = "role" }, Validator = u => u.HasPermission("角色管理")},
                          new Menu{ Title="权限列表", LinkRouteName = "Admin.View", LinkRouteValues = new { IsCore = true, Title = "权限列表", Name = "permission" }, Validator = u => u.HasPermission("权限管理")},

@@ -6,9 +6,9 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Admin.Domain.Entities;
 using Tubumu.Core.Extensions;
+using Tubumu.Modules.Admin.Domain.Entities;
+using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 using XM = Tubumu.Modules.Admin.Models;
@@ -144,15 +144,16 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="userId"></param>
         /// <param name="displayName"></param>
         /// <returns></returns>
-        Task<bool> ChangeDisplayNameAsync(int userId, string displayName);
+        Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState);
 
         /// <summary>
         /// ChangeLogoAsync
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="logoUrl"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeLogoAsync(int userId, string logoUrl);
+        Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState);
 
         /// <summary>
         /// ChangePasswordAsync
@@ -168,16 +169,18 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="userChangeProfileInput"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput);
+        Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState);
 
         /// <summary>
-        /// ChangeHeadAsync
+        /// ChangeAvatarAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newAvatarUrl"></param>
+        /// <param name="avatarUrl"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeAvatarAsync(int userId, string newAvatarUrl);
+        Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState);
 
         /// <summary>
         /// ChangePasswordAsync
@@ -210,8 +213,9 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="status"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status);
+        Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status, ModelStateDictionary modelState);
     }
 
     /// <summary>
@@ -763,8 +767,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
             userToSave.RoleId = userInput.RoleId;
             userToSave.Username = userInput.Username;
             userToSave.DisplayName = userInput.DisplayName;
-            userToSave.AvatarUrl = userInput.AvatarUrl;
-            userToSave.LogoUrl = userInput.LogoUrl;
             userToSave.RealName = userInput.RealName;
             userToSave.RealNameIsValid = userInput.RealNameIsValid;
             userToSave.Email = userInput.Email;
@@ -937,12 +939,16 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="displayName"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeDisplayNameAsync(int userId, string displayName)
+        public async Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState)
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
+            {
+                modelState.AddModelError("UserId", "当前用户不存在");
                 return false;
+            }
             user.DisplayName = displayName;
             await _context.SaveChangesAsync();
 
@@ -954,12 +960,16 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="logoUrl"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeLogoAsync(int userId, string logoUrl)
+        public async Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState)
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
+            {
+                modelState.AddModelError("Error", "用户不存在");
                 return false;
+            }
             user.LogoUrl = logoUrl;
             await _context.SaveChangesAsync();
 
@@ -1002,9 +1012,9 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 modelState.AddModelError("Error", "用户不存在");
                 return 0;
             }
-
             user.Password = password;
             await _context.SaveChangesAsync();
+
             return user.UserId;
         }
 
@@ -1013,18 +1023,20 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="userChangeProfileInput"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput)
+        public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState)
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
+            {
+                modelState.AddModelError("Error", "用户不存在");
                 return false;
-
+            }
             user.DisplayName = userChangeProfileInput.DisplayName;
             await _context.SaveChangesAsync();
 
             return true;
-
         }
 
         /// <summary>
@@ -1042,9 +1054,9 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 modelState.AddModelError("Mobile", "重置密码失败:用户不存在");
                 return 0;
             }
-
             user.Password = password;
             await _context.SaveChangesAsync();
+
             return user.UserId;
         }
 
@@ -1053,12 +1065,16 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="avatarUrl"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeAvatarAsync(int userId, string avatarUrl)
+        public async Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState)
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
+            {
+                modelState.AddModelError("Error", "用户不存在");
                 return false;
+            }
 
             user.AvatarUrl = avatarUrl;
             await _context.SaveChangesAsync();
@@ -1111,18 +1127,22 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="status"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status)
+        public async Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status, ModelStateDictionary modelState)
         {
             User user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
-            if (user == null) return false;
+            if (user == null)
+            {
+                modelState.AddModelError("Error", "用户不存在");
+                return false;
+            }
             user.Status = status;
             await _context.SaveChangesAsync();
+
             return true;
         }
 
         #endregion
-
-
     }
 }

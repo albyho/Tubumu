@@ -68,20 +68,6 @@ namespace Tubumu.Modules.Admin.Models.Input
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// 头像
-        /// </summary>
-        [StringLength(200, ErrorMessage = "AvatarUrl 请保持在200个字符以内")]
-        [DisplayName("AvatarUrl")]
-        public string AvatarUrl { get; set; }
-
-        /// <summary>
-        /// Logo
-        /// </summary>
-        [StringLength(200, ErrorMessage = "LogoUrl 请保持在200个字符以内")]
-        [DisplayName("LogoUrl")]
-        public string LogoUrl { get; set; }
-
-        /// <summary>
         /// 真实名称
         /// </summary>
         [StringLength(100, MinimumLength = 0, ErrorMessage = "真实名称请保持在20个字符之内")]
@@ -148,7 +134,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         //[Required(ErrorMessage = "确认密码不能为空")]
         [StringLength(32, MinimumLength = 4, ErrorMessage = "确认密码请保持在4-32个字符之间")]
-        [Tubumu.Modules.Framework.ModelValidation.Attributes.Compare("Password", ValidationCompareOperator.Equal, ValidationDataType.String, ErrorMessage = "请确认两次输入的密码一致")]
+        [Framework.ModelValidation.Attributes.Compare("Password", ValidationCompareOperator.Equal, ValidationDataType.String, ErrorMessage = "请确认两次输入的密码一致")]
         [DataType(DataType.Password)]
         [DisplayName("确认密码")]
         public virtual string PasswordConfirm { get; set; }

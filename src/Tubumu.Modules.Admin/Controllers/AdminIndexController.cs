@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -20,8 +19,6 @@ namespace Tubumu.Modules.Admin.Controllers
     /// </summary>
     public partial class AdminController
     {
-        private readonly string[] _imageExtensions = new[] { ".jpg", ".png" };
-
         #region Index
 
         /// <summary>
@@ -89,39 +86,15 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeAvatar(IFormFile file)
         {
             var result = new ApiResultUrl();
-            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (!_imageExtensions.Contains(extension))
+            var url =  await _userService.ChangeAvatarAsync(HttpContext.User.GetUserId(), file, ModelState);
+            if (!ModelState.IsValid)
             {
                 result.Code = 400;
-                result.Message = "修改头像失败：图片格式错误(仅支持 jpg 或 png)";
+                result.Message = $"修改头像失败:{ModelState.FirstErrorMessage()}";
                 return result;
             }
 
-            if (file.Length > 1024 * 1024)
-            {
-                result.Code = 400;
-                result.Message = "修改头像失败：请保持在 1M 以内";
-                return result;
-            }
-            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Avatar");
-            if (!Directory.Exists(uploadFolder))
-            {
-                Directory.CreateDirectory(uploadFolder);
-            }
-            var userId = HttpContext.User.GetUserId();
-            var fileName =  userId + extension;
-            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
-            {
-                file.CopyTo(stream);
-            }
-            var webUrl = $"/Upload/Avatar/{fileName}";
-            if (!await _userService.ChangeAvatarAsync(userId, webUrl, ModelState))
-            {
-                result.Code = 400;
-                result.Message = "修改头像失败：" + ModelState.FirstErrorMessage();
-            }
-
-            result.Url = webUrl;
+            result.Url = url;
             result.Code = 200;
             result.Message = "修改头像成功";
             return result;
@@ -136,39 +109,15 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeLogo(IFormFile file)
         {
             var result = new ApiResultUrl();
-            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (!_imageExtensions.Contains(extension))
+            var url =  await _userService.ChangeLogoAsync(HttpContext.User.GetUserId(), file, ModelState);
+            if (!ModelState.IsValid)
             {
                 result.Code = 400;
-                result.Message = "修改 Logo 失败：图片格式错误(仅支持 jpg 或 png)";
+                result.Message = $"修改 Logo 失败:{ModelState.FirstErrorMessage()}";
                 return result;
             }
 
-            if (file.Length > 1024 * 1024)
-            {
-                result.Code = 400;
-                result.Message = "修改 Logo 失败：请保持在 1M 以内";
-                return result;
-            }
-            var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", "Logo");
-            if (!Directory.Exists(uploadFolder))
-            {
-                Directory.CreateDirectory(uploadFolder);
-            }
-            var userId = HttpContext.User.GetUserId();
-            var fileName =  userId + extension;
-            using (var stream = System.IO.File.Create(Path.Combine(uploadFolder, fileName)))
-            {
-                file.CopyTo(stream);
-            }
-            var webUrl = $"/Upload/Logo/{fileName}";
-            if (!await _userService.ChangeLogoAsync(userId, webUrl, ModelState))
-            {
-                result.Code = 400;
-                result.Message = "修改 Logo 失败：" + ModelState.FirstErrorMessage();
-            }
-
-            result.Url = webUrl;
+            result.Url = url;
             result.Code = 200;
             result.Message = "修改 Logo 成功";
             return result;
