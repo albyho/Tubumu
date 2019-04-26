@@ -11,6 +11,166 @@ namespace Tubumu.Core.Extensions
     /// </summary>
     public static class QueryableExtensions
     {
+        #region Like
+
+        /*
+        public static Expression<Func<T, bool>> Like<T>(Expression<Func<T, string>> expr, string likeValue)
+        {
+            var paramExpr = expr.Parameters.First();
+            var memExpr = expr.Body;
+
+            if (likeValue == null || likeValue.Contains('%') != true)
+            {
+                Expression<Func<string>> valExpr = () => likeValue;
+                var eqExpr = Expression.Equal(memExpr, valExpr.Body);
+                return Expression.Lambda<Func<T, bool>>(eqExpr, paramExpr);
+            }
+
+            if (likeValue.Replace("%", string.Empty).Length == 0)
+            {
+                return PredicateBuilder.True<T>();
+            }
+
+            likeValue = Regex.Replace(likeValue, "%+", "%");
+
+            if (likeValue.Length > 2 && likeValue.Substring(1, likeValue.Length - 2).Contains('%'))
+            {
+                likeValue = likeValue.Replace("[", "[[]").Replace("_", "[_]");
+                Expression<Func<string>> valExpr = () => likeValue;
+                var patExpr = Expression.Call(typeof(SqlFunctions).GetMethod("PatIndex",
+                    new[] { typeof(string), typeof(string) }), valExpr.Body, memExpr);
+                var neExpr = Expression.NotEqual(patExpr, Expression.Convert(Expression.Constant(0), typeof(int?)));
+                return Expression.Lambda<Func<T, bool>>(neExpr, paramExpr);
+            }
+
+            if (likeValue.StartsWith("%"))
+            {
+                if (likeValue.EndsWith("%") == true)
+                {
+                    likeValue = likeValue.Substring(1, likeValue.Length - 2);
+                    Expression<Func<string>> valExpr = () => likeValue;
+                    var containsExpr = Expression.Call(memExpr, typeof(String).GetMethod("Contains",
+                        new[] { typeof(string) }), valExpr.Body);
+                    return Expression.Lambda<Func<T, bool>>(containsExpr, paramExpr);
+                }
+                else
+                {
+                    likeValue = likeValue.Substring(1);
+                    Expression<Func<string>> valExpr = () => likeValue;
+                    var endsExpr = Expression.Call(memExpr, typeof(String).GetMethod("EndsWith",
+                        new[] { typeof(string) }), valExpr.Body);
+                    return Expression.Lambda<Func<T, bool>>(endsExpr, paramExpr);
+                }
+            }
+            else
+            {
+                likeValue = likeValue.Remove(likeValue.Length - 1);
+                Expression<Func<string>> valExpr = () => likeValue;
+                var startsExpr = Expression.Call(memExpr, typeof(String).GetMethod("StartsWith",
+                    new[] { typeof(string) }), valExpr.Body);
+                return Expression.Lambda<Func<T, bool>>(startsExpr, paramExpr);
+            }
+        }
+
+        public static Expression<Func<T, bool>> AndLike<T>(this Expression<Func<T, bool>> predicate, Expression<Func<T, string>> expr, string likeValue)
+        {
+            var andPredicate = Like(expr, likeValue);
+            if (andPredicate != null)
+            {
+                predicate = predicate.And(andPredicate.Expand());
+            }
+            return predicate;
+        }
+
+        public static Expression<Func<T, bool>> OrLike<T>(this Expression<Func<T, bool>> predicate, Expression<Func<T, string>> expr, string likeValue)
+        {
+            var orPredicate = Like(expr, likeValue);
+            if (orPredicate != null)
+            {
+                predicate = predicate.Or(orPredicate.Expand());
+            }
+            return predicate;
+        }
+
+        */
+
+        #endregion
+
+        /// <summary>
+        /// WhereOrContains
+        /// </summary>
+        /// <typeparam name="TEntity"></typeparam>
+        /// <typeparam name="String"></typeparam>
+        /// <param name="query"></param>
+        /// <param name="selector"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static IQueryable<TEntity> WhereOrStringContains<TEntity, String>
+            (
+            this IQueryable<TEntity> query,
+            Expression<Func<TEntity, String>> selector,
+            IEnumerable<String> values
+            )
+        {
+            /*
+             * 实现效果：
+             * var tags = new[] { "A", "B", "C" };
+             * SELECT * FROM [User] Where Name='Test' AND (Tags LIKE '%A%' Or Tags LIKE  '%B%')
+             */
+
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
+            if (!values.Any()) return query;
+
+            ParameterExpression p = selector.Parameters.Single();
+            var containsExpressions = values.Select(value => (Expression)Expression.Call(selector.Body, typeof(String).GetMethod("Contains", new[] { typeof(String) }), Expression.Constant(value)));
+            Expression body = containsExpressions.Aggregate((accumulate, containsExpression) => Expression.Or(accumulate, containsExpression));
+
+            return query.Where(Expression.Lambda<Func<TEntity, bool>>(body, p));
+        }
+
+        public static IQueryable<TEntity> WhereOrCollectionAnyEqual<TEntity, TValue, TPropertyOrFieldValue>
+            (
+            this IQueryable<TEntity> query,
+            Expression<Func<TEntity, IEnumerable<TValue>>> selector,
+            Expression<Func<TValue, TPropertyOrFieldValue>> propertyOrFieldSelector,
+            IEnumerable<TPropertyOrFieldValue> values
+            )
+        {
+            if (selector == null)
+            {
+                throw new ArgumentNullException(nameof(selector));
+            }
+            if (values == null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
+            if (!values.Any()) return query;
+
+            ParameterExpression selectorParameter = selector.Parameters.Single();
+            ParameterExpression propertyOrFieldSelectorParameter = propertyOrFieldSelector.Parameters.Single();
+            var methodInfo = GetEnumerableMethod("Any", 2).MakeGenericMethod(typeof(TValue));
+            var anyExpressions = values.Select(value =>
+                    (Expression)Expression.Call(null,
+                                                methodInfo,
+                                                selector.Body,
+                                                Expression.Lambda<Func<TValue, bool>>(Expression.Equal(propertyOrFieldSelector.Body, Expression.Constant(value, typeof(TPropertyOrFieldValue))),
+                                                    propertyOrFieldSelectorParameter)
+                                                )
+                );
+            Expression body = anyExpressions.Aggregate((accumulate, any) => Expression.Or(accumulate, any));
+
+            return query.Where(Expression.Lambda<Func<TEntity, bool>>(body, selectorParameter));
+        }
+
         /// <summary>
         /// WhereIn
         /// </summary>
@@ -27,6 +187,14 @@ namespace Tubumu.Core.Extensions
             IEnumerable<TValue> values
           )
         {
+            /*
+             * 实现效果：
+             * var names = new[] { "A", "B", "C" };
+             * SELECT * FROM [User] Where Name='A' OR Name='B' OR Name='C'
+             * 实际上，可以直接这样：
+             * var query = DbContext.User.Where(m => names.Contains(m.Name));
+             */
+
             if (selector == null)
             {
                 throw new ArgumentNullException(nameof(selector));
@@ -238,6 +406,14 @@ namespace Tubumu.Core.Extensions
             return condition
                 ? query.Where(predicate)
                 : query;
+        }
+
+        private static MethodInfo GetEnumerableMethod(string name, int parameterCount = 0, Func<MethodInfo, bool> predicate = null)
+        {
+            return typeof(Enumerable)
+                .GetTypeInfo()
+                .GetDeclaredMethods(name)
+                .Single(_ => _.GetParameters().Length == parameterCount && (predicate == null || predicate(_)));
         }
     }
 }

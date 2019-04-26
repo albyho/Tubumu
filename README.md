@@ -5,12 +5,13 @@
 1. [Orchard Core Framework](https://orchardcore.readthedocs.io/en/latest/)
 2. [EntityFramework Core](https://docs.microsoft.com/en-us/ef/core/) (Microsoft SQL Server)
 3. [Redis](https://github.com/MicrosoftArchive/redis/releases)
-4. [Jwt](https://jwt.io/)
-5. [Swagger](https://swagger.io/)
-6. [SignalR](https://docs.microsoft.com/zh-cn/aspnet/core/signalr/introduction?view=aspnetcore-2.2)
-7. [AutoMapper](http://automapper.org/)
-8. [NLog](https://www.nuget.org/packages/NLog.Web.AspNetCore/) (Based on OrchardCore.Logging.NLog)
-9. [Vue](https://cn.vuejs.org/) ([Element-UI](http://element-cn.eleme.io/#/zh-CN))
+4. [RabbitMQ](https://www.rabbitmq.com/)
+5. [Jwt](https://jwt.io/)
+6. [Swagger](https://swagger.io/)
+7. [SignalR](https://docs.microsoft.com/zh-cn/aspnet/core/signalr/introduction?view=aspnetcore-2.2)
+8. [AutoMapper](http://automapper.org/)
+9. [NLog](https://www.nuget.org/packages/NLog.Web.AspNetCore/) (Based on OrchardCore.Logging.NLog)
+10. [Vue](https://cn.vuejs.org/) ([Element-UI](http://element-cn.eleme.io/#/zh-CN))
 
 ## 安装
 
