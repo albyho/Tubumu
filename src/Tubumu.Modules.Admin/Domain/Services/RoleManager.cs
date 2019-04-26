@@ -189,7 +189,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             if (roleInput.RoleId.HasValue)
             {
                 roleToSave = await _context.Role.
-                    Include(m=>m.RolePermission).
+                    Include(m => m.RolePermission).
                     FirstOrDefaultAsync(m => m.RoleId == roleInput.RoleId.Value);
             }
             if (roleToSave == null)
@@ -212,8 +212,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 if (!roleInput.PermissionIds.IsNullOrEmpty())
                 {
                     List<RolePermission> permissionToRemove = (from p in roleToSave.RolePermission
-                                                           where !roleInput.PermissionIds.Contains(p.PermissionId)
-                                                           select p).ToList();
+                                                               where !roleInput.PermissionIds.Contains(p.PermissionId)
+                                                               select p).ToList();
                     for (int i = 0; i < permissionToRemove.Count; i++)
                         roleToSave.RolePermission.Remove(permissionToRemove[i]);
                 }
@@ -223,7 +223,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 }
             }
             if (!roleInput.PermissionIds.IsNullOrEmpty())
-            {            
+            {
                 // 添加项
                 // 要添加的Id集
                 List<Guid> permissionIdToAdd = (from p in roleInput.PermissionIds
@@ -232,11 +232,11 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                 // 要添加的项
                 List<RolePermission> permissionToAdd = await (from p in _context.Permission
-                                                          where permissionIdToAdd.Contains(p.PermissionId)
-                                                          select new RolePermission
-                                                          {
-                                                              Permission = p
-                                                          }).ToListAsync();
+                                                              where permissionIdToAdd.Contains(p.PermissionId)
+                                                              select new RolePermission
+                                                              {
+                                                                  Permission = p
+                                                              }).ToListAsync();
                 foreach (var item in permissionToAdd)
                     roleToSave.RolePermission.Add(item);
 

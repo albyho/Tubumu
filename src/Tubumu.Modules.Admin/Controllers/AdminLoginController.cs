@@ -69,7 +69,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return result;
             }
 
-            result.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            result.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             result.Url = _frontendSettings.CoreEnvironment.IsDevelopment ? _frontendSettings.CoreEnvironment.DevelopmentHost + "/modules/index.html" : Url.Action("Index", "View");
             result.Code = 200;
             result.Message = "登录成功";

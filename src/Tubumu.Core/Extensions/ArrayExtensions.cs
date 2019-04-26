@@ -36,7 +36,7 @@ namespace Tubumu.Core.Extensions
 
         private static void ValidParamters<T>(T[] sourceArray, long length)
         {
-            if(sourceArray == null)
+            if (sourceArray == null)
             {
                 throw new ArgumentNullException(nameof(sourceArray));
             }

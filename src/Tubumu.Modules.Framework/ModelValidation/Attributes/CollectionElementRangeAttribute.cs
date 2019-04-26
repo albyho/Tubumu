@@ -42,7 +42,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 
             if (value is IEnumerable<int> list)
             {
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     return item >= Minimum && item <= Maximum;
                 }

@@ -169,7 +169,7 @@ namespace Tubumu.Modules.Framework.Swagger
                 }
             }
 
-            return !extension.IsNullOrWhiteSpace() ? extension + " ": "";
+            return !extension.IsNullOrWhiteSpace() ? extension + " " : "";
         }
 
         private static T GetCustomAttribute<T>(ApiDescription apiDescription, bool inherit) where T : Attribute

@@ -136,12 +136,12 @@ namespace Tubumu.Core.Extensions
             return query.Where(Expression.Lambda<Func<TEntity, bool>>(body, p));
         }
 
-        public static IQueryable<TEntity> WhereOrCollectionAnyEqual<TEntity, TValue, TPropertyOrFieldValue>
+        public static IQueryable<TEntity> WhereOrCollectionAnyEqual<TEntity, TValue, TMemberValue>
             (
             this IQueryable<TEntity> query,
             Expression<Func<TEntity, IEnumerable<TValue>>> selector,
-            Expression<Func<TValue, TPropertyOrFieldValue>> propertyOrFieldSelector,
-            IEnumerable<TPropertyOrFieldValue> values
+            Expression<Func<TValue, TMemberValue>> memberSelector,
+            IEnumerable<TMemberValue> values
             )
         {
             if (selector == null)
@@ -156,14 +156,16 @@ namespace Tubumu.Core.Extensions
             if (!values.Any()) return query;
 
             ParameterExpression selectorParameter = selector.Parameters.Single();
-            ParameterExpression propertyOrFieldSelectorParameter = propertyOrFieldSelector.Parameters.Single();
+            ParameterExpression memberParameter = memberSelector.Parameters.Single();
             var methodInfo = GetEnumerableMethod("Any", 2).MakeGenericMethod(typeof(TValue));
             var anyExpressions = values.Select(value =>
                     (Expression)Expression.Call(null,
                                                 methodInfo,
                                                 selector.Body,
-                                                Expression.Lambda<Func<TValue, bool>>(Expression.Equal(propertyOrFieldSelector.Body, Expression.Constant(value, typeof(TPropertyOrFieldValue))),
-                                                    propertyOrFieldSelectorParameter)
+                                                Expression.Lambda<Func<TValue, bool>>(Expression.Equal(memberSelector.Body,
+                                                                                                       Expression.Constant(value, typeof(TMemberValue))),
+                                                                                                       memberParameter
+                                                                                                       )
                                                 )
                 );
             Expression body = anyExpressions.Aggregate((accumulate, any) => Expression.Or(accumulate, any));

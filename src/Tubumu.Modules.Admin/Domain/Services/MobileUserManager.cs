@@ -140,7 +140,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                          },
                 Role = u.Role != null ? new XM.RoleInfo
                 {
-                    RoleId =  u.Role.RoleId,
+                    RoleId = u.Role.RoleId,
                     Name = u.Role.Name,
                 } : null,
                 Roles = from ur in u.UserRole
@@ -304,7 +304,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         public async Task<XM.UserInfo> GenerateItemAsync(Guid groupId, XM.UserStatus status, string mobile, string password, ModelStateDictionary modelState)
         {
-            if(await _context.User.AnyAsync(m => m.Mobile == mobile))
+            if (await _context.User.AnyAsync(m => m.Mobile == mobile))
             {
                 modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 已被注册。");
                 return null;
@@ -335,19 +335,19 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         public async Task<int> ResetPasswordAsync(string mobile, string password, ModelStateDictionary modelState)
         {
-            if(!await _context.User.AnyAsync(m => m.Mobile == mobile))
+            if (!await _context.User.AnyAsync(m => m.Mobile == mobile))
             {
                 modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 尚未注册。");
                 return 0;
             }
 
-            var user = await _context.User.Where(m=>m.Mobile == mobile).FirstOrDefaultAsync();
-            if(user == null)
+            var user = await _context.User.Where(m => m.Mobile == mobile).FirstOrDefaultAsync();
+            if (user == null)
             {
                 modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 尚未注册。");
                 return 0;
             }
-            if(user.Status != XM.UserStatus.Normal)
+            if (user.Status != XM.UserStatus.Normal)
             {
                 modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 的用户状态不允许重置密码。");
                 return 0;

@@ -26,7 +26,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         [DataType(DataType.Password)]
         [DisplayName("新的密码")]
         public string NewPassword { get; set; }
-        
+
         /// <summary>
         /// 确认密码
         /// <remark>客户端请进行 MD5 加密(小写)</remark>

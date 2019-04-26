@@ -70,7 +70,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return result;
             }
 
-            result.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            result.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             result.Code = 200;
             result.Message = "登录成功";
             return result;
@@ -138,7 +138,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "注册成功";
             return returnResult;
@@ -162,7 +162,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -244,7 +244,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -284,7 +284,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -324,7 +324,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;
@@ -364,7 +364,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            returnResult.Data =  await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
             return returnResult;

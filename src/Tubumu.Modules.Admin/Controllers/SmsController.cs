@@ -43,7 +43,7 @@ namespace Tubumu.Modules.Admin.Controllers
         {
             var returnResult = new ApiResult();
             var sendResult = await _smsSender.SendAsync(input.PhoneNumber, input.Text);
-            if(!sendResult)
+            if (!sendResult)
             {
                 returnResult.Code = 400;
                 returnResult.Message = ModelState.FirstErrorMessage();

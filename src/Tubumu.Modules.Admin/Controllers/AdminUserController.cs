@@ -120,7 +120,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeUserAvatar([FromForm]UserImageInput userImageInput)
         {
             var result = new ApiResultUrl();
-            var url =  await _userService.ChangeAvatarAsync(userImageInput, ModelState);
+            var url = await _userService.ChangeAvatarAsync(userImageInput, ModelState);
             if (!ModelState.IsValid)
             {
                 result.Code = 400;
@@ -144,7 +144,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeUserLogo([FromForm]UserImageInput userImageInput)
         {
             var result = new ApiResultUrl();
-            var url =  await _userService.ChangeLogoAsync(userImageInput, ModelState);
+            var url = await _userService.ChangeLogoAsync(userImageInput, ModelState);
             if (!ModelState.IsValid)
             {
                 result.Code = 400;

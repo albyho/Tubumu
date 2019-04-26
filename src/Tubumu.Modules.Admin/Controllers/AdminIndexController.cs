@@ -86,7 +86,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeAvatar(IFormFile file)
         {
             var result = new ApiResultUrl();
-            var url =  await _userService.ChangeAvatarAsync(HttpContext.User.GetUserId(), file, ModelState);
+            var url = await _userService.ChangeAvatarAsync(HttpContext.User.GetUserId(), file, ModelState);
             if (!ModelState.IsValid)
             {
                 result.Code = 400;
@@ -109,7 +109,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultUrl> ChangeLogo(IFormFile file)
         {
             var result = new ApiResultUrl();
-            var url =  await _userService.ChangeLogoAsync(HttpContext.User.GetUserId(), file, ModelState);
+            var url = await _userService.ChangeLogoAsync(HttpContext.User.GetUserId(), file, ModelState);
             if (!ModelState.IsValid)
             {
                 result.Code = 400;

@@ -13,7 +13,7 @@ namespace Tubumu.Modules.Framework.RabbitMQ
                 ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
             };
             var bodyJson = JsonConvert.SerializeObject(body, Formatting.None, serializerSettings);
-            var bodyBytes= Encoding.UTF8.GetBytes(bodyJson);
+            var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
             model.BasicPublish(
                 exchange: exchange,
                 routingKey: routingKey,

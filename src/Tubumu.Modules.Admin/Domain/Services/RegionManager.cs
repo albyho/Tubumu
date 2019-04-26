@@ -49,10 +49,10 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         public async Task<List<XM.RegionInfo>> GetRegionInfoListAsync()
         {
-             var list = await _context.Region.AsNoTracking().
-                 OrderBy(m => m.DisplayOrder).
-                 ProjectTo<XM.RegionInfo>().
-                 ToListAsync();
+            var list = await _context.Region.AsNoTracking().
+                OrderBy(m => m.DisplayOrder).
+                ProjectTo<XM.RegionInfo>().
+                ToListAsync();
             return list;
         }
 
