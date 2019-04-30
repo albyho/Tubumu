@@ -103,10 +103,10 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task GetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
+        public static async Task<T> GetObjectAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
         {
-            var bytes = value.ToByteArray();
-            await distributedCache.SetAsync(key, bytes, options, token);
+            var value = await distributedCache.GetAsync(key, token);
+            return value.FromByteArray<T>();
         }
 
         #endregion
