@@ -25,7 +25,6 @@ namespace Tubumu.Modules.Admin.Application.Services
         public async Task<bool> SendAsync(SmsMessage smsMessage)
         {
             var client = _clientFactory.CreateClient();
-
             const string requestUriFormat = "https://api.smsbao.com/sms?u={0}&p={1}&m={2}&c={3}";
             // 如果需要 %20 转 + , 则用 Uri.EscapeDataString(someString);
             var urlEncodedMessage = WebUtility.UrlEncode(smsMessage.Text);
