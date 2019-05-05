@@ -14,13 +14,13 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions" Version="2.1.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71142" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71285" />
     <PackageReference Include="Senparc.Weixin.Open" Version="4.4.5.2" />
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.3.10" />
   </ItemGroup>

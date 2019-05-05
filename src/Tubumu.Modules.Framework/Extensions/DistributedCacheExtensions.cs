@@ -55,6 +55,7 @@ namespace Tubumu.Modules.Framework.Extensions
         public static async Task<T> GetJsonAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
         {
             var value = await distributedCache.GetStringAsync(key, token);
+
             return ObjectExtensions.FromJson<T>(value);
         }
 
@@ -106,6 +107,7 @@ namespace Tubumu.Modules.Framework.Extensions
         public static async Task<T> GetObjectAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
         {
             var value = await distributedCache.GetAsync(key, token);
+            if (value == null) return null;
             return value.FromByteArray<T>();
         }
 
@@ -155,6 +157,7 @@ namespace Tubumu.Modules.Framework.Extensions
         public static async Task<T> GetPackAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
         {
             var value = await distributedCache.GetAsync(key, token);
+            if (value == null) return null;
             return MessagePackSerializer.Deserialize<T>(value);
         }
 
