@@ -12,9 +12,8 @@ using Tubumu.Modules.Framework.Models;
 namespace Tubumu.Modules.Admin.Controllers
 {
     /// <summary>
-    /// BasicData Controller
+    /// BasicData Controller (基础数据)
     /// </summary>
-    /// <remarks>基础数据</remarks>
     [Route("Api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
@@ -49,7 +48,7 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取区域信息列表（全部）
+        /// 获取区域信息列表 (全部)
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -66,7 +65,7 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 获取区域信息树（全部）
+        /// 获取区域信息树 (全部)
         /// </summary>
         /// <returns></returns>
         [HttpGet]

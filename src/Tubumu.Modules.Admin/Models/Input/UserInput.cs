@@ -39,9 +39,8 @@ namespace Tubumu.Modules.Admin.Models.Input
         public Guid? RoleId { get; set; }
 
         /// <summary>
-        /// 用户状态
+        /// 用户状态: 1、待审 2、待审 3、待删
         /// </summary>
-        /// <remarks>Status: 1 待审 2 待审 3 待删</remarks>
         [Required(ErrorMessage = "请选择用户状态")]
         //[Range(1, 3, ErrorMessage = "用户状态不正确")]
         [DisplayName("用户状态")]
@@ -165,6 +164,5 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 拥有权限 Id
         /// </summary>
         public IEnumerable<Guid> PermissionIds { get; set; }
-
     }
 }

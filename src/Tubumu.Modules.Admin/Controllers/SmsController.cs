@@ -10,9 +10,8 @@ using Tubumu.Modules.Framework.Swagger;
 namespace Tubumu.Modules.Admin.Controllers
 {
     /// <summary>
-    /// Sms Controller
+    /// Sms Controller (短信)
     /// </summary>
-    /// <remarks>短信</remarks>
     [Route("Api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]

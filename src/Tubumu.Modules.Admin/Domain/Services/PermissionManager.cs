@@ -224,7 +224,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 {
                     permissionToSave.ParentId = permissionInput.ParentId;
 
-                    //获取当前节点的下一个兄弟节点或更高层下一个父节点（不是自己的父节点）的DisplayOrder
+                    //获取当前节点的下一个兄弟节点或更高层下一个父节点 (不是自己的父节点)的DisplayOrder
                     int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(permissionToSave);
 
                     #region 当前节点树Id集合
@@ -344,7 +344,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                                 return false;
                             }
 
-                            // 更新本节点树至新的父节点（包括新的父节点）之间的节点的DisplayOrder
+                            // 更新本节点树至新的父节点 (包括新的父节点)之间的节点的DisplayOrder
                             sql = "Update Permission Set DisplayOrder=DisplayOrder-@CurTreeCount Where DisplayOrder>=@DOONPONB And DisplayOrder<=@TDisplayOrder";
                             await _context.Database.ExecuteSqlCommandAsync(sql
                                 , new SqlParameter("CurTreeCount", currentTreeItemCount)

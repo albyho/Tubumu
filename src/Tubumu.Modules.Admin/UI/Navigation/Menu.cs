@@ -76,7 +76,7 @@ namespace Tubumu.Modules.Admin.UI.Navigation
         [JsonProperty(PropertyName = "linkTarget", NullValueHandling = NullValueHandling.Ignore)]
         public string LinkTarget { get; set; }
 
-        //权限（只是用于控制菜单显示，并无实际约束能力）
+        //权限 (只是用于控制菜单显示，并无实际约束能力)
         /// <summary>
         /// 权限
         /// </summary>
@@ -93,7 +93,7 @@ namespace Tubumu.Modules.Admin.UI.Navigation
         public string Group { get; set; }
 
         /// <summary>
-        /// 验证器（如果有验证器，将忽略 Permission、Role 和 Group）
+        /// 验证器 (如果有验证器，将忽略 Permission、Role 和 Group)
         /// </summary>
         public Func<ClaimsPrincipal, bool> Validator { get; set; }
     }

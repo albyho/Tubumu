@@ -52,7 +52,7 @@ namespace Tubumu.Modules.Framework.Application.Services
                 signingCredentials: SignatureHelper.GenerateSigningCredentials(_tokenValidationSettings.IssuerSigningKey)
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(jwtToken);
+            return _tokenHandler.WriteToken(jwtToken);
         }
 
         /// <summary>

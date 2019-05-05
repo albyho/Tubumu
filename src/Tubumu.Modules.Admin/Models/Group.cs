@@ -78,7 +78,7 @@ namespace Tubumu.Modules.Admin.Models
         public Guid? ParentId { set; get; }
 
         /// <summary>
-        /// 层级（从 1 开始）
+        /// 层级 (从 1 开始)
         /// </summary>
         public int Level { get; set; }
 

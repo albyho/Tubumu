@@ -111,20 +111,18 @@ namespace Tubumu.Modules.Admin.Models
     public class NotificationInput
     {
         /// <summary>
-        /// 通知 Id
+        /// 通知 Id (添加时为 null；编辑时未非 null)
         /// </summary>
-        /// <remarks>添加时为 null；编辑时未非 null</remarks>
         [Range(1, Int32.MaxValue, ErrorMessage = "请输入通知 Id")]
         public int? NotificationId { get; set; }
 
         /// <summary>
-        /// 发送自
+        /// 发送自 (内部赋值)
         /// </summary>
-        /// <remarks>内部赋值</remarks>
         public int? FromUserId { get; set; }
 
         /// <summary>
-        /// 发送至（ null 则发送至所有人）
+        /// 发送至 ( null 则发送至所有人)
         /// </summary>
         public int? ToUserId { get; set; }
 

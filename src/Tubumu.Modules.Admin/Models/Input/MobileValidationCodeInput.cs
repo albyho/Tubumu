@@ -18,8 +18,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         public string Mobile { get; set; }
 
         /// <summary>
-        /// 验证类型
-        /// <remark>Type: 0 注册 1 重置密码 2 更换手机号 3 短信登录(如果没注册，则自动注册) 4 绑定手机号</remark>
+        /// 验证码类型: 0、注册 1、重置密码 2、更换手机号 3、短信登录(如果没注册，则自动注册) 4、绑定手机号
         /// </summary>
         [Required(ErrorMessage = "请输入验证类型")]
         [DisplayName("验证类型")]
@@ -40,8 +39,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         public string Mobile { get; set; }
 
         /// <summary>
-        /// 验证类型
-        /// <remark>Type: 0 注册 1 重置密码 2 更换手机号 3 短信登录(如果没注册，则自动注册) 4 绑定手机号</remark>
+        /// 验证码类型: 0、注册 1、重置密码 2、更换手机号 3、短信登录(如果没注册，则自动注册) 4、绑定手机号
         /// </summary>
         [Required(ErrorMessage = "请输入验证类型")]
         [DisplayName("验证类型")]

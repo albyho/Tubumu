@@ -7,8 +7,7 @@ using Tubumu.Core.Extensions;
 namespace Tubumu.Modules.Admin.Models
 {
     /// <summary>
-    /// 用户信息包装
-    /// <remark>简单信息</remark>
+    /// 用户信息包装(简单信息)
     /// </summary>
     public class UserInfoWarpper
     {

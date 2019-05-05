@@ -6,15 +6,13 @@ using Tubumu.Modules.Framework.ModelValidation.Attributes;
 namespace Tubumu.Modules.Admin.Models.Input
 {
     /// <summary>
-    /// 用户编辑 Input
-    /// <remark>编辑用户密码要么都为空，要么必须输入合法的密码</remark>
+    /// 用户编辑 Input (编辑用户密码要么都为空，要么必须输入合法的密码)
     /// </summary>
     public class UserInputEdit : UserInput
     {
         /// <summary>
-        /// 用户 Id
+        /// 用户 Id (添加时为 null；编辑时未非 null)
         /// </summary>
-        /// <remarks>添加时为 null；编辑时未非 null</remarks>
         [DisplayName("用户 Id")]
         [Range(1, Int32.MaxValue, ErrorMessage = "请选择存在的用户")]
         public int UserId { get; set; }
@@ -33,8 +31,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         public int UserId { get; set; }
 
         /// <summary>
-        /// 登录密码
-        /// <remark>客户端请进行 MD5 加密(小写)</remark>
+        /// 登录密码(客户端请进行 MD5 加密(小写))
         /// </summary>
         [Required(ErrorMessage = "登录密码不能为空")]
         [StringLength(32, MinimumLength = 6, ErrorMessage = "登录密码请保持在 6-32 个字符之间")]
@@ -43,8 +40,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         public string Password { get; set; }
 
         /// <summary>
-        /// 确认密码
-        /// <remark>客户端请进行 MD5 加密(小写)</remark>
+        /// 确认密码(客户端请进行 MD5 加密(小写))
         /// </summary>
         [Required(ErrorMessage = "确认密码不能为空")]
         [StringLength(32, MinimumLength = 6, ErrorMessage = "确认密码请保持在 6-32 个字符之间")]
@@ -52,7 +48,6 @@ namespace Tubumu.Modules.Admin.Models.Input
         [DataType(DataType.Password)]
         [DisplayName("确认密码")]
         public string PasswordConfirm { get; set; }
-
     }
 
     /// <summary>

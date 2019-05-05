@@ -359,7 +359,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 //如果父节点改变(从无父节点到有父节点，从有父节点到无父节点，从一个父节点到另一个父节点)
                 groupToSave.ParentId = groupInput.ParentId;
 
-                //获取当前节点的下一个兄弟节点或更高层下一个父节点（不是自己的父节点）的DisplayOrder
+                //获取当前节点的下一个兄弟节点或更高层下一个父节点 (不是自己的父节点)的DisplayOrder
                 int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(groupToSave);
                 // 当前节点树Id集合
                 var currTreeIds = await GetTreeIdListAsync(groupToSave, displayOrderOfNextParentOrNextBrother, true);
@@ -369,7 +369,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 {
                     //当前节点将由子节点升为顶级节点，直接将该节点数移到最后
 
-                    #region 将由子节点升为顶级节点（成为最后一个顶级节点）
+                    #region 将由子节点升为顶级节点 (成为最后一个顶级节点)
 
                     //需要提升的层级数
                     int xLevel = groupToSave.Level - 1;
@@ -414,7 +414,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 {
                     //当前节点将改变父节点，包括从顶级节点移至另一节点下，或从当前父节点下移至另一节点下
 
-                    #region 从顶级节点移至另一节点下，或从当前父节点下移至另一节点下（成为目标节点的最有一个子节点）
+                    #region 从顶级节点移至另一节点下，或从当前父节点下移至另一节点下 (成为目标节点的最有一个子节点)
 
                     //目标父节点
                     var newParent = await _context.Group.AsNoTracking().FirstOrDefaultAsync(m => m.GroupId == groupInput.ParentId.Value);
@@ -470,7 +470,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                             return false;
                         }
 
-                        // 更新本节点树至新的父节点（包括新的父节点）之间的节点的DisplayOrder
+                        // 更新本节点树至新的父节点 (包括新的父节点)之间的节点的DisplayOrder
                         sql = "Update [Group] Set DisplayOrder=DisplayOrder-@CurTreeCount Where DisplayOrder>=@DOONPONB And DisplayOrder<=@TDisplayOrder";
                         await _context.Database.ExecuteSqlCommandAsync(sql
                         , new SqlParameter("CurTreeCount", currentTreeItemCount)
@@ -933,9 +933,9 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
             #endregion
 
-            // 获取当前节点的下一个兄弟节点或更高层下一个父节点（不是自己的父节点）的DisplayOrder
+            // 获取当前节点的下一个兄弟节点或更高层下一个父节点 (不是自己的父节点)的DisplayOrder
             int displayOrderOfNextParentOrNextBrother = await GetDisplayOrderOfNextParentOrNextBrotherAsync(sourceGroup);
-            // 当前节点树Id集合（包含本节点）
+            // 当前节点树Id集合 (包含本节点)
             var sourceTree = await GetTreeAsync(sourceGroup, displayOrderOfNextParentOrNextBrother, true);
 
             #region 数据验证: 贪吃蛇
@@ -1005,7 +1005,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             else if (targetGroup.DisplayOrder - sourceGroup.DisplayOrder > 0)
             {
                 // 下移算法： 
-                // 1、本节点树以下、目标节点（包括或不包括）之上的节点的上移 DisplayOrder = DisplayOrder - 本节点树的节点数
+                // 1、本节点树以下、目标节点 (包括或不包括)之上的节点的上移 DisplayOrder = DisplayOrder - 本节点树的节点数
                 // 2、本节点树的 DisplayOrder = DisplayOrder + (1 中移动的节点数)
                 // 3、本节点树的 Level = Level + xLevel
                 // 4、本节点的 ParentId = sourceNewParentId
@@ -1022,7 +1022,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             else
             {
                 // 上移算法：
-                // 1、本节点树以上、目标节点之下（包括或不包括）的节点的下移 DisplayOrder = DisplayOrder + 本节点树的节点数
+                // 1、本节点树以上、目标节点之下 (包括或不包括)的节点的下移 DisplayOrder = DisplayOrder + 本节点树的节点数
                 // 2、本节点树的 DisplayOrder = DisplayOrder + (1 中移动的节点数)
                 // 3、本节点树的 Level = Level + xLevel
                 // 4、本节点的 ParentId = sourceNewParentId

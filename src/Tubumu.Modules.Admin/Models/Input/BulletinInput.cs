@@ -43,6 +43,5 @@ namespace Tubumu.Modules.Admin.Models.Input
         [DisplayName("是否显示")]
         [JsonProperty(PropertyName = "isShow")]
         public bool IsShow { get; set; }
-
     }
 }

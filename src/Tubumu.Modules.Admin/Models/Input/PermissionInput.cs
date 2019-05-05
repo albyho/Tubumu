@@ -29,7 +29,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         public Guid? PermissionId { get; set; }
 
         /// <summary>
-        /// 所属权限（父权限）
+        /// 所属权限 (父权限)
         /// </summary>
         [DisplayName("所属权限")]
         public Guid? ParentId { get; set; }

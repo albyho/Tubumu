@@ -47,9 +47,8 @@ namespace Tubumu.Modules.Admin.Models.Input
     public class RoleNameInput
     {
         /// <summary>
-        /// 角色 Id
+        /// 角色 Id (添加时为 null；编辑时未非 null)
         /// </summary>
-        /// <remarks>添加时为 null；编辑时未非 null</remarks>
         [Required(ErrorMessage = "请输入角色 Id")]
         public Guid RoleId { get; set; }
 

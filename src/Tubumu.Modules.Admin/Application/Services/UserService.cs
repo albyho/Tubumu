@@ -140,7 +140,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         Task<bool> ChangeUsernameAsync(int userId, string username, ModelStateDictionary modelState);
 
         /// <summary>
-        /// 修改显示名称（昵称）
+        /// 修改显示名称 (昵称)
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="displayName"></param>
@@ -521,7 +521,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         }
 
         /// <summary>
-        /// 修改显示名称（昵称）
+        /// 修改显示名称 (昵称)
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="displayName"></param>

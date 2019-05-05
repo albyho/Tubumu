@@ -10,7 +10,7 @@ namespace Tubumu.Modules.Admin.Models.Input
     public class UserChangeProfileInput
     {
         /// <summary>
-        /// 显示名称（昵称）
+        /// 显示名称 (昵称)
         /// </summary>
         //public string Username { get; set; }
         //[Required(ErrorMessage = "昵称不能为空")]

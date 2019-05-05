@@ -23,14 +23,13 @@ namespace Tubumu.Modules.Admin.Models.Input
     public class GroupInput
     {
         /// <summary>
-        /// 分组 Id
+        /// 分组 Id (添加时为 null；编辑时未非 null)
         /// </summary>
-        /// <remarks>添加时为 null；编辑时未非 null</remarks>
         [DisplayName("分组 Id")]
         public Guid? GroupId { get; set; }
 
         /// <summary>
-        /// 主要分组（父分组） Id
+        /// 主要分组 (父分组) Id
         /// </summary>
         [DisplayName("主要分组")]
         public Guid? ParentId { get; set; }

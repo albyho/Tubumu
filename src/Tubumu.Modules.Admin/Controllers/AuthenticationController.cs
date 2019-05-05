@@ -14,9 +14,8 @@ using Tubumu.Modules.Framework.Application.Services;
 namespace Tubumu.Modules.Admin.Controllers
 {
     /// <summary>
-    /// Authentication Controller
+    /// Authentication Controller (用户认证)
     /// </summary>
-    /// <remarks>用户认证</remarks>
     [Route("Api/[controller]/[action]")]
     [ApiController]
     [IgnoreAntiforgeryToken]
