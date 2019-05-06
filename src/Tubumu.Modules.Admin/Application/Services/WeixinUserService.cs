@@ -527,6 +527,5 @@ namespace Tubumu.Modules.Admin.Application.Services
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userId);
             await _cache.RemoveAsync(cacheKey);
         }
-
     }
 }

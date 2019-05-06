@@ -60,16 +60,16 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         #region IMobileUserService Members
 
-        public async Task<bool> IsExistsMobileAsync(string mobile)
+        public Task<bool> IsExistsMobileAsync(string mobile)
         {
-            if (mobile.IsNullOrWhiteSpace()) return false;
-            return await _manager.IsExistsMobileAsync(mobile);
+            if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.IsExistsMobileAsync(mobile);
         }
 
-        public async Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
+        public Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
         {
-            if (mobile.IsNullOrWhiteSpace()) return false;
-            return await _manager.VerifyExistsMobileAsync(userId, mobile);
+            if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.VerifyExistsMobileAsync(userId, mobile);
         }
 
         public async Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState)
@@ -276,19 +276,19 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         #endregion
 
-        private async Task CacheUser(UserInfo userInfo)
+        private Task CacheUser(UserInfo userInfo)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userInfo.UserId);
-            await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
+            return _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromDays(1)
             });
         }
 
-        private async Task CleanCache(int userId)
+        private Task CleanCache(int userId)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userId);
-            await _cache.RemoveAsync(cacheKey);
+            return _cache.RemoveAsync(cacheKey);
         }
 
         private string GenerateMobileValidationCode(int codeLength)

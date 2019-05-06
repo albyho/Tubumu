@@ -144,9 +144,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="groupId"></param>
         /// <returns></returns>
-        public async Task<Group> GetItemAsync(Guid groupId)
+        public Task<Group> GetItemAsync(Guid groupId)
         {
-            return await _manager.GetItemAsync(groupId);
+            return _manager.GetItemAsync(groupId);
         }
 
         /// <summary>
@@ -154,9 +154,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public async Task<Group> GetItemAsync(string name)
+        public Task<Group> GetItemAsync(string name)
         {
-            return await _manager.GetItemAsync(name);
+            return _manager.GetItemAsync(name);
         }
 
         /// <summary>
@@ -174,10 +174,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// GetTreeInCacheAsync
         /// </summary>
         /// <returns></returns>
-        public async Task<List<GroupTreeNode>> GetTreeInCacheAsync()
+        public Task<List<GroupTreeNode>> GetTreeInCacheAsync()
         {
-            var tree = await GetTreeInCacheInternalAsync();
-            return tree;
+            return GetTreeInCacheInternalAsync();
         }
 
         /// <summary>
@@ -218,7 +217,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.SaveAsync(groupInput, modelState);
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             return result;
         }
@@ -245,7 +244,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     throw new InvalidOperationException($"{item.Name} 分组添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
-            await RemoveCacheAsync();
+            RemoveCacheAsync().NoWarning();
             return true;
         }
 
@@ -260,7 +259,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(groupId, modelState);
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             return result;
         }
@@ -276,7 +275,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(groupId, movingTarget);
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             return result;
         }
@@ -295,7 +294,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(sourceGroupId, targetGroupId, movingLocation, isChild, modelState);
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             return result;
         }
@@ -314,7 +313,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveByDisplayOrderAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             return result;
         }
@@ -575,10 +574,9 @@ namespace Tubumu.Modules.Admin.Application.Services
             };
         }
 
-        private async Task RemoveCacheAsync()
+        private Task RemoveCacheAsync()
         {
-            await _cache.RemoveAsync(ListCacheKey);
-            await _cache.RemoveAsync(TreeCacheKey);
+            return Task.WhenAll(_cache.RemoveAsync(ListCacheKey), _cache.RemoveAsync(TreeCacheKey));
         }
 
         #endregion

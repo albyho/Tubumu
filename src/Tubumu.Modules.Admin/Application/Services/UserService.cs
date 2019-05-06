@@ -364,9 +364,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="userIds"></param>
         /// <returns></returns>
-        public async Task<List<UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds)
+        public Task<List<UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds)
         {
-            return await _manager.GetUserInfoWarpperListAsync(userIds);
+            return _manager.GetUserInfoWarpperListAsync(userIds);
         }
 
         /// <summary>
@@ -374,9 +374,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GetAvatarUrlAsync(int userId)
+        public Task<string> GetAvatarUrlAsync(int userId)
         {
-            return await _manager.GetAvatarUrlAsync(userId);
+            return _manager.GetAvatarUrlAsync(userId);
         }
 
         /// <summary>
@@ -385,9 +385,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="userId"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public async Task<bool> IsExistsAsync(int userId, UserStatus? status = null)
+        public Task<bool> IsExistsAsync(int userId, UserStatus? status = null)
         {
-            return await _manager.IsExistsAsync(userId, status);
+            return _manager.IsExistsAsync(userId, status);
         }
 
         /// <summary>
@@ -442,9 +442,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="userInput"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState)
+        public Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState)
         {
-            return await _manager.VerifyExistsAsync(userInput, modelState);
+            return _manager.VerifyExistsAsync(userInput, modelState);
         }
 
         /// <summary>

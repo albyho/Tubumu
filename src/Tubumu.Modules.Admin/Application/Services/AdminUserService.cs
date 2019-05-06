@@ -74,9 +74,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="input"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput input, ModelStateDictionary modelState)
+        public Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput input, ModelStateDictionary modelState)
         {
-            return await _userService.ChangeProfileAsync(userId, input, modelState);
+            return _userService.ChangeProfileAsync(userId, input, modelState);
         }
 
         #endregion

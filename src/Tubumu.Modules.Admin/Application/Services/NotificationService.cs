@@ -34,9 +34,9 @@ namespace Tubumu.Modules.Admin.Application.Services
             _hubContext = hubContext;
         }
 
-        public async Task<Page<NotificationUser>> GetPageAsync(NotificationPageSearchCriteria criteria)
+        public Task<Page<NotificationUser>> GetPageAsync(NotificationPageSearchCriteria criteria)
         {
-            return await _notificationManager.GetPageAsync(criteria);
+            return _notificationManager.GetPageAsync(criteria);
         }
 
         public async Task<bool> SaveAsync(NotificationInput notificationInput, ModelStateDictionary modelState)
@@ -63,25 +63,24 @@ namespace Tubumu.Modules.Admin.Application.Services
             return result;
         }
 
-        public async Task<bool> RemoveAsync(int notificationId, ModelStateDictionary modelState)
+        public Task<bool> RemoveAsync(int notificationId, ModelStateDictionary modelState)
         {
-            return await _notificationManager.RemoveAsync(notificationId, modelState);
+            return _notificationManager.RemoveAsync(notificationId, modelState);
         }
 
-        public async Task<bool> ReadAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
+        public Task<bool> ReadAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
         {
-            return await _notificationManager.ReadAsync(userId, notificationIds, modelState);
+            return _notificationManager.ReadAsync(userId, notificationIds, modelState);
         }
 
-        public async Task<bool> DeleteAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
+        public Task<bool> DeleteAsync(int userId, int[] notificationIds, ModelStateDictionary modelState)
         {
-            return await _notificationManager.DeleteAsync(userId, notificationIds, modelState);
+            return _notificationManager.DeleteAsync(userId, notificationIds, modelState);
         }
 
-        public async Task<NotificationUser> GetNewestAsync(int userId, int? currentNotificationId = null)
+        public Task<NotificationUser> GetNewestAsync(int userId, int? currentNotificationId = null)
         {
-            return await _notificationManager.GetNewestAsync(userId, currentNotificationId);
+            return _notificationManager.GetNewestAsync(userId, currentNotificationId);
         }
-
     }
 }

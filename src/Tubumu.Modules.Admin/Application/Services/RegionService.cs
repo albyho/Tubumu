@@ -66,10 +66,9 @@ namespace Tubumu.Modules.Admin.Application.Services
             return list;
         }
 
-        public async Task<List<RegionTreeNode>> GetRegiontTreeAsync()
+        public Task<List<RegionTreeNode>> GetRegiontTreeAsync()
         {
-            var tree = await GetTreeInCacheInternalAsync();
-            return tree;
+            return GetTreeInCacheInternalAsync();
         }
 
         public async Task<List<RegionTreeNode>> GetRegiontParentTreeAsync(int[] parentIdPath)

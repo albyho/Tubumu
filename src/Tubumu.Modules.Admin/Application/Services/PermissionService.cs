@@ -74,16 +74,14 @@ namespace Tubumu.Modules.Admin.Application.Services
             return await _manager.GetItemAsync(permissionId);
         }
 
-        public async Task<List<Permission>> GetListInCacheAsync()
+        public Task<List<Permission>> GetListInCacheAsync()
         {
-            var permissions = await GetListInCacheInternalAsync();
-            return permissions;
+            return GetListInCacheInternalAsync();
         }
 
-        public async Task<List<PermissionTreeNode>> GetTreeInCacheAsync()
+        public Task<List<PermissionTreeNode>> GetTreeInCacheAsync()
         {
-            var tree = await GetTreeInCacheInternalAsync();
-            return tree;
+            return GetTreeInCacheInternalAsync();
         }
 
         public async Task<PermissionTreeNode> GetSubTreeInCacheAsync(Guid permissionId)
@@ -98,7 +96,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             bool result = await _manager.SaveAsync(permissionInput, modelState);
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             else
             {
@@ -118,7 +116,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     throw new InvalidOperationException($"{item.Name} 权限添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
-            await RemoveCacheAsync();
+            RemoveCacheAsync().NoWarning();
             return true;
         }
 
@@ -127,7 +125,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(permissionId);
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             return result;
         }
@@ -149,7 +147,7 @@ namespace Tubumu.Modules.Admin.Application.Services
 
             if (result)
             {
-                await RemoveCacheAsync();
+                RemoveCacheAsync().NoWarning();
             }
             return result;
         }
@@ -274,10 +272,9 @@ namespace Tubumu.Modules.Admin.Application.Services
             };
         }
 
-        private async Task RemoveCacheAsync()
+        private Task RemoveCacheAsync()
         {
-            await _cache.RemoveAsync(ListCacheKey);
-            await _cache.RemoveAsync(TreeCacheKey);
+            return Task.WhenAll(_cache.RemoveAsync(ListCacheKey), _cache.RemoveAsync(TreeCacheKey));
         }
 
         #endregion

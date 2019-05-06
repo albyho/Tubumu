@@ -42,14 +42,14 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         #region IRoleService Members
 
-        public async Task<Role> GetItemAsync(Guid roleId)
+        public Task<Role> GetItemAsync(Guid roleId)
         {
-            return await _manager.GetItemAsync(roleId);
+            return _manager.GetItemAsync(roleId);
         }
 
-        public async Task<Role> GetItemAsync(string name)
+        public Task<Role> GetItemAsync(string name)
         {
-            return await _manager.GetItemAsync(name);
+            return _manager.GetItemAsync(name);
         }
 
         public async Task<List<RoleBase>> GetBaseListInCacheAsync()
@@ -65,10 +65,9 @@ namespace Tubumu.Modules.Admin.Application.Services
             return roleBases;
         }
 
-        public async Task<List<Role>> GetListInCacheAsync()
+        public Task<List<Role>> GetListInCacheAsync()
         {
-            var roles = await GetListInCacheInternalAsync();
-            return roles;
+            return GetListInCacheInternalAsync();
         }
 
         public async Task<bool> SaveAsync(RoleInput roleInput, ModelStateDictionary modelState)
