@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Tubumu.Modules.Admin.Domain.Entities
 {

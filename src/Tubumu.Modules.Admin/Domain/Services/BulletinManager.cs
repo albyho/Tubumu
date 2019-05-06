@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Domain.Entities;
+using Tubumu.Modules.Admin.Models.Input;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Domain.Services

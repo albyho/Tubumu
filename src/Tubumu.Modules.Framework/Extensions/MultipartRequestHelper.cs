@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
-using Microsoft.Net.Http.Headers;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 
 namespace Tubumu.Modules.Framework.Extensions
 {

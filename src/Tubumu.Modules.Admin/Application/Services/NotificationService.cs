@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.SignalR;
-using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Domain.Services;
+using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.SignalR.Hubs;
 using Tubumu.Modules.Framework.Models;
 

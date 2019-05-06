@@ -5,8 +5,8 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Tubumu.Modules.Admin.Domain.Entities;
 using Tubumu.Core.Extensions;
+using Tubumu.Modules.Admin.Domain.Entities;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Domain.Services

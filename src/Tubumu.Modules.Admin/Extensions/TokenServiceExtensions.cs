@@ -3,9 +3,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Tubumu.Modules.Admin.Models;
+using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Application.Services;
 
 namespace Tubumu.Modules.Admin.Application.Services
 {

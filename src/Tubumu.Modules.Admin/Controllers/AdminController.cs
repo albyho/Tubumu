@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Application.Services;
-using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Admin.UI.Frontend;
 using Tubumu.Modules.Admin.UI.Navigation;
-using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Application.Services;
-using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Models;
+using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
-using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Framework.Extensions;
 
 namespace Tubumu.Modules.Admin.Application.Services
