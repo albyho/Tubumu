@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
@@ -53,9 +54,9 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// 从缓存获取
         /// </summary>
         /// <returns></returns>
-        public async Task<Bulletin> GetItemInCacheAsync()
+        public Task<Bulletin> GetItemInCacheAsync()
         {
-            return await GetItemInCacheInternalAsync();
+            return GetItemInCacheInternalAsync();
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             bool result = await _manager.SaveAsync(bulletin, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(CacheKey);
+                _cache.RemoveAsync(CacheKey).NoWarning();
             }
             return result;
         }
@@ -80,7 +81,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (bulletin == null)
             {
                 bulletin = await _manager.GetItemAsync();
-                await _cache.SetJsonAsync(CacheKey, bulletin);
+                _cache.SetJsonAsync(CacheKey, bulletin).NoWarning();
             }
             return bulletin;
 

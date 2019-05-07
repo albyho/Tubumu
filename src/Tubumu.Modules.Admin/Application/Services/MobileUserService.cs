@@ -81,7 +81,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                await CleanCache(userId);
+                CleanCache(userId).NoWarning();
             }
             return result;
         }
@@ -93,7 +93,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GenerateItemAsync(groupId, status, input.Mobile, password, modelState);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                await CacheUser(userInfo);
+                CacheUser(userInfo).NoWarning();
             }
             return userInfo;
         }
@@ -107,7 +107,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             {
                 return false;
             }
-            await CleanCache(userId);
+            CleanCache(userId).NoWarning();
             return true;
         }
 
@@ -117,7 +117,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetItemByMobileAsync(mobile, mobileIsValid, status);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                await CacheUser(userInfo);
+                CacheUser(userInfo).NoWarning();
             }
             return userInfo;
         }
@@ -131,7 +131,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 userInfo = await _manager.GenerateItemAsync(groupId, generateStatus, mobile, password, modelState);
                 if (userInfo != null && userInfo.Status == UserStatus.Normal)
                 {
-                    await CacheUser(userInfo);
+                    CacheUser(userInfo).NoWarning();
                 }
             }
             return userInfo;
@@ -192,10 +192,10 @@ namespace Tubumu.Modules.Admin.Application.Services
                     FinishVerifyDate = null,
                     CreationTime = now,
                 };
-                await _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
+                _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-                });
+                }).NoWarning();
             }
             var sms = "{\"code\":\"" + validationCode + "\",\"time\":\"" + (_mobileValidationCodeSettings.Expiration / 60) + "\"}";
             return await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, sms);
@@ -217,10 +217,11 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
 
             mobileValidationCode.VerifyTimes++;
-            await _cache.SetJsonAsync<MobileValidationCode>(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
+            // 可以接受的误差
+            _cache.SetJsonAsync<MobileValidationCode>(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-            });
+            }).NoWarning();
 
             if (mobileValidationCode.ValidationCode.IsNullOrWhiteSpace())
             {
@@ -267,10 +268,10 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
 
             mobileValidationCode.FinishVerifyDate = DateTime.Now;
-            await _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
+            _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-            });
+            }).NoWarning();
             return true;
         }
 

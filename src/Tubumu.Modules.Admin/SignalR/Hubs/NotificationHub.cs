@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Framework.Models;
 
@@ -32,31 +33,31 @@ namespace Tubumu.Modules.Admin.SignalR.Hubs
             _notificationService = notificationService;
         }
 
-        public override async Task OnConnectedAsync()
+        public override Task OnConnectedAsync()
         {
             //await SendMessageToCaller(new ApiResultNotification { Code = 200, Message = "连接通知成功" });
             var userId = int.Parse(Context.User.Identity.Name);
-            await SendNewNotificationAsync(userId);
+            return SendNewNotificationAsync(userId);
         }
 
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
-            await base.OnDisconnectedAsync(exception);
+            return base.OnDisconnectedAsync(exception);
         }
     }
 
     public partial class NotificationHub
     {
-        public async Task SendMessageByUserIdAsync(int userId, ApiResultNotification message)
+        public Task SendMessageByUserIdAsync(int userId, ApiResultNotification message)
         {
             var client = Clients.User(userId.ToString());
-            await client.ReceiveMessage(message);
+            return client.ReceiveMessage(message);
         }
 
-        public async Task SendMessageAsync(string connectionId, ApiResultNotification message)
+        public Task SendMessageAsync(string connectionId, ApiResultNotification message)
         {
             var client = Clients.Client(connectionId);
-            await client.ReceiveMessage(message);
+            return client.ReceiveMessage(message);
         }
 
         public Task SendMessageToCaller(ApiResultNotification message)
@@ -64,9 +65,9 @@ namespace Tubumu.Modules.Admin.SignalR.Hubs
             return Clients.Caller.ReceiveMessage(message);
         }
 
-        public async Task BroadcastMessageAsync(ApiResultNotification message)
+        public Task BroadcastMessageAsync(ApiResultNotification message)
         {
-            await Clients.All.ReceiveMessage(message);
+            return Clients.All.ReceiveMessage(message);
         }
     }
 
@@ -77,12 +78,12 @@ namespace Tubumu.Modules.Admin.SignalR.Hubs
             var newest = await _notificationService.GetNewestAsync(userId);
             if (newest != null)
             {
-                await SendMessageByUserIdAsync(userId, new ApiResultNotification
+                SendMessageByUserIdAsync(userId, new ApiResultNotification
                 {
                     Code = 201,
                     Title = newest.Title,
                     Message = newest.Message,
-                });
+                }).NoWarning();
             }
         }
     }

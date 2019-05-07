@@ -64,14 +64,14 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="userService"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public static async Task<UserInfo> GetNormalUserByUesrIdAsync(this IUserService userService, string userId)
+        public static Task<UserInfo> GetNormalUserByUesrIdAsync(this IUserService userService, string userId)
         {
             if (int.TryParse(userId, out var value))
             {
-                return await userService.GetItemByUserIdAsync(value, UserStatus.Normal);
+                return userService.GetItemByUserIdAsync(value, UserStatus.Normal);
             }
 
-            return null;
+            return Task.FromResult<UserInfo>(null);
         }
 
         /// <summary>

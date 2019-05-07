@@ -59,7 +59,7 @@ namespace Tubumu.Modules.Framework.Application.Services
         /// 生成 Refresh Token
         /// </summary>
         /// <returns></returns>
-        public async Task<string> GenerateRefreshTokenAsync(int userId)
+        public Task<string> GenerateRefreshTokenAsync(int userId)
         {
             var randomNumber = new byte[32];
             using (var rng = RandomNumberGenerator.Create())
@@ -67,11 +67,11 @@ namespace Tubumu.Modules.Framework.Application.Services
                 rng.GetBytes(randomNumber);
                 var refreshToken = Convert.ToBase64String(randomNumber);
                 var cacheKey = CacheKeyFormat.FormatWith(userId);
-                await _cache.SetStringAsync(cacheKey, refreshToken, new DistributedCacheEntryOptions
+                _cache.SetStringAsync(cacheKey, refreshToken, new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_tokenValidationSettings.ExpiresSeconds + _tokenValidationSettings.ClockSkewSeconds + _tokenValidationSettings.RefreshTokenExpiresSeconds)
-                });
-                return refreshToken;
+                }).NoWarning();
+                return Task.FromResult(refreshToken);
             }
         }
 
@@ -80,10 +80,10 @@ namespace Tubumu.Modules.Framework.Application.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task<string> GetRefreshTokenAsync(int userId)
+        public Task<string> GetRefreshTokenAsync(int userId)
         {
             var cacheKey = CacheKeyFormat.FormatWith(userId);
-            return await _cache.GetStringAsync(cacheKey);
+            return _cache.GetStringAsync(cacheKey);
         }
 
         /// <summary>
@@ -91,10 +91,10 @@ namespace Tubumu.Modules.Framework.Application.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public async Task RevokeRefreshTokenAsync(int userId)
+        public Task RevokeRefreshTokenAsync(int userId)
         {
             var cacheKey = CacheKeyFormat.FormatWith(userId);
-            await _cache.RemoveAsync(cacheKey);
+            return  _cache.RemoveAsync(cacheKey);
         }
 
         /// <summary>

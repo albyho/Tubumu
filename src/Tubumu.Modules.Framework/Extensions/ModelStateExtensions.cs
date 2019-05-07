@@ -25,7 +25,7 @@ namespace Tubumu.Modules.Framework.Extensions
             var firstErrorMessage = item.ErrorMessage;
             if (firstErrorMessage.IsNullOrWhiteSpace())
             {
-                firstErrorMessage = item.Exception.Message;
+                firstErrorMessage = item.Exception?.Message;
             }
             return firstErrorMessage ?? "未指定错误。";
         }

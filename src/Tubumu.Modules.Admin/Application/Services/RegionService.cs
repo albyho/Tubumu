@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Tubumu.Core.Extensions;
 using Tubumu.Core.Extensions.Object;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
@@ -49,8 +50,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (json == null)
             {
                 var list = await _manager.GetRegionInfoListAsync();
-                json = list.ToJson();
-                await _distributedCache.SetStringAsync(ListCacheKey, json);
+                _distributedCache.SetJsonAsync(ListCacheKey, list).NoWarning();
             }
             return json;
         }

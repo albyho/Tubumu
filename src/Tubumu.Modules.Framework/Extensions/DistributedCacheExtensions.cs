@@ -23,10 +23,10 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
         {
             var json = value.ToJson();
-            await distributedCache.SetStringAsync(key, json, options, token);
+            return distributedCache.SetStringAsync(key, json, options, token);
         }
 
         /// <summary>
@@ -38,10 +38,10 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="value"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
         {
             var json = value.ToJson();
-            await distributedCache.SetStringAsync(key, json, token);
+            return distributedCache.SetStringAsync(key, json, token);
         }
 
         /// <summary>
@@ -55,7 +55,6 @@ namespace Tubumu.Modules.Framework.Extensions
         public static async Task<T> GetJsonAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
         {
             var value = await distributedCache.GetStringAsync(key, token);
-
             return ObjectExtensions.FromJson<T>(value);
         }
 
@@ -73,10 +72,10 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
         {
             var bytes = value.ToByteArray();
-            await distributedCache.SetAsync(key, bytes, options, token);
+            return distributedCache.SetAsync(key, bytes, options, token);
         }
 
         /// <summary>
@@ -88,10 +87,10 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="value"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
         {
             var bytes = value.ToByteArray();
-            await distributedCache.SetAsync(key, bytes, token);
+            return distributedCache.SetAsync(key, bytes, token);
         }
 
         /// <summary>
@@ -125,10 +124,10 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
         {
             var bytes = MessagePackSerializer.Serialize(value);
-            await distributedCache.SetAsync(key, bytes, options, token);
+            return distributedCache.SetAsync(key, bytes, options, token);
         }
 
         /// <summary>
@@ -140,10 +139,10 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="value"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
         {
             var bytes = MessagePackSerializer.Serialize(value);
-            await distributedCache.SetAsync(key, bytes, token);
+            return distributedCache.SetAsync(key, bytes, token);
         }
 
         /// <summary>

@@ -56,15 +56,14 @@ namespace Tubumu.Modules.Admin.Application.Services
         public async Task<bool> ChangePasswordAsync(int userId, UserChangePasswordInput input, ModelStateDictionary modelState)
         {
             //判断当前密码是否输入正确
-            var chkUser = await _userService.GetNormalUserAsync(userId, input.CurrentPassword);
-            if (chkUser == null)
+            var userInfo = await _userService.GetNormalUserAsync(userId, input.CurrentPassword);
+            if (userInfo == null)
             {
                 modelState.AddModelError("CurrentPassword", "当前密码不正确");
                 return false;
             }
 
-            return await _userService.ChangePasswordAsync(chkUser.UserId, input.NewPassword, modelState);
-
+            return await _userService.ChangePasswordAsync(userInfo.UserId, input.NewPassword, modelState);
         }
 
         /// <summary>

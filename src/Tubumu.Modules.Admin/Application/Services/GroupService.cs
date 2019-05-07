@@ -489,7 +489,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (groups == null)
             {
                 groups = await _manager.GetListAsync();
-                await _cache.SetJsonAsync(ListCacheKey, groups);
+                _cache.SetJsonAsync(ListCacheKey, groups).NoWarning();
             }
             return groups;
             /*
@@ -529,7 +529,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                         GroupTreeAddChildren(list, node, i);
                     }
                 }
-                await _cache.SetJsonAsync(TreeCacheKey, tree);
+                _cache.SetJsonAsync(TreeCacheKey, tree).NoWarning();
             }
             return tree;
         }

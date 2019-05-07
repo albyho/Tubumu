@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Tubumu.Core.Extensions;
 
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
@@ -12,32 +13,22 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// <summary>
         /// Maximum
         /// </summary>
-        public object Maximum { get; }
+        public DateTime Maximum { get; }
 
         /// <summary>
         /// Minimum
         /// </summary>
-        public object Minimum { get; }
+        public DateTime Minimum { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="minimum"></param>
         /// <param name="maximum"></param>
-        public DateTimeRangeAttribute(DateTime minimum, DateTime maximum)
+        public DateTimeRangeAttribute(string minimum, string maximum)
         {
-            Minimum = minimum;
-            Maximum = maximum;
-        }
-
-        /// <summary>
-        /// FormatErrorMessage
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public override string FormatErrorMessage(string name)
-        {
-            return String.Empty;
+            Minimum = DateTime.Parse(minimum);
+            Maximum = DateTime.Parse(maximum);
         }
 
         /// <summary>
@@ -47,7 +38,15 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         /// <returns></returns>
         public override bool IsValid(object value)
         {
-            return value == null;
+            if (value == null) return true;
+            var stringValue = value.ToString();
+            if (stringValue.IsNullOrWhiteSpace()) return true;
+            if (DateTime.TryParse(stringValue, out var nativeValue))
+            {
+                nativeValue = nativeValue.ToLocalTime();
+                return nativeValue >= Minimum && nativeValue <= Maximum;
+            }
+            return false;
         }
     }
 }

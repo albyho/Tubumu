@@ -157,7 +157,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(permissionId, target);
             if (result)
             {
-                await _cache.RemoveAsync(ListCacheKey);
+                _cache.RemoveAsync(ListCacheKey).NoWarning();
             }
             return result;
         }
@@ -172,7 +172,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (list == null)
             {
                 list = await _manager.GetListAsync();
-                await _cache.SetJsonAsync(ListCacheKey, list);
+                _cache.SetJsonAsync(ListCacheKey, list).NoWarning();
             }
             return list;
 
@@ -213,7 +213,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                         PermisssionTreeAddChildren(list, node, i);
                     }
                 }
-                await _cache.SetJsonAsync(TreeCacheKey, tree);
+                _cache.SetJsonAsync(TreeCacheKey, tree).NoWarning();
             }
             return tree;
         }

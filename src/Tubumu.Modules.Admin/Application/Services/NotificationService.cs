@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.SignalR;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.SignalR.Hubs;
@@ -53,11 +54,11 @@ namespace Tubumu.Modules.Admin.Application.Services
                 if (notificationInput.ToUserId.HasValue)
                 {
                     var client = _hubContext.Clients.User(notificationInput.ToUserId.Value.ToString());
-                    await client.ReceiveMessage(apiResultNotification);
+                    client.ReceiveMessage(apiResultNotification).NoWarning();
                 }
                 else
                 {
-                    await _hubContext.Clients.All.ReceiveMessage(apiResultNotification);
+                    _hubContext.Clients.All.ReceiveMessage(apiResultNotification).NoWarning();
                 }
             }
             return result;

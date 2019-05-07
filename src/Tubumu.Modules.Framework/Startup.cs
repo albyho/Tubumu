@@ -183,7 +183,7 @@ namespace Tubumu.Modules.Framework
                             {
                                 Code = 400,
                                 Message = "Authentication Challenge",
-                                // TODO: 前端 IsDevelopment 为 true 时不返回 Url
+                                // TODO: (alby)前端 IsDevelopment 为 true 时不返回 Url
                                 Url = _environment.IsProduction() ? tokenValidationSettings.LoginUrl : null,
                             };
                             var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result));
