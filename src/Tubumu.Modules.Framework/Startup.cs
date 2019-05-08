@@ -205,7 +205,7 @@ namespace Tubumu.Modules.Framework
             services.Replace(ServiceDescriptor.Singleton(typeof(IUserIdProvider), typeof(NameUserIdProvider)));
 
             // AutoMapper
-            services.AddAutoMapper();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             Initalizer.Initialize();
 
             // RabbitMQ
