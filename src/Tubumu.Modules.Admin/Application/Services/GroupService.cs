@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
@@ -125,16 +126,18 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         private readonly IGroupManager _manager;
         private readonly IDistributedCache _cache;
+        private readonly ILogger<GroupService> _logger;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="cache"></param>
         /// <param name="repository"></param>
-        public GroupService(IDistributedCache cache, IGroupManager repository)
+        public GroupService(IDistributedCache cache, IGroupManager repository, ILogger<GroupService> logger)
         {
             _cache = cache;
             _manager = repository;
+            _logger = logger;
         }
 
         #region IGroupService Members
@@ -217,7 +220,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.SaveAsync(groupInput, modelState);
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -244,7 +247,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     throw new InvalidOperationException($"{item.Name} 分组添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
-            RemoveCacheAsync().NoWarning();
+            RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             return true;
         }
 
@@ -259,7 +262,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(groupId, modelState);
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -275,7 +278,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(groupId, movingTarget);
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -294,7 +297,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(sourceGroupId, targetGroupId, movingLocation, isChild, modelState);
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -313,7 +316,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveByDisplayOrderAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -328,7 +331,6 @@ namespace Tubumu.Modules.Admin.Application.Services
         private async Task<bool> ValidateExistsAsync(GroupInput groupInput, ModelStateDictionary modelState)
         {
             var foundGroup = await _manager.GetItemAsync(groupInput.Name);
-
             if (foundGroup != null && groupInput.GroupId != foundGroup.GroupId)
             {
                 modelState.AddModelError("Name", $"分组名称【{groupInput.Name}】已经被使用");
@@ -489,7 +491,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (groups == null)
             {
                 groups = await _manager.GetListAsync();
-                _cache.SetJsonAsync(ListCacheKey, groups).NoWarning();
+                _cache.SetJsonAsync(ListCacheKey, groups).ContinueWithOnFailedLog(_logger);
             }
             return groups;
             /*
@@ -529,7 +531,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                         GroupTreeAddChildren(list, node, i);
                     }
                 }
-                _cache.SetJsonAsync(TreeCacheKey, tree).NoWarning();
+                _cache.SetJsonAsync(TreeCacheKey, tree).ContinueWithOnFailedLog(_logger);
             }
             return tree;
         }

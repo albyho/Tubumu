@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.SignalR.Hubs;
+using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Application.Services
@@ -28,11 +30,13 @@ namespace Tubumu.Modules.Admin.Application.Services
     {
         private readonly INotificationManager _notificationManager;
         private readonly IHubContext<NotificationHub, INotificationClient> _hubContext;
+        private readonly ILogger<NotificationService> _logger;
 
-        public NotificationService(INotificationManager notificationManager, IHubContext<NotificationHub, INotificationClient> hubContext)
+        public NotificationService(INotificationManager notificationManager, IHubContext<NotificationHub, INotificationClient> hubContext, ILogger<NotificationService> logger)
         {
             _notificationManager = notificationManager;
             _hubContext = hubContext;
+            _logger = logger;
         }
 
         public Task<Page<NotificationUser>> GetPageAsync(NotificationPageSearchCriteria criteria)
@@ -54,11 +58,11 @@ namespace Tubumu.Modules.Admin.Application.Services
                 if (notificationInput.ToUserId.HasValue)
                 {
                     var client = _hubContext.Clients.User(notificationInput.ToUserId.Value.ToString());
-                    client.ReceiveMessage(apiResultNotification).NoWarning();
+                    client.ReceiveMessage(apiResultNotification).ContinueWithOnFailedLog(_logger);
                 }
                 else
                 {
-                    _hubContext.Clients.All.ReceiveMessage(apiResultNotification).NoWarning();
+                    _hubContext.Clients.All.ReceiveMessage(apiResultNotification).ContinueWithOnFailedLog(_logger);
                 }
             }
             return result;

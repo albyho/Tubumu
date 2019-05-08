@@ -5,9 +5,11 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Framework.Authorization;
+using Tubumu.Modules.Framework.Extensions;
 
 namespace Tubumu.Modules.Framework.Application.Services
 {
@@ -19,6 +21,7 @@ namespace Tubumu.Modules.Framework.Application.Services
         private readonly JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
         private readonly TokenValidationSettings _tokenValidationSettings;
         private readonly IDistributedCache _cache;
+        private readonly ILogger<TokenService> _logger;
         private const string CacheKeyFormat = "RefreshToken:{0}";
 
         /// <summary>
@@ -26,13 +29,16 @@ namespace Tubumu.Modules.Framework.Application.Services
         /// </summary>
         /// <param name="tokenValidationSettings"></param>
         /// <param name="cache"></param>
+        /// <param name="logger"></param>
         public TokenService(
             TokenValidationSettings tokenValidationSettings,
-            IDistributedCache cache
+            IDistributedCache cache,
+            ILogger<TokenService> logger
             )
         {
             _tokenValidationSettings = tokenValidationSettings;
             _cache = cache;
+            _logger = logger;
         }
 
         /// <summary>
@@ -70,7 +76,7 @@ namespace Tubumu.Modules.Framework.Application.Services
                 _cache.SetStringAsync(cacheKey, refreshToken, new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_tokenValidationSettings.ExpiresSeconds + _tokenValidationSettings.ClockSkewSeconds + _tokenValidationSettings.RefreshTokenExpiresSeconds)
-                }).NoWarning();
+                }).ContinueWithOnFailedLog(_logger);
                 return Task.FromResult(refreshToken);
             }
         }

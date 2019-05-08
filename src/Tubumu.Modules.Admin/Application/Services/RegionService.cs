@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Tubumu.Core.Extensions;
 using Tubumu.Core.Extensions.Object;
 using Tubumu.Modules.Admin.Domain.Services;
@@ -36,12 +37,14 @@ namespace Tubumu.Modules.Admin.Application.Services
         private readonly IRegionManager _manager;
         private readonly IDistributedCache _distributedCache;
         private readonly IMemoryCache _memoryCache;
+        private readonly ILogger<RegionService> _logger;
 
-        public RegionService(IRegionManager manager, IDistributedCache distributedCache, IMemoryCache memoryCache)
+        public RegionService(IRegionManager manager, IDistributedCache distributedCache, IMemoryCache memoryCache, ILogger<RegionService> logger)
         {
             _manager = manager;
             _distributedCache = distributedCache;
             _memoryCache = memoryCache;
+            _logger = logger;
         }
 
         public async Task<string> GetRegionInfoListJsonAsync()
@@ -50,7 +53,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (json == null)
             {
                 var list = await _manager.GetRegionInfoListAsync();
-                _distributedCache.SetJsonAsync(ListCacheKey, list).NoWarning();
+                _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFailedLog(_logger);
             }
             return json;
         }
@@ -144,7 +147,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 if (list == null)
                 {
                     list = await _manager.GetRegionInfoListAsync();
-                    await _distributedCache.SetJsonAsync(ListCacheKey, list);
+                    _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFailedLog(_logger);
                 }
 
                 // Set cache options.

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Senparc.Weixin.WxOpen.AdvancedAPIs.Sns;
 using Tubumu.Core.Extensions;
@@ -173,24 +174,29 @@ namespace Tubumu.Modules.Admin.Application.Services
     /// </summary>
     public class WeixinUserService : IWeixinUserService
     {
-        private readonly IDistributedCache _cache;
-        private readonly IWeixinUserManager _manager;
         private readonly WeixinAppSettings _weixinAppSettings;
+        private readonly IWeixinUserManager _manager;
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<WeixinUserService> _logger;
 
         /// <summary>
-        /// Constructorss
+        /// Constructor
         /// </summary>
-        /// <param name="cache"></param>
-        /// <param name="manager"></param>
         /// <param name="weixinAppSettingsOptions"></param>
-        public WeixinUserService(IDistributedCache cache,
-            IWeixinUserManager manager,
-            IOptions<WeixinAppSettings> weixinAppSettingsOptions
+        /// <param name="manager"></param>
+        /// <param name="cache"></param>
+        /// <param name="logger"></param>
+        public WeixinUserService(
+            IOptions<WeixinAppSettings> weixinAppSettingsOptions,
+                        IWeixinUserManager manager,
+            IDistributedCache cache,
+            ILogger<WeixinUserService> logger
             )
         {
+            _weixinAppSettings = weixinAppSettingsOptions.Value;
             _manager = manager;
             _cache = cache;
-            _weixinAppSettings = weixinAppSettingsOptions.Value;
+            _logger = logger;
         }
 
         #region IWeixinUserService Members
@@ -205,7 +211,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetItemByWeixinMobileEndOpenIdAsync(openId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -220,7 +226,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetItemByWeixinAppOpenIdAsync(openId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -235,7 +241,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetItemByWeixinWebOpenIdAsync(openId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -250,7 +256,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetItemByWeixinUnionIdAsync(unionId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -327,7 +333,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetOrGenerateItemByWeixinMobileEndOpenIdAsync(generateGroupId, generateStatus, openId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -344,7 +350,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetOrGenerateItemByWeixinAppOpenIdAsync(generateGroupId, generateStatus, openId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -361,7 +367,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetOrGenerateItemByWeixinWebOpenIdAsync(generateGroupId, generateStatus, openId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -378,7 +384,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetOrGenerateItemByWeixinUnionIdAsync(generateGroupId, generateStatus, unionId);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUser(userInfo).NoWarning();
+                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -395,7 +401,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.UpdateWeixinMobileEndOpenIdAsync(userId, openId, modelState);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -410,7 +416,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.CleanWeixinMobileEndOpenIdAsync(userId);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -427,7 +433,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.UpdateWeixinAppOpenIdAsync(userId, openId, modelState);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -442,7 +448,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.CleanWeixinAppOpenIdAsync(userId);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -459,7 +465,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.UpdateWeixinWebOpenIdAsync(userId, openId, modelState);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -474,7 +480,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.CleanWeixinWebOpenIdAsync(userId);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -491,7 +497,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.UpdateWeixinUnionIdAsync(userId, openId, modelState);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -506,14 +512,14 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.CleanWeixinUnionIdAsync(userId);
             if (result)
             {
-                CleanCache(userId).NoWarning();
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
 
         #endregion
 
-        private Task CacheUser(UserInfo userInfo)
+        private Task CacheUserAsync(UserInfo userInfo)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userInfo.UserId);
             return _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
@@ -522,7 +528,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             });
         }
 
-        private Task CleanCache(int userId)
+        private Task CleanCacheAsync(int userId)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userId);
             return _cache.RemoveAsync(cacheKey);

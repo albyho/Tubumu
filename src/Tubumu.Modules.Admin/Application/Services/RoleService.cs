@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
@@ -33,11 +35,13 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         private readonly IRoleManager _manager;
         private readonly IDistributedCache _cache;
+        private readonly ILogger<RoleService> _logger;
 
-        public RoleService(IRoleManager manager, IDistributedCache cache)
+        public RoleService(IRoleManager manager, IDistributedCache cache, ILogger<RoleService> logger)
         {
             _manager = manager;
             _cache = cache;
+            _logger = logger;
         }
 
         #region IRoleService Members
@@ -84,7 +88,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                await _cache.RemoveAsync(RoleListCacheKey);
+                _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -104,7 +108,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     throw new InvalidOperationException($"{item.Name} 角色添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
-            await _cache.RemoveAsync(RoleListCacheKey);
+            _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             return true;
         }
 
@@ -114,7 +118,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(roleId, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(RoleListCacheKey);
+                _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -124,7 +128,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.SaveNameAsync(saveRoleNameInput, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(RoleListCacheKey);
+                _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -134,7 +138,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(roleId, target);
             if (result)
             {
-                await _cache.RemoveAsync(RoleListCacheKey);
+                _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -144,7 +148,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(sourceDisplayOrder, targetDisplayOrder, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(RoleListCacheKey);
+                _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -154,7 +158,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(sourceRoleId, targetRoleId, modelState);
             if (result)
             {
-                await _cache.RemoveAsync(RoleListCacheKey);
+                _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -184,7 +188,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (roles == null)
             {
                 roles = await _manager.GetListAsync();
-                await _cache.SetJsonAsync(RoleListCacheKey, roles);
+                _cache.RemoveAsync(RoleListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return roles;
         }

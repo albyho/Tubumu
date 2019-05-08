@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
@@ -38,16 +39,19 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         private readonly IBulletinManager _manager;
         private readonly IDistributedCache _cache;
+        private readonly ILogger<BulletinService> _logger;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="cache"></param>
         /// <param name="repository"></param>
-        public BulletinService(IDistributedCache cache, IBulletinManager repository)
+        /// <param name="logger"></param>
+        public BulletinService(IDistributedCache cache, IBulletinManager repository, ILogger<BulletinService> logger)
         {
             _cache = cache;
             _manager = repository;
+            _logger = logger;
         }
 
         /// <summary>
@@ -67,10 +71,10 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> SaveAsync(BulletinInput bulletin, ModelStateDictionary modelState)
         {
-            bool result = await _manager.SaveAsync(bulletin, modelState);
+            var result = await _manager.SaveAsync(bulletin, modelState);
             if (result)
             {
-                _cache.RemoveAsync(CacheKey).NoWarning();
+                _cache.RemoveAsync(CacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -81,7 +85,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (bulletin == null)
             {
                 bulletin = await _manager.GetItemAsync();
-                _cache.SetJsonAsync(CacheKey, bulletin).NoWarning();
+                _cache.SetJsonAsync(CacheKey, bulletin).ContinueWithOnFailedLog(_logger);
             }
             return bulletin;
 

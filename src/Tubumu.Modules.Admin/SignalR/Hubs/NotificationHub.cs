@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Application.Services;
+using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.SignalR.Hubs
@@ -27,15 +29,17 @@ namespace Tubumu.Modules.Admin.SignalR.Hubs
     public partial class NotificationHub : Hub<INotificationClient>
     {
         private readonly INotificationService _notificationService;
+        private readonly ILogger<NotificationHub> _logger;
 
-        public NotificationHub(INotificationService notificationService)
+        public NotificationHub(INotificationService notificationService, ILogger<NotificationHub> logger)
         {
             _notificationService = notificationService;
+            _logger = logger;
         }
 
         public override Task OnConnectedAsync()
         {
-            //await SendMessageToCaller(new ApiResultNotification { Code = 200, Message = "连接通知成功" });
+            // return SendMessageToCaller(new ApiResultNotification { Code = 200, Message = "连接通知成功" });
             var userId = int.Parse(Context.User.Identity.Name);
             return SendNewNotificationAsync(userId);
         }
@@ -83,7 +87,7 @@ namespace Tubumu.Modules.Admin.SignalR.Hubs
                     Code = 201,
                     Title = newest.Title,
                     Message = newest.Message,
-                }).NoWarning();
+                }).ContinueWithOnFailedLog(_logger);
             }
         }
     }

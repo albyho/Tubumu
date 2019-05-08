@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
@@ -44,11 +45,13 @@ namespace Tubumu.Modules.Admin.Application.Services
 
         private readonly IPermissionManager _manager;
         private readonly IDistributedCache _cache;
+        private readonly ILogger<PermissionService> _logger;
 
-        public PermissionService(IPermissionManager manager, IDistributedCache cache)
+        public PermissionService(IPermissionManager manager, IDistributedCache cache, ILogger<PermissionService> logger)
         {
             _manager = manager;
             _cache = cache;
+            _logger = logger;
         }
 
         #region IPermissionService Members
@@ -59,7 +62,6 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (!permissions.IsNullOrEmpty())
             {
                 return permissions.FirstOrDefault(m => m.Name == name);
-
             }
             return await _manager.GetItemAsync(name);
         }
@@ -96,7 +98,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             bool result = await _manager.SaveAsync(permissionInput, modelState);
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             else
             {
@@ -116,7 +118,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     throw new InvalidOperationException($"{item.Name} 权限添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
-            RemoveCacheAsync().NoWarning();
+            RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             return true;
         }
 
@@ -125,7 +127,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(permissionId);
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -147,7 +149,7 @@ namespace Tubumu.Modules.Admin.Application.Services
 
             if (result)
             {
-                RemoveCacheAsync().NoWarning();
+                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -157,7 +159,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(permissionId, target);
             if (result)
             {
-                _cache.RemoveAsync(ListCacheKey).NoWarning();
+                _cache.RemoveAsync(ListCacheKey).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -172,7 +174,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (list == null)
             {
                 list = await _manager.GetListAsync();
-                _cache.SetJsonAsync(ListCacheKey, list).NoWarning();
+                _cache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFailedLog(_logger);
             }
             return list;
 
@@ -200,6 +202,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var tree = await _cache.GetJsonAsync<List<PermissionTreeNode>>(TreeCacheKey);
             if (tree == null)
             {
+                _cache.SetJsonAsync(TreeCacheKey, tree).ContinueWithOnFailedLog(_logger);
                 var list = await GetListInCacheInternalAsync();
                 tree = new List<PermissionTreeNode>();
                 for (var i = 0; i < list.Count; i++)
@@ -213,7 +216,6 @@ namespace Tubumu.Modules.Admin.Application.Services
                         PermisssionTreeAddChildren(list, node, i);
                     }
                 }
-                _cache.SetJsonAsync(TreeCacheKey, tree).NoWarning();
             }
             return tree;
         }

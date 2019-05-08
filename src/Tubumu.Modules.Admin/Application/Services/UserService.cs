@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tubumu.Core.Extensions;
 using Tubumu.Core.Utilities.Cryptography;
@@ -270,23 +271,26 @@ namespace Tubumu.Modules.Admin.Application.Services
         private readonly IHostingEnvironment _environment;
         private readonly AvatarSettings _avatarSettings;
         private readonly IUserManager _manager;
-        private readonly IDistributedCache _cache;
         private readonly IGroupService _groupService;
+        private readonly IDistributedCache _cache;
+        private readonly ILogger<UserService> _logger;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="environment"></param>
         /// <param name="avatarSettingsOptions"></param>
-        /// <param name="cache"></param>
         /// <param name="manager"></param>
         /// <param name="groupService"></param>
+        /// <param name="cache"></param>
+        /// <param name="logger"></param>
         public UserService(
             IHostingEnvironment environment,
             IOptions<AvatarSettings> avatarSettingsOptions,
             IUserManager manager,
+                        IGroupService groupService,
             IDistributedCache cache,
-            IGroupService groupService
+            ILogger<UserService> logger
             )
         {
             _environment = environment;
@@ -294,6 +298,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             _manager = manager;
             _cache = cache;
             _groupService = groupService;
+            _logger = logger;
         }
 
         #region IUserService Members
@@ -311,7 +316,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 return await GetNormalItemByUserIdInCacheInternalAsync(userId);
             }
             var userInfo = await _manager.GetItemByUserIdAsync(userId, status);
-            await CacheNormalUser(userInfo);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             return userInfo;
         }
 
@@ -325,7 +330,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (username.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByUsernameAsync(username, status);
-            await CacheNormalUser(userInfo);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             return userInfo;
         }
 
@@ -340,7 +345,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (email.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByEmailAsync(email, emailIsValid, status);
-            await CacheNormalUser(userInfo);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             return userInfo;
         }
 
@@ -355,7 +360,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByMobileAsync(mobile, mobileIsValid, status);
-            await CacheNormalUser(userInfo);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
             return userInfo;
         }
 
@@ -395,10 +400,10 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public async Task<bool> IsExistsUsernameAsync(string username)
+        public Task<bool> IsExistsUsernameAsync(string username)
         {
-            if (username.IsNullOrWhiteSpace()) return false;
-            return await _manager.IsExistsUsernameAsync(username);
+            if (username.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.IsExistsUsernameAsync(username);
         }
 
         /// <summary>
@@ -406,10 +411,10 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> IsExistsEmailAsync(string email)
+        public Task<bool> IsExistsEmailAsync(string email)
         {
-            if (email.IsNullOrWhiteSpace()) return false;
-            return await _manager.IsExistsEmailAsync(email);
+            if (email.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.IsExistsEmailAsync(email);
         }
 
         /// <summary>
@@ -418,10 +423,10 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="userId"></param>
         /// <param name="username"></param>
         /// <returns></returns>
-        public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
+        public Task<bool> VerifyExistsUsernameAsync(int userId, string username)
         {
-            if (username.IsNullOrWhiteSpace()) return false;
-            return await _manager.VerifyExistsUsernameAsync(userId, username);
+            if (username.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.VerifyExistsUsernameAsync(userId, username);
         }
 
         /// <summary>
@@ -430,10 +435,10 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="userId"></param>
         /// <param name="email"></param>
         /// <returns></returns>
-        public async Task<bool> VerifyExistsEmailAsync(int userId, string email)
+        public Task<bool> VerifyExistsEmailAsync(int userId, string email)
         {
-            if (email.IsNullOrWhiteSpace()) return false;
-            return await _manager.VerifyExistsEmailAsync(userId, email);
+            if (email.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.VerifyExistsEmailAsync(userId, email);
         }
 
         /// <summary>
@@ -494,7 +499,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.SaveAsync(userInput, modelState);
             if (userInput is UserInputEdit userInputEdit)
             {
-                await CleanCache(userInputEdit.UserId);
+                CleanCacheAsync(userInputEdit.UserId).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
         }
@@ -515,7 +520,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -536,7 +541,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -553,7 +558,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.ChangeAvatarAsync(userId, avatarUrl, modelState);
             if (result)
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -570,7 +575,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             bool result = await _manager.ChangeLogoAsync(userId, logoUrl, modelState);
             if (result)
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -586,7 +591,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Avatar", userImageInput, modelState, _manager.ChangeAvatarAsync);
             if (modelState.IsValid)
             {
-                await CleanCache(userImageInput.UserId);
+                CleanCacheAsync(userImageInput.UserId).ContinueWithOnFailedLog(_logger);
             }
             return url;
         }
@@ -602,7 +607,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Logo", userImageInput, modelState, _manager.ChangeLogoAsync);
             if (modelState.IsValid)
             {
-                await CleanCache(userImageInput.UserId);
+                CleanCacheAsync(userImageInput.UserId).ContinueWithOnFailedLog(_logger);
             }
             return url;
         }
@@ -619,7 +624,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Avatar", userId, file, modelState, _manager.ChangeAvatarAsync);
             if (modelState.IsValid)
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return url;
         }
@@ -636,7 +641,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Logo", userId, file, modelState, _manager.ChangeLogoAsync);
             if (modelState.IsValid)
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return url;
         }
@@ -654,7 +659,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.ChangePasswordAsync(userId, encryptedPassword, modelState);
             if (result)
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -675,7 +680,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
 
@@ -697,7 +702,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 return false;
             }
 
-            await CleanCache(userId);
+            CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             return true;
         }
 
@@ -712,7 +717,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(userId, modelState);
             if (result)
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -729,7 +734,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.ChangeStatusAsync(userId, status, modelState);
             if (result)
             {
-                await CleanCache(userId);
+                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             }
             return result;
         }
@@ -745,7 +750,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var user = await getUser();
             if (user != null)
             {
-                await CleanCache(user.UserId);
+                CleanCacheAsync(user.UserId).ContinueWithOnFailedLog(_logger);
                 return true;
             }
 
@@ -759,7 +764,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> SignOutAsync(int userId)
         {
-            await CleanCache(userId);
+            CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
             return true;
         }
 
@@ -796,20 +801,20 @@ namespace Tubumu.Modules.Admin.Application.Services
             return tmpstr;
         }
 
-        private async Task CacheNormalUser(UserInfo userInfo)
+        private Task CacheNormalUserAsync(UserInfo userInfo)
         {
-            if (userInfo == null || userInfo.Status != UserStatus.Normal) return;
+            if (userInfo == null || userInfo.Status != UserStatus.Normal) return Task.CompletedTask;
             var cacheKey = UserCacheKeyFormat.FormatWith(userInfo.UserId);
-            await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
+            return _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromDays(1)
             });
         }
 
-        private async Task CleanCache(int userId)
+        private Task CleanCacheAsync(int userId)
         {
             var cacheKey = UserCacheKeyFormat.FormatWith(userId);
-            await _cache.RemoveAsync(cacheKey);
+            return _cache.RemoveAsync(cacheKey);
         }
 
         private async Task GengerateGroupIdsAsync(UserPageSearchCriteria criteria)
@@ -833,10 +838,10 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (userInfo == null)
             {
                 userInfo = await _manager.GetItemByUserIdAsync(userId, UserStatus.Normal);
-                await _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
+                _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromDays(1)
-                });
+                }).ContinueWithOnFailedLog(_logger);
             }
             return userInfo;
             /*
