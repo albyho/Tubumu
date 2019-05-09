@@ -85,7 +85,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -97,7 +97,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GenerateItemAsync(groupId, status, input.Mobile, password, modelState);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
+                CacheUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
             }
             return userInfo;
         }
@@ -111,7 +111,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             {
                 return false;
             }
-            CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+            CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             return true;
         }
 
@@ -121,7 +121,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetItemByMobileAsync(mobile, mobileIsValid, status);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
+                CacheUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
             }
             return userInfo;
         }
@@ -135,7 +135,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 userInfo = await _manager.GenerateItemAsync(groupId, generateStatus, mobile, password, modelState);
                 if (userInfo != null && userInfo.Status == UserStatus.Normal)
                 {
-                    CacheUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
+                    CacheUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
                 }
             }
             return userInfo;
@@ -199,7 +199,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-                }).ContinueWithOnFailedLog(_logger);
+                }).ContinueWithOnFaultedLog(_logger);
             }
             var sms = "{\"code\":\"" + validationCode + "\",\"time\":\"" + (_mobileValidationCodeSettings.Expiration / 60) + "\"}";
             return await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, sms);
@@ -225,7 +225,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             _cache.SetJsonAsync<MobileValidationCode>(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-            }).ContinueWithOnFailedLog(_logger);
+            }).ContinueWithOnFaultedLog(_logger);
 
             if (mobileValidationCode.ValidationCode.IsNullOrWhiteSpace())
             {
@@ -275,7 +275,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-            }).ContinueWithOnFailedLog(_logger);
+            }).ContinueWithOnFaultedLog(_logger);
             return true;
         }
 

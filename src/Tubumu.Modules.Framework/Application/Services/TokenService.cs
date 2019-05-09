@@ -76,7 +76,7 @@ namespace Tubumu.Modules.Framework.Application.Services
                 _cache.SetStringAsync(cacheKey, refreshToken, new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(_tokenValidationSettings.ExpiresSeconds + _tokenValidationSettings.ClockSkewSeconds + _tokenValidationSettings.RefreshTokenExpiresSeconds)
-                }).ContinueWithOnFailedLog(_logger);
+                }).ContinueWithOnFaultedLog(_logger);
                 return Task.FromResult(refreshToken);
             }
         }

@@ -53,7 +53,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (json == null)
             {
                 var list = await _manager.GetRegionInfoListAsync();
-                _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFailedLog(_logger);
+                _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFaultedLog(_logger);
             }
             return json;
         }
@@ -147,7 +147,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 if (list == null)
                 {
                     list = await _manager.GetRegionInfoListAsync();
-                    _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFailedLog(_logger);
+                    _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFaultedLog(_logger);
                 }
 
                 // Set cache options.

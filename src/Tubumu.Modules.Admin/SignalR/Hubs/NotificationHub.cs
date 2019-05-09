@@ -87,7 +87,7 @@ namespace Tubumu.Modules.Admin.SignalR.Hubs
                     Code = 201,
                     Title = newest.Title,
                     Message = newest.Message,
-                }).ContinueWithOnFailedLog(_logger);
+                }).ContinueWithOnFaultedLog(_logger);
             }
         }
     }

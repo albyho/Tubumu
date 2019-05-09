@@ -316,7 +316,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 return await GetNormalItemByUserIdInCacheInternalAsync(userId);
             }
             var userInfo = await _manager.GetItemByUserIdAsync(userId, status);
-            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
             return userInfo;
         }
 
@@ -330,7 +330,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (username.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByUsernameAsync(username, status);
-            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
             return userInfo;
         }
 
@@ -345,7 +345,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (email.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByEmailAsync(email, emailIsValid, status);
-            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
             return userInfo;
         }
 
@@ -360,7 +360,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByMobileAsync(mobile, mobileIsValid, status);
-            CacheNormalUserAsync(userInfo).ContinueWithOnFailedLog(_logger);
+            CacheNormalUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
             return userInfo;
         }
 
@@ -499,7 +499,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.SaveAsync(userInput, modelState);
             if (userInput is UserInputEdit userInputEdit)
             {
-                CleanCacheAsync(userInputEdit.UserId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userInputEdit.UserId).ContinueWithOnFaultedLog(_logger);
             }
             return userInfo;
         }
@@ -520,7 +520,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -541,7 +541,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -558,7 +558,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.ChangeAvatarAsync(userId, avatarUrl, modelState);
             if (result)
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -575,7 +575,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             bool result = await _manager.ChangeLogoAsync(userId, logoUrl, modelState);
             if (result)
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -591,7 +591,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Avatar", userImageInput, modelState, _manager.ChangeAvatarAsync);
             if (modelState.IsValid)
             {
-                CleanCacheAsync(userImageInput.UserId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userImageInput.UserId).ContinueWithOnFaultedLog(_logger);
             }
             return url;
         }
@@ -607,7 +607,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Logo", userImageInput, modelState, _manager.ChangeLogoAsync);
             if (modelState.IsValid)
             {
-                CleanCacheAsync(userImageInput.UserId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userImageInput.UserId).ContinueWithOnFaultedLog(_logger);
             }
             return url;
         }
@@ -624,7 +624,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Avatar", userId, file, modelState, _manager.ChangeAvatarAsync);
             if (modelState.IsValid)
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return url;
         }
@@ -641,7 +641,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var url = await ChangeUserImageAsync("Logo", userId, file, modelState, _manager.ChangeLogoAsync);
             if (modelState.IsValid)
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return url;
         }
@@ -659,7 +659,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.ChangePasswordAsync(userId, encryptedPassword, modelState);
             if (result)
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -680,7 +680,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
 
@@ -702,7 +702,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 return false;
             }
 
-            CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+            CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             return true;
         }
 
@@ -717,7 +717,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(userId, modelState);
             if (result)
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -734,7 +734,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.ChangeStatusAsync(userId, status, modelState);
             if (result)
             {
-                CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -750,7 +750,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var user = await getUser();
             if (user != null)
             {
-                CleanCacheAsync(user.UserId).ContinueWithOnFailedLog(_logger);
+                CleanCacheAsync(user.UserId).ContinueWithOnFaultedLog(_logger);
                 return true;
             }
 
@@ -764,7 +764,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<bool> SignOutAsync(int userId)
         {
-            CleanCacheAsync(userId).ContinueWithOnFailedLog(_logger);
+            CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
             return true;
         }
 
@@ -841,7 +841,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
                 {
                     SlidingExpiration = TimeSpan.FromDays(1)
-                }).ContinueWithOnFailedLog(_logger);
+                }).ContinueWithOnFaultedLog(_logger);
             }
             return userInfo;
             /*

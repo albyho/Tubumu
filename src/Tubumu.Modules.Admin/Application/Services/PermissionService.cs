@@ -98,7 +98,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             bool result = await _manager.SaveAsync(permissionInput, modelState);
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
+                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
             }
             else
             {
@@ -118,7 +118,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     throw new InvalidOperationException($"{item.Name} 权限添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
-            RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
+            RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
             return true;
         }
 
@@ -127,7 +127,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(permissionId);
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
+                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -149,7 +149,7 @@ namespace Tubumu.Modules.Admin.Application.Services
 
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFailedLog(_logger);
+                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -159,7 +159,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(permissionId, target);
             if (result)
             {
-                _cache.RemoveAsync(ListCacheKey).ContinueWithOnFailedLog(_logger);
+                _cache.RemoveAsync(ListCacheKey).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -174,7 +174,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (list == null)
             {
                 list = await _manager.GetListAsync();
-                _cache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFailedLog(_logger);
+                _cache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFaultedLog(_logger);
             }
             return list;
 
@@ -202,7 +202,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var tree = await _cache.GetJsonAsync<List<PermissionTreeNode>>(TreeCacheKey);
             if (tree == null)
             {
-                _cache.SetJsonAsync(TreeCacheKey, tree).ContinueWithOnFailedLog(_logger);
+                _cache.SetJsonAsync(TreeCacheKey, tree).ContinueWithOnFaultedLog(_logger);
                 var list = await GetListInCacheInternalAsync();
                 tree = new List<PermissionTreeNode>();
                 for (var i = 0; i < list.Count; i++)

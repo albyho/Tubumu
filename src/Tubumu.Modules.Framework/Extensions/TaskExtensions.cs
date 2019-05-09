@@ -7,7 +7,7 @@ namespace Tubumu.Modules.Framework.Extensions
 {
     public static class TaskExtensions
     {
-        public static void ContinueWithOnFailedLog(this Task task, ILogger logger)
+        public static void ContinueWithOnFaultedLog(this Task task, ILogger logger)
         {
             task.ContinueWith(val => {
                 // we need to access val.Exception property otherwise unobserved exception will be thrown
@@ -15,12 +15,11 @@ namespace Tubumu.Modules.Framework.Extensions
                 foreach (var ex in val.Exception.Flatten().InnerExceptions)
                 {
                     logger.LogError($"Task exception: {ex}");
-                    Console.WriteLine("HandleExceptionContinueWith: exception handled in ContinueWith.");
                 }
             }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        public static void ContinueWithOnFailedLogHandle(this Task task, ILogger logger)
+        public static void ContinueWithOnFaultedHandleLog(this Task task, ILogger logger)
         {
             task.ContinueWith(val => {
                 val.Exception.Handle(ex =>
@@ -30,6 +29,5 @@ namespace Tubumu.Modules.Framework.Extensions
                 });
             }, TaskContinuationOptions.OnlyOnFaulted);
         }
-
     }
 }

@@ -58,11 +58,11 @@ namespace Tubumu.Modules.Admin.Application.Services
                 if (notificationInput.ToUserId.HasValue)
                 {
                     var client = _hubContext.Clients.User(notificationInput.ToUserId.Value.ToString());
-                    client.ReceiveMessage(apiResultNotification).ContinueWithOnFailedLog(_logger);
+                    client.ReceiveMessage(apiResultNotification).ContinueWithOnFaultedLog(_logger);
                 }
                 else
                 {
-                    _hubContext.Clients.All.ReceiveMessage(apiResultNotification).ContinueWithOnFailedLog(_logger);
+                    _hubContext.Clients.All.ReceiveMessage(apiResultNotification).ContinueWithOnFaultedLog(_logger);
                 }
             }
             return result;

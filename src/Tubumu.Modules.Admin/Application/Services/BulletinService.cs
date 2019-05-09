@@ -74,7 +74,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.SaveAsync(bulletin, modelState);
             if (result)
             {
-                _cache.RemoveAsync(CacheKey).ContinueWithOnFailedLog(_logger);
+                _cache.RemoveAsync(CacheKey).ContinueWithOnFaultedLog(_logger);
             }
             return result;
         }
@@ -85,7 +85,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (bulletin == null)
             {
                 bulletin = await _manager.GetItemAsync();
-                _cache.SetJsonAsync(CacheKey, bulletin).ContinueWithOnFailedLog(_logger);
+                _cache.SetJsonAsync(CacheKey, bulletin).ContinueWithOnFaultedLog(_logger);
             }
             return bulletin;
 
