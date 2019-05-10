@@ -202,6 +202,27 @@ namespace Tubumu.Modules.Admin.Application.Services
         Task<string> ChangeLogoAsync(int userId, IFormFile file, ModelStateDictionary modelState);
 
         /// <summary>
+        /// ChangeUserImageAsync
+        /// </summary>
+        /// <param name="subFolder"></param>
+        /// <param name="userImageInput"></param>
+        /// <param name="modelState"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        Task<string> ChangeUserImageAsync(string subFolder, UserImageInput userImageInput, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="subFolder"></param>
+        /// <param name="userId"></param>
+        /// <param name="file"></param>
+        /// <param name="modelState"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        Task<string> ChangeUserImageAsync(string subFolder, int userId, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action);
+
+        /// <summary>
         /// 修改密码
         /// </summary>
         /// <param name="userId"></param>
@@ -864,7 +885,15 @@ namespace Tubumu.Modules.Admin.Application.Services
             */
         }
 
-        private async Task<string> ChangeUserImageAsync(string subFolder, UserImageInput userImageInput, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
+        /// <summary>
+        /// ChangeUserImageAsync
+        /// </summary>
+        /// <param name="subFolder"></param>
+        /// <param name="userImageInput"></param>
+        /// <param name="modelState"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public Task<string> ChangeUserImageAsync(string subFolder, UserImageInput userImageInput, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
         {
             if (userImageInput.FileCollection.Files.Count == 0)
             {
@@ -872,11 +901,25 @@ namespace Tubumu.Modules.Admin.Application.Services
                 return null;
             }
             var file = userImageInput.FileCollection.Files[0];
-            return await ChangeUserImageAsync(subFolder, userImageInput.UserId, file, modelState, action);
+            return ChangeUserImageAsync(subFolder, userImageInput.UserId, file, modelState, action);
         }
 
-        private async Task<string> ChangeUserImageAsync(string subFolder, int userId, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
+        /// <summary>
+        /// ChangeUserImageAsync
+        /// </summary>
+        /// <param name="subFolder"></param>
+        /// <param name="userId"></param>
+        /// <param name="file"></param>
+        /// <param name="modelState"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public async Task<string> ChangeUserImageAsync(string subFolder, int userId, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
         {
+            if (file == null || file.Length == 0)
+            {
+                modelState.AddModelError("Error", "请选择图片");
+                return null;
+            }
             var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
             if (extension == null || !_avatarSettings.ImageExtensions.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(extension))
             {
