@@ -23,7 +23,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default) where T : class
         {
             var json = value.ToJson();
             return distributedCache.SetStringAsync(key, json, options, token);
@@ -38,7 +38,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="value"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetJsonAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default) where T : class
         {
             var json = value.ToJson();
             return distributedCache.SetStringAsync(key, json, token);
@@ -52,7 +52,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="key"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<T> GetJsonAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
+        public static async Task<T> GetJsonAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default) where T : class
         {
             var value = await distributedCache.GetStringAsync(key, token);
             return ObjectExtensions.FromJson<T>(value);
@@ -72,7 +72,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default) where T : class
         {
             var bytes = value.ToByteArray();
             return distributedCache.SetAsync(key, bytes, options, token);
@@ -87,7 +87,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="value"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetObjectAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default) where T : class
         {
             var bytes = value.ToByteArray();
             return distributedCache.SetAsync(key, bytes, token);
@@ -99,11 +99,9 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="distributedCache"></param>
         /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<T> GetObjectAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
+        public static async Task<T> GetObjectAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default) where T : class
         {
             var value = await distributedCache.GetAsync(key, token);
             if (value == null) return null;
@@ -124,7 +122,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="options"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default) where T : class
         {
             var bytes = MessagePackSerializer.Serialize(value);
             return distributedCache.SetAsync(key, bytes, options, token);
@@ -139,7 +137,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="value"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default(CancellationToken)) where T : class
+        public static Task SetPackAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default) where T : class
         {
             var bytes = MessagePackSerializer.Serialize(value);
             return distributedCache.SetAsync(key, bytes, token);
@@ -153,7 +151,7 @@ namespace Tubumu.Modules.Framework.Extensions
         /// <param name="key"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static async Task<T> GetPackAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default(CancellationToken)) where T : class
+        public static async Task<T> GetPackAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default) where T : class
         {
             var value = await distributedCache.GetAsync(key, token);
             if (value == null) return null;

@@ -133,6 +133,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="cache"></param>
         /// <param name="repository"></param>
+        /// <param name="logger"></param>
         public GroupService(IDistributedCache cache, IGroupManager repository, ILogger<GroupService> logger)
         {
             _cache = cache;

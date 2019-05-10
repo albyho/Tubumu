@@ -27,5 +27,4 @@ namespace Tubumu.Modules.Framework.Filters
             ////throw new NotImplementedException();
         }
     }
-
 }

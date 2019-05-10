@@ -143,6 +143,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="displayName"></param>
+        /// <param name="modelState"></param>
         /// <returns></returns>
         Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState);
 
