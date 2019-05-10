@@ -456,7 +456,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
         {
             IQueryable<Notification> query = _context.Notification;
             query = query.WhereIf(criteria.FromUserId.HasValue, m => m.FromUserId == criteria.FromUserId);
-            query = query.WhereIf(criteria.ToUserId.HasValue, m => m.ToUserId == criteria.ToUserId);
             if (criteria.CreationTimeBegin.HasValue)
             {
                 var begin = criteria.CreationTimeBegin.Value.Date;
