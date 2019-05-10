@@ -20,14 +20,12 @@ namespace Tubumu.Modules.Framework.Mappings
 
             var allTypes = assembliesToScan
                 .Where(a => a.GetName().Name != nameof(AutoMapper))
-                .SelectMany(a => a.DefinedTypes)
-                .ToArray();
+                .SelectMany(a => a.DefinedTypes);
 
             var profileTypeInfo = typeof(Profile).GetTypeInfo();
             var profiles = allTypes
                 .Where(t => profileTypeInfo.IsAssignableFrom(t) && !t.IsAbstract)
-                .Select(t => t.AsType())
-                .ToArray();
+                .Select(t => t.AsType());
 
             Mapper.Initialize(cfg =>
             {
