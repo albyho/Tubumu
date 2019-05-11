@@ -458,12 +458,12 @@ namespace Tubumu.Modules.Admin.Domain.Services
             query = query.WhereIf(criteria.FromUserId.HasValue, m => m.FromUserId == criteria.FromUserId);
             if (criteria.CreationTimeBegin.HasValue)
             {
-                var begin = criteria.CreationTimeBegin.Value.Date;
+                var begin = criteria.CreationTimeBegin?.Date;
                 query = query.Where(m => m.CreationTime >= begin);
             }
             if (criteria.CreationTimeEnd.HasValue)
             {
-                var end = criteria.CreationTimeEnd.Value.Date.AddDays(1);
+                var end = criteria.CreationTimeEnd?.Date.AddDays(1);
                 query = query.Where(m => m.CreationTime < end);
             }
             if (criteria.Keyword != null)
