@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using MessagePack;
 using Microsoft.Extensions.Caching.Distributed;
@@ -156,6 +157,67 @@ namespace Tubumu.Modules.Framework.Extensions
             var value = await distributedCache.GetAsync(key, token);
             if (value == null) return null;
             return MessagePackSerializer.Deserialize<T>(value);
+        }
+
+        #endregion
+
+        #region Protocol buffers
+
+        /// <summary>
+        /// SetProtobufAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="distributedCache"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="options"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static Task SetProtobufAsync<T>(this IDistributedCache distributedCache, string key, T value, DistributedCacheEntryOptions options, CancellationToken token = default) where T : class
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                ProtoBuf.Serializer.Serialize(memoryStream, value);
+                var bytes = memoryStream.ToArray();
+                return distributedCache.SetAsync(key, bytes, options, token);
+            }
+        }
+
+        /// <summary>
+        /// SetProtobufAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="distributedCache"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static Task SetProtobufAsync<T>(this IDistributedCache distributedCache, string key, T value, CancellationToken token = default) where T : class
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                ProtoBuf.Serializer.Serialize(memoryStream, value);
+                var bytes = memoryStream.ToArray();
+                return distributedCache.SetAsync(key, bytes, token);
+            }
+        }
+
+        /// <summary>
+        /// GetProtobufAsync
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="distributedCache"></param>
+        /// <param name="key"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public static async Task<T> GetProtobufAsync<T>(this IDistributedCache distributedCache, string key, CancellationToken token = default) where T : class
+        {
+            var value = await distributedCache.GetAsync(key, token);
+            if (value == null) return null;
+            using (var memoryStream = new MemoryStream(value))
+            {
+                return ProtoBuf.Serializer.Deserialize<T>(memoryStream);
+            }
         }
 
         #endregion

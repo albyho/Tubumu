@@ -43,7 +43,6 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
             if (stringValue.IsNullOrWhiteSpace()) return true;
             if (DateTime.TryParse(stringValue, out var nativeValue))
             {
-                nativeValue = nativeValue.ToLocalTime();
                 return nativeValue >= Minimum && nativeValue <= Maximum;
             }
             return false;
