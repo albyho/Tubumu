@@ -16,8 +16,8 @@
     <PackageReference Include="AutoMapper.Extensions" Version="2.1.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
-    <PackageReference Include="MessagePack" Version="1.7.3.4" />
-    <PackageReference Include="MessagePackAnalyzer" Version="1.6.0" />
+    <PackageReference Include="MessagePack" Version="1.7.3.7" />
+    <PackageReference Include="MessagePackAnalyzer" Version="1.7.3.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
