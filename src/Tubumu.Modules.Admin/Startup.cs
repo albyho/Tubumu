@@ -50,12 +50,12 @@ namespace Tubumu.Modules.Admin
             services.AddScoped<IMenuProvider, Menus>();
 
             services.AddHttpClient();
-            services.AddDbContext<TubumuContext>(options =>
+            services.AddDbContextPool<TubumuContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("Tubumu")).ConfigureWarnings(warnings =>
                 {
                     warnings.Throw(CoreEventId.IncludeIgnoredWarning);
                     //warnings.Throw(RelationalEventId.QueryClientEvaluationWarning);
-                }));
+                }), poolSize: 64);
 
             // Domain Services
             services.AddScoped<IRegionManager, RegionManager>();

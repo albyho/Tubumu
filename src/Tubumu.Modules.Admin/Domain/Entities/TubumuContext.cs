@@ -4,10 +4,6 @@ namespace Tubumu.Modules.Admin.Domain.Entities
 {
     public partial class TubumuContext : DbContext
     {
-        public TubumuContext()
-        {
-        }
-
         public TubumuContext(DbContextOptions<TubumuContext> options)
             : base(options)
         {
