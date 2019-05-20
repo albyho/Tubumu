@@ -66,7 +66,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
             var dbBulletin = await _context.Bulletin.OrderByDescending(m => m.BulletinId).FirstOrDefaultAsync();
             if (dbBulletin == null) return false;
 
-            bulletinInput.PublishDate = bulletinInput.PublishDate;
             Mapper.Map(bulletinInput, dbBulletin);
             await _context.SaveChangesAsync();
 
