@@ -24,6 +24,11 @@ using Newtonsoft.Json;
 using OrchardCore.BackgroundTasks;
 using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
+using StackExchange.Redis.Extensions.Core;
+using StackExchange.Redis.Extensions.Core.Abstractions;
+using StackExchange.Redis.Extensions.Core.Configuration;
+using StackExchange.Redis.Extensions.Core.Implementations;
+using StackExchange.Redis.Extensions.Newtonsoft;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Tubumu.Core.Extensions;
@@ -37,6 +42,7 @@ using Tubumu.Modules.Framework.RabbitMQ;
 using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
+using StartupBase = OrchardCore.Modules.StartupBase;
 
 namespace Tubumu.Modules.Framework
 {
@@ -80,8 +86,16 @@ namespace Tubumu.Modules.Framework
                 options.Configuration = "localhost";
                 options.InstanceName = _environment.ApplicationName + ":";
             });
-
             services.AddMemoryCache();
+
+            // StackExchange.Redis.Extensions
+            // https://github.com/imperugo/StackExchange.Redis.Extensions
+            var redisConfiguration = _configuration.GetSection("Redis").Get<RedisConfiguration>();
+            services.AddSingleton(redisConfiguration);
+            services.AddSingleton<IRedisCacheClient, RedisCacheClient>();
+            services.AddSingleton<IRedisCacheConnectionPoolManager, RedisCacheConnectionPoolManager>();
+            services.AddSingleton<IRedisDefaultCacheClient, RedisDefaultCacheClient>();
+            services.AddSingleton<ISerializer, NewtonsoftSerializer>();
 
             // Cors
             services.AddCors(options => options.AddPolicy("DefaultPolicy",
