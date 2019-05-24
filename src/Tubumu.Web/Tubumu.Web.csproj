@@ -13,9 +13,9 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="OrchardCore" Version="1.0.0-beta3-71285" />
-    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-beta3-71285" />
-    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-beta3-71285" />
+    <PackageReference Include="OrchardCore" Version="1.0.0-beta3-71521" />
+    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-beta3-71521" />
+    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-beta3-71521" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,7 +26,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>

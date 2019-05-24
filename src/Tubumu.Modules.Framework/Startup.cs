@@ -79,6 +79,16 @@ namespace Tubumu.Modules.Framework
         {
             // Background Service
             services.AddSingleton<IBackgroundTask, IdleBackgroundTask>();
+            services.AddSingleton<IBackgroundTask, NewDayBackgroundTask>();
+
+            // StackExchange.Redis.Extensions
+            // https://github.com/imperugo/StackExchange.Redis.Extensions
+            var redisConfiguration = _configuration.GetSection("RedisSettings").Get<RedisConfiguration>();
+            services.AddSingleton(redisConfiguration);
+            services.AddSingleton<IRedisCacheClient, RedisCacheClient>();
+            services.AddSingleton<IRedisCacheConnectionPoolManager, RedisCacheConnectionPoolManager>();
+            services.AddSingleton<IRedisDefaultCacheClient, RedisDefaultCacheClient>();
+            services.AddSingleton<ISerializer, NewtonsoftSerializer>();
 
             // Cache
             services.AddDistributedRedisCache(options =>
@@ -87,15 +97,6 @@ namespace Tubumu.Modules.Framework
                 options.InstanceName = _environment.ApplicationName + ":";
             });
             services.AddMemoryCache();
-
-            // StackExchange.Redis.Extensions
-            // https://github.com/imperugo/StackExchange.Redis.Extensions
-            var redisConfiguration = _configuration.GetSection("Redis").Get<RedisConfiguration>();
-            services.AddSingleton(redisConfiguration);
-            services.AddSingleton<IRedisCacheClient, RedisCacheClient>();
-            services.AddSingleton<IRedisCacheConnectionPoolManager, RedisCacheConnectionPoolManager>();
-            services.AddSingleton<IRedisDefaultCacheClient, RedisDefaultCacheClient>();
-            services.AddSingleton<ISerializer, NewtonsoftSerializer>();
 
             // Cors
             services.AddCors(options => options.AddPolicy("DefaultPolicy",
