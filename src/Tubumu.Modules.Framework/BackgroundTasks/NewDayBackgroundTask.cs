@@ -7,9 +7,9 @@ using OrchardCore.BackgroundTasks;
 namespace Tubumu.Modules.Framework.BackgroundTasks
 {
     /// <summary>
-    /// NewDayBackgroundTask 北京时间 00:05:00，调度器使用的是 UTC 时间，故减少8小时应该设置为 14:05:00
+    /// NewDayBackgroundTask 北京时间 00:00:00，调度器使用的是 UTC 时间，故减少8小时应该设置为 16:00:00
     /// </summary>
-    [BackgroundTask(Schedule = "5 14 * * *", Description = "New day background task.")]
+    [BackgroundTask(Schedule = "0 16 * * *", Description = "New day background task.")]
     public class NewDayBackgroundTask : IBackgroundTask
     {
         private readonly ILogger<NewDayBackgroundTask> _logger;
