@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
         public int Maximum { get; }
 
         /// <summary>
-        /// c
+        /// Constructor
         /// </summary>
         /// <param name="minimum"></param>
         /// <param name="maximum"></param>
@@ -31,22 +31,27 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
             Maximum = maximum;
         }
 
-        /// <summary>s
+        /// <summary>
         /// IsValid
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         public override bool IsValid(object value)
         {
-
-            if (value is IEnumerable<int> list)
+            if (value is null) return true;
+            var isValid = true;
+            if (value is IEnumerable<int> list && list != null)
             {
                 foreach (var item in list)
                 {
-                    return item >= Minimum && item <= Maximum;
+                    if(item < Minimum || item > Maximum)
+                    {
+                        isValid = false;
+                        break;
+                    }
                 }
             }
-            return false;
+            return isValid;
         }
     }
 }
