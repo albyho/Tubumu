@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Entities;
 using Tubumu.Modules.Admin.Models.Input;
+using Tubumu.Modules.Core.Models;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 using XM = Tubumu.Modules.Admin.Models;
@@ -697,9 +698,13 @@ namespace Tubumu.Modules.Admin.Domain.Services
             }
 
             IOrderedQueryable<User> orderedQuery;
-            if (criteria.PagingInfo.SortInfo != null && !criteria.PagingInfo.SortInfo.Sort.IsNullOrWhiteSpace())
+            if (criteria.PagingInfo.SortInfo.IsValid())
             {
-                orderedQuery = query.Order(criteria.PagingInfo.SortInfo.Sort, criteria.PagingInfo.SortInfo.SortDir == SortDir.DESC);
+                orderedQuery = query.Order(criteria.PagingInfo.SortInfo);
+            }
+            else if(criteria.PagingInfo.SortInfos.IsValid())
+            {
+                orderedQuery = query.Order(criteria.PagingInfo.SortInfos);
             }
             else
             {

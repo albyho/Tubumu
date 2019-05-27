@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Entities;
+using Tubumu.Modules.Core.Models;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 using XM = Tubumu.Modules.Admin.Models;
@@ -130,9 +131,13 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
             IQueryable<Notification> query = CreateQuery(criteria);
             IOrderedQueryable<Notification> orderedQuery;
-            if (criteria.PagingInfo.SortInfo != null && !criteria.PagingInfo.SortInfo.Sort.IsNullOrWhiteSpace())
+            if (criteria.PagingInfo.SortInfo.IsValid())
             {
-                orderedQuery = query.Order(criteria.PagingInfo.SortInfo.Sort, criteria.PagingInfo.SortInfo.SortDir == SortDir.DESC);
+                orderedQuery = query.Order(criteria.PagingInfo.SortInfo);
+            }
+            else if (criteria.PagingInfo.SortInfos.IsValid())
+            {
+                orderedQuery = query.Order(criteria.PagingInfo.SortInfos);
             }
             else
             {
@@ -212,9 +217,13 @@ namespace Tubumu.Modules.Admin.Domain.Services
             }
 
             IOrderedQueryable<XM.NotificationUser> orderedQuery;
-            if (criteria.PagingInfo.SortInfo != null && !criteria.PagingInfo.SortInfo.Sort.IsNullOrWhiteSpace())
+            if (criteria.PagingInfo.SortInfo.IsValid())
             {
-                orderedQuery = query2.Order(criteria.PagingInfo.SortInfo.Sort, criteria.PagingInfo.SortInfo.SortDir == SortDir.DESC);
+                orderedQuery = query2.Order(criteria.PagingInfo.SortInfo);
+            }
+            else if (criteria.PagingInfo.SortInfos.IsValid())
+            {
+                orderedQuery = query2.Order(criteria.PagingInfo.SortInfos);
             }
             else
             {

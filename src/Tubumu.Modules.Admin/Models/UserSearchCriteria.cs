@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Tubumu.Modules.Framework.Models;
+using Tubumu.Modules.Core.Models;
 
 namespace Tubumu.Modules.Admin.Models
 {

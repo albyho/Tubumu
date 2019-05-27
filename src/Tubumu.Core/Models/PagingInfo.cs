@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
-namespace Tubumu.Modules.Framework.Models
+namespace Tubumu.Modules.Core.Models
 {
     /// <summary>
     /// 分页信息
@@ -40,6 +40,12 @@ namespace Tubumu.Modules.Framework.Models
         /// </summary>
         [JsonProperty(PropertyName = "sortInfo")]
         public SortInfo SortInfo { get; set; }
+
+        /// <summary>
+        /// 排序信息（多个排序字段。优先级低于 SortInfo 属性。）
+        /// </summary>
+        [JsonProperty(PropertyName = "sortInfos")]
+        public SortInfo[] SortInfos { get; set; }
 
         /// <summary>
         /// 是否排除元数据（如果不是第一页，没有必要重复获取 TotalItemCount 和 TotalPageCount）

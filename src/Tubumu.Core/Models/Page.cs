@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Tubumu.Modules.Framework.Models
+namespace Tubumu.Modules.Core.Models
 {
     /// <summary>
     /// 分页

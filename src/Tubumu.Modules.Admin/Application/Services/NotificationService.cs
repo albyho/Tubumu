@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.SignalR.Hubs;
+using Tubumu.Modules.Core.Models;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Application.Services
 {

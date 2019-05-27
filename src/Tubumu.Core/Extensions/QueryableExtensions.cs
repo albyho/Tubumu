@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Tubumu.Modules.Core.Models;
 
 namespace Tubumu.Core.Extensions
 {
@@ -330,6 +331,41 @@ namespace Tubumu.Core.Extensions
                 source.Expression,
                 Expression.Quote(sort));
             return (IOrderedQueryable<T>)source.Provider.CreateQuery<T>(call);
+        }
+
+        /// <summary>
+        /// Order
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="descending"></param>
+        /// <param name="anotherLevel"></param>
+        /// <returns></returns>
+        public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, SortInfo sortInfo, bool anotherLevel = false)
+        {
+            return Order(source, sortInfo.Sort, sortInfo.SortDir == SortDir.DESC, anotherLevel);
+        }
+
+        /// <summary>
+        /// Order
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="descending"></param>
+        /// <param name="anotherLevel"></param>
+        /// <returns></returns>
+        public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, ICollection<SortInfo> sortInfos)
+        {
+            IOrderedQueryable<T> result = null;
+            var isFirst = true;
+            foreach(var sortInfo in sortInfos)
+            {
+                result = Order(source, sortInfo, !isFirst);
+                isFirst = false;
+            }
+            return result;
         }
 
         /// <summary>

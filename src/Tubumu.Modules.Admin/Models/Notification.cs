@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 using Tubumu.Core.Json;
-using Tubumu.Modules.Framework.Models;
+using Tubumu.Modules.Core.Models;
 using Tubumu.Modules.Framework.ModelValidation.Attributes;
 
 namespace Tubumu.Modules.Admin.Models
