@@ -221,7 +221,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.SaveAsync(groupInput, modelState);
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
+                CleanupCache();
             }
             return result;
         }
@@ -248,7 +248,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     throw new InvalidOperationException($"{item.Name} 分组添加失败: {modelState.FirstErrorMessage()}");
                 }
             }
-            RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
+            CleanupCache();
             return true;
         }
 
@@ -263,7 +263,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.RemoveAsync(groupId, modelState);
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
+                CleanupCache();
             }
             return result;
         }
@@ -279,7 +279,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(groupId, movingTarget);
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
+                CleanupCache();
             }
             return result;
         }
@@ -298,7 +298,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveAsync(sourceGroupId, targetGroupId, movingLocation, isChild, modelState);
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
+                CleanupCache();
             }
             return result;
         }
@@ -317,7 +317,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var result = await _manager.MoveByDisplayOrderAsync(sourceDisplayOrder, targetDisplayOrder, movingLocation, isChild, modelState);
             if (result)
             {
-                RemoveCacheAsync().ContinueWithOnFaultedLog(_logger);
+                CleanupCache();
             }
             return result;
         }
@@ -492,7 +492,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (groups == null)
             {
                 groups = await _manager.GetListAsync();
-                _cache.SetJsonAsync(ListCacheKey, groups).ContinueWithOnFaultedLog(_logger);
+                CacheList(groups);
             }
             return groups;
             /*
@@ -532,7 +532,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                         GroupTreeAddChildren(list, node, i);
                     }
                 }
-                _cache.SetJsonAsync(TreeCacheKey, tree).ContinueWithOnFaultedLog(_logger);
+                CacheTree(tree);
             }
             return tree;
         }
@@ -577,9 +577,19 @@ namespace Tubumu.Modules.Admin.Application.Services
             };
         }
 
-        private Task RemoveCacheAsync()
+        private void CacheList(List<Group> list)
         {
-            return Task.WhenAll(_cache.RemoveAsync(ListCacheKey), _cache.RemoveAsync(TreeCacheKey));
+            _cache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFaultedHandleLog(_logger);
+        }
+
+        private void CacheTree(List<GroupTreeNode> tree)
+        {
+            _cache.SetJsonAsync(TreeCacheKey, tree).ContinueWithOnFaultedHandleLog(_logger);
+        }
+
+        private void CleanupCache()
+        {
+            Task.WhenAll(_cache.RemoveAsync(ListCacheKey), _cache.RemoveAsync(TreeCacheKey)).ContinueWithOnFaultedHandleLog(_logger);
         }
 
         #endregion

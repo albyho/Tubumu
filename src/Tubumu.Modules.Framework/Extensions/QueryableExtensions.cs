@@ -38,7 +38,6 @@ namespace Tubumu.Modules.Framework.Extensions
                 if (!pagingInfo.IsExcludeMetaData)
                 {
                     page.TotalItemCount = await sourceQuery.CountAsync();
-                    page.TotalPageCount = (int)Math.Ceiling(page.TotalItemCount / (double)pagingInfo.PageSize);
                 }
             }
             else
@@ -55,7 +54,6 @@ namespace Tubumu.Modules.Framework.Extensions
                     if (!pagingInfo.IsExcludeMetaData)
                     {
                         page.TotalItemCount = await sourceQuery.CountAsync() + topItemCount;
-                        page.TotalPageCount = (int)Math.Ceiling(page.TotalItemCount / (double)pagingInfo.PageSize);
                     }
                 }
                 else
@@ -74,10 +72,11 @@ namespace Tubumu.Modules.Framework.Extensions
                         // 查询集记录数
                         int sourceItemCount = await sourceQuery.CountAsync();
                         page.TotalItemCount = sourceItemCount + topItemCount;
-                        page.TotalPageCount = (int)Math.Ceiling(page.TotalItemCount / (double)pagingInfo.PageSize);
                     }
                 }
             }
+
+            page.TotalPageCount = (int)Math.Ceiling(page.TotalItemCount / (double)pagingInfo.PageSize);
 
             return page;
         }

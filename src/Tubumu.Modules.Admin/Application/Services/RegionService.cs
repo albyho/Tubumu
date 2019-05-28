@@ -53,7 +53,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             if (json == null)
             {
                 var list = await _manager.GetRegionInfoListAsync();
-                _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFaultedLog(_logger);
+                Cache(list);
             }
             return json;
         }
@@ -147,7 +147,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 if (list == null)
                 {
                     list = await _manager.GetRegionInfoListAsync();
-                    _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFaultedLog(_logger);
+                    Cache(list);
                 }
 
                 // Set cache options.
@@ -295,6 +295,11 @@ namespace Tubumu.Modules.Admin.Application.Services
                     CleanTree(node.Children, newNode.Children, parentIdPath, index + 1);
                 }
             }
+        }
+
+        private void Cache(List<RegionInfo> list)
+        {
+            _distributedCache.SetJsonAsync(ListCacheKey, list).ContinueWithOnFaultedHandleLog(_logger);
         }
 
         #endregion

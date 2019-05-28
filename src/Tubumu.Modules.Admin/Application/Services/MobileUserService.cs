@@ -85,7 +85,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else
             {
-                CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
+                CleanupUserCache(userId);
             }
             return result;
         }
@@ -97,7 +97,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GenerateItemAsync(groupId, status, input.Mobile, password, modelState);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
+                CacheUser(userInfo);
             }
             return userInfo;
         }
@@ -111,7 +111,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             {
                 return false;
             }
-            CleanCacheAsync(userId).ContinueWithOnFaultedLog(_logger);
+            CleanupUserCache(userId);
             return true;
         }
 
@@ -121,7 +121,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             var userInfo = await _manager.GetItemByMobileAsync(mobile, mobileIsValid, status);
             if (userInfo != null && userInfo.Status == UserStatus.Normal)
             {
-                CacheUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
+                CacheUser(userInfo);
             }
             return userInfo;
         }
@@ -135,7 +135,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 userInfo = await _manager.GenerateItemAsync(groupId, generateStatus, mobile, password, modelState);
                 if (userInfo != null && userInfo.Status == UserStatus.Normal)
                 {
-                    CacheUserAsync(userInfo).ContinueWithOnFaultedLog(_logger);
+                    CacheUser(userInfo);
                 }
             }
             return userInfo;
@@ -196,10 +196,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                     FinishVerifyDate = null,
                     CreationTime = now,
                 };
-                _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
-                {
-                    SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-                }).ContinueWithOnFaultedLog(_logger);
+                CacheMobileValidationCodeCache(cacheKey, mobileValidationCode);
             }
             var sms = "{\"code\":\"" + validationCode + "\",\"time\":\"" + (_mobileValidationCodeSettings.Expiration / 60) + "\"}";
             return await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, sms);
@@ -221,11 +218,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
 
             mobileValidationCode.VerifyTimes++;
-            // 可以接受的误差
-            _cache.SetJsonAsync<MobileValidationCode>(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-            }).ContinueWithOnFaultedLog(_logger);
+            CacheMobileValidationCodeCache(cacheKey, mobileValidationCode);
 
             if (mobileValidationCode.ValidationCode.IsNullOrWhiteSpace())
             {
@@ -272,28 +265,33 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
 
             mobileValidationCode.FinishVerifyDate = DateTime.Now;
-            _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
-            {
-                SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
-            }).ContinueWithOnFaultedLog(_logger);
+            CacheMobileValidationCodeCache(cacheKey, mobileValidationCode);
             return true;
         }
 
         #endregion
 
-        private Task CacheUserAsync(UserInfo userInfo)
+        private void CacheUser(UserInfo userInfo)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userInfo.UserId);
-            return _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
+            _cache.SetJsonAsync(cacheKey, userInfo, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = TimeSpan.FromDays(1)
-            });
+            }).ContinueWithOnFaultedHandleLog(_logger);
         }
 
-        private Task CleanCacheAsync(int userId)
+        private void CleanupUserCache(int userId)
         {
             var cacheKey = UserService.UserCacheKeyFormat.FormatWith(userId);
-            return _cache.RemoveAsync(cacheKey);
+            _cache.RemoveAsync(cacheKey).ContinueWithOnFaultedHandleLog(_logger);
+        }
+
+        private void CacheMobileValidationCodeCache(string cacheKey, MobileValidationCode mobileValidationCode)
+        {
+            _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
+            {
+                SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
+            }).ContinueWithOnFaultedHandleLog(_logger);
         }
 
         private string GenerateMobileValidationCode(int codeLength)
