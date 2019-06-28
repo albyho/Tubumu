@@ -775,7 +775,7 @@ namespace Tubumu.Modules.Admin.Application.Services
                 CleanupCache(user.UserId);
                 return true;
             }
-
+            afterSignIn?.Invoke(user);
             return false;
         }
 

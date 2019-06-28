@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         Task<XM.Bulletin> GetItemAsync();
 
         /// <summary>
-        /// BulletinInput
+        /// SaveAsync
         /// </summary>
         /// <param name="bulletinInput"></param>
         /// <param name="modelState"></param>
