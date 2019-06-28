@@ -123,6 +123,10 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
                         num = ((DateTime)value).CompareTo(otherValue);
                         break;
 
+                    case ValidationDataType.Time:
+                        num = ((TimeSpan)value).CompareTo(otherValue);
+                        break;
+
                     case ValidationDataType.Currency:
                         num = ((decimal)value).CompareTo(otherValue);
                         break;

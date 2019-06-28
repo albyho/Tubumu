@@ -26,6 +26,11 @@
         Date,
 
         /// <summary>
+        /// 时间
+        /// </summary>
+        Time,
+
+        /// <summary>
         /// Decimal
         /// </summary>
         Currency,
