@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.Settings;
@@ -38,8 +39,10 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly IGroupService _groupService;
         private readonly IRoleService _roleService;
         private readonly IBulletinService _bulletinService;
+        private readonly IUserActionLogService _userActionLogService;
         private readonly IEnumerable<IModuleMetaDataProvider> _moduleMetaDataProviders;
         private readonly IEnumerable<IMenuProvider> _menuProviders;
+        private readonly ILogger<AdminController> _logger;
 
         // /Api/Admin/{action}
         /// <summary>
@@ -57,6 +60,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="groupService"></param>
         /// <param name="roleService"></param>
         /// <param name="bulletinService"></param>
+        /// <param name="userActionLogService"></param>
         /// <param name="moduleMetaDataProviders"></param>
         /// <param name="menuProviders"></param>
         public AdminController(
@@ -72,8 +76,10 @@ namespace Tubumu.Modules.Admin.Controllers
             IGroupService groupService,
             IRoleService roleService,
             IBulletinService bulletinService,
+            IUserActionLogService userActionLogService,
             IEnumerable<IModuleMetaDataProvider> moduleMetaDataProviders,
-            IEnumerable<IMenuProvider> menuProviders)
+            IEnumerable<IMenuProvider> menuProviders,
+            ILogger<AdminController> logger)
         {
             _environment = environment;
             _tokenValidationSettings = tokenValidationSettings;
@@ -87,8 +93,10 @@ namespace Tubumu.Modules.Admin.Controllers
             _groupService = groupService;
             _roleService = roleService;
             _bulletinService = bulletinService;
+            _userActionLogService = userActionLogService;
             _moduleMetaDataProviders = moduleMetaDataProviders;
             _menuProviders = menuProviders;
+            _logger = logger;
         }
     }
 }

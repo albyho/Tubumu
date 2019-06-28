@@ -11,6 +11,7 @@ namespace Tubumu.Modules.Admin.Domain.Entities
             NotificationFromUser = new HashSet<Notification>();
             NotificationToUser = new HashSet<Notification>();
             NotificationUser = new HashSet<NotificationUser>();
+            UserActionLog = new HashSet<UserActionLog>();
             UserGroup = new HashSet<UserGroup>();
             UserPermission = new HashSet<UserPermission>();
             UserRole = new HashSet<UserRole>();
@@ -46,6 +47,7 @@ namespace Tubumu.Modules.Admin.Domain.Entities
         public virtual ICollection<Notification> NotificationFromUser { get; set; }
         public virtual ICollection<Notification> NotificationToUser { get; set; }
         public virtual ICollection<NotificationUser> NotificationUser { get; set; }
+        public virtual ICollection<UserActionLog> UserActionLog { get; set; }
         public virtual ICollection<UserGroup> UserGroup { get; set; }
         public virtual ICollection<UserPermission> UserPermission { get; set; }
         public virtual ICollection<UserRole> UserRole { get; set; }

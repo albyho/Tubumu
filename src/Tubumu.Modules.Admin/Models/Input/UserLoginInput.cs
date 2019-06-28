@@ -1,13 +1,32 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using Tubumu.Modules.Framework.ModelValidation.Attributes;
 
 namespace Tubumu.Modules.Admin.Models.Input
 {
     /// <summary>
+    /// 客户端类型 Input
+    /// </summary>
+    public class ClientTypeInput
+    {
+        /// <summary>
+        /// ClientTypeId: 1、PC 2、Web 3、Android 4、iOS 5、可扩充
+        /// </summary>
+        [Range(1, Int32.MaxValue, ErrorMessage = "请输入合法的客户端类型 Id (大于0)")]
+        public int? ClientTypeId { get; set; }
+
+        /// <summary>
+        /// ClientAgent: 简单描述客户端软件名称版本等信息
+        /// </summary>
+        [StringLength(100, ErrorMessage = "客户端代理请保持在 100 个字符以内")]
+        public string ClientAgent { get; set; }
+    }
+
+    /// <summary>
     /// 账号 + 密码 + 验证码 登录 Input
     /// </summary>
-    public class AccountPasswordValidationCodeLoginInput
+    public class AccountPasswordValidationCodeLoginInput : ClientTypeInput
     {
         /// <summary>
         /// 账号
@@ -38,7 +57,7 @@ namespace Tubumu.Modules.Admin.Models.Input
     /// <summary>
     /// 账号 + 密码 登录 Input
     /// </summary>
-    public class AccountPasswordLoginInput
+    public class AccountPasswordLoginInput : ClientTypeInput
     {
         /// <summary>
         /// 账号
@@ -62,7 +81,7 @@ namespace Tubumu.Modules.Admin.Models.Input
     /// <summary>
     /// 手机号 + 验证码 登录 Input
     /// </summary>
-    public class MobileValidationCodeLoginInput
+    public class MobileValidationCodeLoginInput : ClientTypeInput
     {
         /// <summary>
         /// 手机号
@@ -83,7 +102,7 @@ namespace Tubumu.Modules.Admin.Models.Input
     /// <summary>
     /// 手机号 + 密码 登录 Input
     /// </summary>
-    public class MobilePasswordLoginInput
+    public class MobilePasswordLoginInput : ClientTypeInput
     {
         /// <summary>
         /// 手机号

@@ -21,6 +21,7 @@ namespace Tubumu.Modules.Admin.Domain.Entities
         public virtual DbSet<Role> Role { get; set; }
         public virtual DbSet<RolePermission> RolePermission { get; set; }
         public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<UserActionLog> UserActionLog { get; set; }
         public virtual DbSet<UserGroup> UserGroup { get; set; }
         public virtual DbSet<UserPermission> UserPermission { get; set; }
         public virtual DbSet<UserRole> UserRole { get; set; }
@@ -269,6 +270,19 @@ namespace Tubumu.Modules.Admin.Domain.Entities
                     .WithMany(p => p.User)
                     .HasForeignKey(d => d.RoleId)
                     .HasConstraintName("FK_User_Role");
+            });
+
+            modelBuilder.Entity<UserActionLog>(entity =>
+            {
+                entity.Property(e => e.ClientAgent).HasMaxLength(100);
+
+                entity.Property(e => e.Remark).HasMaxLength(100);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserActionLog)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_UserActionLog_User");
             });
 
             modelBuilder.Entity<UserGroup>(entity =>

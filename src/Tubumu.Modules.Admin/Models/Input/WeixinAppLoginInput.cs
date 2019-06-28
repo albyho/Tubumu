@@ -5,7 +5,7 @@ namespace Tubumu.Modules.Admin.Models.Input
     /// <summary>
     /// 微信小程序登录 Input
     /// </summary>
-    public class WeixinAppLoginInput
+    public class WeixinAppLoginInput : ClientTypeInput
     {
         /// <summary>
         /// 微信登录 Code

@@ -27,6 +27,7 @@ namespace Tubumu.Modules.Admin.Controllers
         private readonly ITokenService _tokenService;
         private readonly IMobileUserService _mobileUserService;
         private readonly IWeixinUserService _weixinUserService;
+        private readonly IUserActionLogService _userActionLogService;
 
         /// <summary>
         /// Constructor
@@ -36,12 +37,14 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="tokenService"></param>
         /// <param name="mobileUserService"></param>
         /// <param name="weixinUserService"></param>
+        /// <param name="userActionLogService"></param>
         public AuthenticationController(
             IOptions<AuthenticationSettings> authenticationSettingsOptions,
             IUserService userService,
             ITokenService tokenService,
             IMobileUserService mobileUserService,
-            IWeixinUserService weixinUserService
+            IWeixinUserService weixinUserService,
+            IUserActionLogService userActionLogService
             )
         {
             _authenticationSettings = authenticationSettingsOptions.Value;
@@ -49,6 +52,7 @@ namespace Tubumu.Modules.Admin.Controllers
             _tokenService = tokenService;
             _mobileUserService = mobileUserService;
             _weixinUserService = weixinUserService;
+            _userActionLogService = userActionLogService;
         }
 
         /// <summary>
@@ -69,9 +73,37 @@ namespace Tubumu.Modules.Admin.Controllers
                 return result;
             }
 
+            await SaveUserActionLogAsync(userInfo.UserId, 1, "账号(用户名、手机号或邮箱) + 密码 登录", input);
+
             result.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             result.Code = 200;
             result.Message = "登录成功";
+            return result;
+        }
+
+        /// <summary>
+        /// 注销
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ApiResult> Logout(ClientTypeInput input)
+        {
+            var userId = HttpContext.User.GetUserId();
+            if (userId >= 0)
+            {
+                await _tokenService.RevokeRefreshTokenAsync(userId);
+                await _userService.SignOutAsync(userId);
+
+                await SaveUserActionLogAsync(userId, 2, "注销", input);
+            }
+            var result = new ApiResult
+            {
+                Code = 200,
+                Message = "注销成功",
+            };
+
             return result;
         }
 
@@ -161,6 +193,8 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
+            await SaveUserActionLogAsync(userInfo.UserId, 1, "手机号 + 密码 登录", input);
+
             returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
@@ -243,6 +277,8 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
+            await SaveUserActionLogAsync(userInfo.UserId, 1, "手机号 + 验证码 登录", input);
+
             returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
@@ -282,6 +318,8 @@ namespace Tubumu.Modules.Admin.Controllers
                 returnResult.Message = "注册成功，请等待审核。";
                 return returnResult;
             }
+
+            await SaveUserActionLogAsync(userInfo.UserId, 1, "微信小程序登录", input);
 
             returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
@@ -323,6 +361,8 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
+            await SaveUserActionLogAsync(userInfo.UserId, 1, "微信移动端登录", input);
+
             returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "登录成功";
@@ -362,6 +402,8 @@ namespace Tubumu.Modules.Admin.Controllers
                 returnResult.Message = "注册成功，请等待审核。";
                 return returnResult;
             }
+
+            await SaveUserActionLogAsync(userInfo.UserId, 1, "微信网页登录", input);
 
             returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             returnResult.Code = 200;
@@ -465,6 +507,18 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         #region Private Methods
+
+        private Task SaveUserActionLogAsync(int userId, int actionTypeId, string remark, ClientTypeInput input)
+        {
+            return _userActionLogService.SaveAsync(new UserActionLogInput
+            {
+                UserId = userId,
+                ActionTypeId = actionTypeId,
+                ClientTypeId = input.ClientTypeId,
+                ClientAgent = input.ClientAgent,
+                Remark = remark
+            }, ModelState);
+        }
 
         #endregion
     }

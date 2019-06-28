@@ -67,6 +67,7 @@ namespace Tubumu.Modules.Admin
             services.AddScoped<IUserManager, UserManager>();
             services.AddScoped<IMobileUserManager, MobileUserManager>();
             services.AddScoped<IWeixinUserManager, WeixinUserManager>();
+            services.AddScoped<IUserActionLogManager, UserActionLogManager>();
 
             // Application Services
             services.AddScoped<IRegionService, RegionService>();
@@ -79,6 +80,7 @@ namespace Tubumu.Modules.Admin
             services.AddScoped<IMobileUserService, MobileUserService>();
             services.AddScoped<IWeixinUserService, WeixinUserService>();
             services.AddScoped<IAdminUserService, AdminUserService>();
+            services.AddScoped<IUserActionLogService, UserActionLogService>();
 
             // Frontend
             services.Configure<FrontendSettings>(_configuration.GetSection("FrontendSettings"));

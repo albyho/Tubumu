@@ -7,6 +7,7 @@ using Tubumu.Core.Utilities.Security;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Framework.Authorization;
+using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Controllers
@@ -69,10 +70,20 @@ namespace Tubumu.Modules.Admin.Controllers
                 return result;
             }
 
+            await _userActionLogService.SaveAsync(new UserActionLogInput
+            {
+                UserId = userInfo.UserId,
+                ActionTypeId = 1,
+                ClientTypeId = input.ClientTypeId,
+                ClientAgent = input.ClientAgent,
+                Remark = "后台登录"
+            }, ModelState);
+
             result.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
             result.Url = _frontendSettings.CoreEnvironment.IsDevelopment ? _frontendSettings.CoreEnvironment.DevelopmentHost + "/modules/index.html" : Url.Action("Index", "View");
             result.Code = 200;
             result.Message = "登录成功";
+
             return result;
         }
 
@@ -93,7 +104,16 @@ namespace Tubumu.Modules.Admin.Controllers
             {
                 await _tokenService.RevokeRefreshTokenAsync(userId);
                 await _userService.SignOutAsync(userId);
+                await _userActionLogService.SaveAsync(new UserActionLogInput
+                {
+                    UserId = userId,
+                    ActionTypeId = 2,
+                    ClientTypeId = null, // TODO: ClientTypeInput
+                    ClientAgent = null,
+                    Remark = "后台注销"
+                }, ModelState);
             }
+
             var result = new ApiResultUrl
             {
                 Code = 200,
