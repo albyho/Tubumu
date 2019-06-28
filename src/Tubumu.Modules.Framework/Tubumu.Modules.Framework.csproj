@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions" Version="2.1.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="JetBrains.Annotations" Version="2019.1.1" />
     <PackageReference Include="MessagePack" Version="1.7.3.7" />
     <PackageReference Include="MessagePackAnalyzer" Version="1.7.3.7" />
@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71521" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71746" />
     <PackageReference Include="protobuf-net" Version="2.4.0" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="5.0.3" />
