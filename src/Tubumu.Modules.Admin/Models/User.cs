@@ -207,6 +207,11 @@ namespace Tubumu.Modules.Admin.Models
         public string AvatarUrl { get; set; }
 
         /// <summary>
+        /// UniqueId
+        /// </summary>
+        public string UniqueId { get; set; }
+
+        /// <summary>
         /// WeixinMobileEndOpenId
         /// </summary>
         public string WeixinMobileEndOpenId { get; set; }

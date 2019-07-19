@@ -281,6 +281,31 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<bool> SignOutAsync(int userId);
+
+        /// <summary>
+        /// GetItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        Task<UserInfo> GetItemByUniqueIdAsync(string uniqueId);
+
+        /// <summary>
+        /// GetOrGenerateItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        Task<UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, UserStatus generateStatus, string uniqueId);
+
+        /// <summary>
+        /// GetOrGenerateItemByMobileAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, UserStatus generateStatus, string mobile);
     }
 
     public class UserService : IUserService
@@ -310,7 +335,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             IHostingEnvironment environment,
             IOptions<AvatarSettings> avatarSettingsOptions,
             IUserManager manager,
-                        IGroupService groupService,
+            IGroupService groupService,
             IDistributedCache cache,
             ILogger<UserService> logger
             )
@@ -946,6 +971,40 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
 
             return url;
+        }
+
+        /// <summary>
+        /// 根据唯一识别码获取用户信息
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        public Task<UserInfo> GetItemByUniqueIdAsync(string uniqueId)
+        {
+            return _manager.GetItemByUniqueIdAsync(uniqueId);
+        }
+
+        /// <summary>
+        /// 根据唯一识别码获取(不存在则生成)用户信息
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        public Task<UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, UserStatus generateStatus, string uniqueId)
+        {
+            return _manager.GetOrGenerateItemByUniqueIdAsync(generateGroupId, generateStatus, uniqueId);
+        }
+
+        /// <summary>
+        /// 根据手机号获取(不存在则生成)用户信息
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, UserStatus generateStatus, string mobile)
+        {
+            return _manager.GetOrGenerateItemByMobileAsync(generateGroupId, generateStatus, mobile);
         }
     }
 }

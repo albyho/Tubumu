@@ -218,6 +218,31 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="modelState"></param>
         /// <returns></returns>
         Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// GetItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        Task<XM.UserInfo> GetItemByUniqueIdAsync(string uniqueId);
+
+        /// <summary>
+        /// GetOrGenerateItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        Task<XM.UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string uniqueId);
+
+        /// <summary>
+        /// GetOrGenerateItemByMobileAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, XM.UserStatus generateStatus, string mobile);
     }
 
     /// <summary>
@@ -248,6 +273,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 Mobile = u.Mobile,
                 MobileIsValid = u.MobileIsValid,
                 Password = u.Password,
+                UniqueId = u.UniqueId,
                 WeixinMobileEndOpenId = u.WeixinMobileEndOpenId,
                 WeixinAppOpenId = u.WeixinAppOpenId,
                 WeixinWebOpenId = u.WeixinWebOpenId,
@@ -431,11 +457,11 @@ namespace Tubumu.Modules.Admin.Domain.Services
             XM.UserInfo user;
             if (status.HasValue)
             {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == mobileIsValid && m.Mobile == mobile) && m.Status == status.Value);
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.MobileIsValid == mobileIsValid && m.Mobile == mobile) && m.Status == status.Value);
             }
             else
             {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == mobileIsValid && m.Mobile == mobile));
+                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.MobileIsValid == mobileIsValid && m.Mobile == mobile));
             }
             return user;
         }
@@ -1147,6 +1173,78 @@ namespace Tubumu.Modules.Admin.Domain.Services
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        /// <summary>
+        /// GetItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        public async Task<XM.UserInfo> GetItemByUniqueIdAsync(string uniqueId)
+        {
+            if (uniqueId.IsNullOrWhiteSpace()) return null;
+            XM.UserInfo user = await _context.User.AsNoTracking().Where(m => m.UniqueId == uniqueId).Select(_selector).FirstOrDefaultAsync();
+            return user;
+        }
+
+        /// <summary>
+        /// GetOrGenerateItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        public async Task<XM.UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string uniqueId)
+        {
+            if (uniqueId.IsNullOrWhiteSpace()) return null;
+            var user = await GetItemByUniqueIdAsync(uniqueId);
+            if (user == null)
+            {
+                var newUser = new User
+                {
+                    Status = generateStatus,
+                    CreationTime = DateTime.Now,
+                    UniqueId = uniqueId,
+                    GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
+                    Username = "U" + Guid.NewGuid().ToString("N").Substring(19),
+                    Password = uniqueId,
+                };
+
+                _context.User.Add(newUser);
+                await _context.SaveChangesAsync();
+                user = await GetItemByUniqueIdAsync(uniqueId);
+            }
+            return user;
+        }
+
+        /// <summary>
+        /// GetOrGenerateItemByMobileAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public async Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, XM.UserStatus generateStatus, string mobile)
+        {
+            if (mobile.IsNullOrWhiteSpace()) return null;
+            var user = await GetItemByMobileAsync(mobile);
+            if (user == null)
+            {
+                var newUser = new User
+                {
+                    Status = generateStatus,
+                    CreationTime = DateTime.Now,
+                    Mobile = mobile,
+                    GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
+                    Username = "U" + Guid.NewGuid().ToString("N").Substring(19),
+                    Password = mobile,
+                };
+
+                _context.User.Add(newUser);
+                await _context.SaveChangesAsync();
+                user = await GetItemByMobileAsync(mobile);
+            }
+            return user;
         }
 
         #endregion

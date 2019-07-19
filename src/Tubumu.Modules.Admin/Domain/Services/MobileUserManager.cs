@@ -117,6 +117,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 Mobile = u.Mobile,
                 MobileIsValid = u.MobileIsValid,
                 Password = u.Password,
+                UniqueId = u.UniqueId,
                 WeixinMobileEndOpenId = u.WeixinMobileEndOpenId,
                 WeixinAppOpenId = u.WeixinAppOpenId,
                 WeixinWebOpenId = u.WeixinWebOpenId,

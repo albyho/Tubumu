@@ -173,6 +173,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 Mobile = u.Mobile,
                 MobileIsValid = u.MobileIsValid,
                 Password = u.Password,
+                UniqueId = u.UniqueId,
                 WeixinMobileEndOpenId = u.WeixinMobileEndOpenId,
                 WeixinAppOpenId = u.WeixinAppOpenId,
                 WeixinWebOpenId = u.WeixinWebOpenId,
@@ -443,7 +444,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     CreationTime = DateTime.Now,
                     WeixinUnionId = unionId,
                     GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
-                    Username = "g" + Guid.NewGuid().ToString("N").Substring(19),
+                    Username = "U" + Guid.NewGuid().ToString("N").Substring(19),
                     Password = unionId,
                 };
 
@@ -639,7 +640,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         {
             if (unionId.IsNullOrWhiteSpace())
             {
-                modelState.AddModelError("WXOpenId", "未知微信");
+                modelState.AddModelError("unionId", "未知微信");
                 return false;
             }
             // 微信已经被使用

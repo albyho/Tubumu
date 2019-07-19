@@ -9,6 +9,7 @@ using OrchardCore.Modules;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.Domain.Entities;
 using Tubumu.Modules.Admin.Domain.Services;
+using Tubumu.Modules.Admin.FlashValidation;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Admin.SignalR.Hubs;
 using Tubumu.Modules.Admin.Sms;
@@ -106,6 +107,9 @@ namespace Tubumu.Modules.Admin
             services.Configure<WeixinAppSettings>(_configuration.GetSection("WeixinSettings:App"));
             services.Configure<WeixinMobileEndSettings>(_configuration.GetSection("WeixinSettings:MobileEnd"));
             services.Configure<WeixinWebSettings>(_configuration.GetSection("WeixinSettings:Web"));
+
+            // 闪验
+            services.Configure<FlashValidationSettings>(_configuration.GetSection("FlashValidationSettings"));
         }
 
         /// <summary>
