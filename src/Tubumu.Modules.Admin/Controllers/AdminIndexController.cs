@@ -66,7 +66,7 @@ namespace Tubumu.Modules.Admin.Controllers
             if (!changeProfileResult)
             {
                 result.Code = 400;
-                result.Message = "修改资料失败: " + ModelState.FirstErrorMessage();
+                result.Message = $"修改资料失败: {ModelState.FirstErrorMessage()}";
             }
             else
             {
@@ -135,7 +135,7 @@ namespace Tubumu.Modules.Admin.Controllers
             if (!await _adminUserService.ChangePasswordAsync(HttpContext.User.GetUserId(), input, ModelState))
             {
                 result.Code = 400;
-                result.Message = "修改密码失败" + ModelState.FirstErrorMessage();
+                result.Message = $"修改密码失败: {ModelState.FirstErrorMessage()}";
             }
             else
             {

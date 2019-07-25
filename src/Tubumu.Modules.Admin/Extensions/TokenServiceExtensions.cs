@@ -53,5 +53,24 @@ namespace Tubumu.Modules.Admin.Application.Services
                 RefreshToken = refreshToken,
             };
         }
+
+        /// <summary>
+        /// ApiResultTokenWithMobileData
+        /// </summary>
+        /// <param name="tokenService"></param>
+        /// <param name="userInfo"></param>
+        /// <returns></returns>
+        public static async Task<ApiResultTokenWithMobileData> GenerateApiResultTokenWithMobileData(this ITokenService tokenService, UserInfo userInfo)
+        {
+            var token = tokenService.GenerateAccessToken(userInfo);
+            var refreshToken = await tokenService.GenerateRefreshTokenAsync(userInfo.UserId);
+            return new ApiResultTokenWithMobileData
+            {
+                Token = token,
+                RefreshToken = refreshToken,
+                Mobile = userInfo.Mobile,
+            };
+        }
+
     }
 }

@@ -44,7 +44,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="emailIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        Task<XM.UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, XM.UserStatus? status = null);
+        Task<XM.UserInfo> GetItemByEmailAsync(string email, bool? emailIsValid, XM.UserStatus? status = null);
 
         /// <summary>
         /// GetItemByMobileAsync
@@ -53,7 +53,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="mobileIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, XM.UserStatus? status = null);
+        Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool? mobileIsValid, XM.UserStatus? status = null);
 
         /// <summary>
         /// GetAvatarUrlAsync
@@ -82,6 +82,13 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="email"></param>
         /// <returns></returns>
         Task<bool> IsExistsEmailAsync(string email);
+
+        /// <summary>
+        /// IsExistsMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        Task<bool> IsExistsMobileAsync(string mobile);
 
         /// <summary>
         /// IsExistsAsync
@@ -431,17 +438,22 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="emailIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public async Task<XM.UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, XM.UserStatus? status = null)
+        public async Task<XM.UserInfo> GetItemByEmailAsync(string email, bool? emailIsValid, XM.UserStatus? status = null)
         {
-            XM.UserInfo user;
+            var query = _context.User.AsNoTracking().Where(m => m.Email == email);
             if (status.HasValue)
             {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == emailIsValid && m.Email == email) && m.Status == status.Value);
+                query = query.Where(m => m.Status == status.Value);
+            }
+            if (emailIsValid.HasValue)
+            {
+                query = query.Where(m => m.EmailIsValid == emailIsValid.Value);
             }
             else
             {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.EmailIsValid == emailIsValid && m.Email == email));
+                query = query.Where(m => m.Email == email);
             }
+            var user = await query.Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -452,17 +464,22 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="mobileIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public async Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, XM.UserStatus? status = null)
+        public async Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool? mobileIsValid, XM.UserStatus? status = null)
         {
-            XM.UserInfo user;
+            var query = _context.User.AsNoTracking().Where(m => m.Mobile == mobile);
             if (status.HasValue)
             {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.MobileIsValid == mobileIsValid && m.Mobile == mobile) && m.Status == status.Value);
+                query = query.Where(m => m.Status == status.Value);
+            }
+            if (mobileIsValid.HasValue)
+            {
+                query = query.Where(m => m.MobileIsValid == mobileIsValid.Value);
             }
             else
             {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => (m.MobileIsValid == mobileIsValid && m.Mobile == mobile));
+                query = query.Where(m => m.Mobile == mobile);
             }
+            var user = await query.Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -517,6 +534,17 @@ namespace Tubumu.Modules.Admin.Domain.Services
         {
             if (email.IsNullOrWhiteSpace()) return false;
             return await _context.User.AnyAsync(m => m.Email == email);
+        }
+
+        /// <summary>
+        /// IsExistsMobileAsync
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistsMobileAsync(string mobile)
+        {
+            if (mobile.IsNullOrWhiteSpace()) return false;
+            return await _context.User.AnyAsync(m => m.Mobile == mobile);
         }
 
         /// <summary>
@@ -728,7 +756,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             {
                 orderedQuery = query.Order(criteria.PagingInfo.SortInfo);
             }
-            else if(criteria.PagingInfo.SortInfos.IsValid())
+            else if (criteria.PagingInfo.SortInfos.IsValid())
             {
                 orderedQuery = query.Order(criteria.PagingInfo.SortInfos);
             }
@@ -1227,7 +1255,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         public async Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, XM.UserStatus generateStatus, string mobile)
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
-            var user = await GetItemByMobileAsync(mobile);
+            var user = await GetItemByMobileAsync(mobile, null, null);
             if (user == null)
             {
                 var newUser = new User
@@ -1242,7 +1270,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                 _context.User.Add(newUser);
                 await _context.SaveChangesAsync();
-                user = await GetItemByMobileAsync(mobile);
+                user = await GetItemByMobileAsync(mobile, null, null);
             }
             return user;
         }

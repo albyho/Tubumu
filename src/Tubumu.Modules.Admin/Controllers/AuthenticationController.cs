@@ -478,10 +478,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
-        public async Task<ApiResultData<ApiResultTokenData>> BindMobileWithFlashValidation(FlashValidationLoginInput input)
+        public async Task<ApiResultData<ApiResultTokenWithMobileData>> BindMobileWithFlashValidation(FlashValidationLoginInput input)
         {
-            var returnResult = new ApiResultData<ApiResultTokenData>();
+            var returnResult = new ApiResultData<ApiResultTokenWithMobileData>();
             var mobile = await InvokeFlashValidatinApi(input, ModelState);
             if (!ModelState.IsValid)
             {
@@ -503,7 +502,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 userInfo = await _userService.GetItemByUserIdAsync(HttpContext.User.GetUserId(), UserStatus.Normal);
             }
 
-            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Data = await _tokenService.GenerateApiResultTokenWithMobileData(userInfo);
             returnResult.Code = 200;
             returnResult.Message = "绑定闪验成功";
             return returnResult;
