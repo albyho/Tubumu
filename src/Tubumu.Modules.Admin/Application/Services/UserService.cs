@@ -46,7 +46,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="emailIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        Task<UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, UserStatus? status = null);
+        Task<UserInfo> GetItemByEmailAsync(string email, bool? emailIsValid, UserStatus? status = null);
 
         /// <summary>
         /// 通过手机号获取用户信息
@@ -55,7 +55,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="mobileIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid, UserStatus? status = null);
+        Task<UserInfo> GetItemByMobileAsync(string mobile, bool? mobileIsValid, UserStatus? status = null);
 
         /// <summary>
         /// 获取用户信息列表
@@ -92,6 +92,13 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="email"></param>
         /// <returns></returns>
         Task<bool> IsExistsEmailAsync(string email);
+
+        /// <summary>
+        /// 通过手机号判断用户是否存在
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        Task<bool> IsExistsMobileAsync(string mobile);
 
         /// <summary>
         /// 验证除指定用户 Id 外，用户名是否被使用
@@ -213,15 +220,17 @@ namespace Tubumu.Modules.Admin.Application.Services
         Task<string> ChangeUserImageAsync(string subFolder, UserImageInput userImageInput, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action);
 
         /// <summary>
-        /// 
+        /// SaveFileAsync
         /// </summary>
+        /// <param name="typeId"></param>
         /// <param name="subFolder"></param>
         /// <param name="userId"></param>
+        /// <param name="name"></param>
         /// <param name="file"></param>
         /// <param name="modelState"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        Task<string> ChangeUserImageAsync(string subFolder, int userId, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action);
+        Task<string> SaveFileAsync(int typeId, string subFolder, int userId, string name, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action);
 
         /// <summary>
         /// 修改密码
@@ -388,7 +397,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="emailIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public async Task<UserInfo> GetItemByEmailAsync(string email, bool emailIsValid = true, UserStatus? status = null)
+        public async Task<UserInfo> GetItemByEmailAsync(string email, bool? emailIsValid, UserStatus? status = null)
         {
             if (email.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByEmailAsync(email, emailIsValid, status);
@@ -403,7 +412,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="mobileIsValid"></param>
         /// <param name="status"></param>
         /// <returns></returns>
-        public async Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, UserStatus? status = null)
+        public async Task<UserInfo> GetItemByMobileAsync(string mobile, bool? mobileIsValid, UserStatus? status = null)
         {
             if (mobile.IsNullOrWhiteSpace()) return null;
             var userInfo = await _manager.GetItemByMobileAsync(mobile, mobileIsValid, status);
@@ -462,6 +471,17 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (email.IsNullOrWhiteSpace()) return Task.FromResult(false);
             return _manager.IsExistsEmailAsync(email);
+        }
+
+        /// <summary>
+        /// 通过手机号判断用户是否存在
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public Task<bool> IsExistsMobileAsync(string mobile)
+        {
+            if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.IsExistsMobileAsync(mobile);
         }
 
         /// <summary>
@@ -668,7 +688,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<string> ChangeAvatarAsync(int userId, IFormFile file, ModelStateDictionary modelState)
         {
-            var url = await ChangeUserImageAsync("Avatar", userId, file, modelState, _manager.ChangeAvatarAsync);
+            var url = await SaveFileAsync(1, "Avatar", userId, userId.ToString(), file, modelState, _manager.ChangeAvatarAsync);
             if (modelState.IsValid)
             {
                 CleanupCache(userId);
@@ -685,7 +705,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<string> ChangeLogoAsync(int userId, IFormFile file, ModelStateDictionary modelState)
         {
-            var url = await ChangeUserImageAsync("Logo", userId, file, modelState, _manager.ChangeLogoAsync);
+            var url = await SaveFileAsync(1, "Logo", userId, userId.ToString(), file, modelState, _manager.ChangeLogoAsync);
             if (modelState.IsValid)
             {
                 CleanupCache(userId);
@@ -924,32 +944,37 @@ namespace Tubumu.Modules.Admin.Application.Services
                 return null;
             }
             var file = userImageInput.FileCollection.Files[0];
-            return ChangeUserImageAsync(subFolder, userImageInput.UserId, file, modelState, action);
+            return SaveFileAsync(1, subFolder, userImageInput.UserId, userImageInput.UserId.ToString(), file, modelState, action);
         }
 
         /// <summary>
-        /// ChangeUserImageAsync
+        /// SaveFileAsync
         /// </summary>
+        /// <param name="typeId"></param>
         /// <param name="subFolder"></param>
         /// <param name="userId"></param>
+        /// <param name="name"></param>
         /// <param name="file"></param>
         /// <param name="modelState"></param>
         /// <param name="action"></param>
         /// <returns></returns>
-        public async Task<string> ChangeUserImageAsync(string subFolder, int userId, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
+        public async Task<string> SaveFileAsync(int typeId, string subFolder, int userId, string name, IFormFile file, ModelStateDictionary modelState, Func<int, string, ModelStateDictionary, Task<bool>> action)
         {
             if (file == null || file.Length == 0)
             {
-                modelState.AddModelError("Error", "请选择图片");
+                modelState.AddModelError("Error", "请选择上传文件");
                 return null;
             }
             var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            if (extension == null || !_avatarSettings.ImageExtensions.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(extension))
+            var extensions = typeId == 1 ? _avatarSettings.ImageExtensions : _avatarSettings.FileExtensions;
+            var sizeMax = typeId == 1 ? _avatarSettings.ImageSizeMax : _avatarSettings.FileSizeMax;
+
+            if (extension == null || !extensions.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(extension))
             {
-                modelState.AddModelError("Error", $"图片格式错误(仅支持 {_avatarSettings.ImageExtensions})");
+                modelState.AddModelError("Error", $"格式错误(仅支持 {_avatarSettings.ImageExtensions})");
                 return null;
             }
-            if (file.Length > _avatarSettings.ImageSizeMax)
+            if (file.Length > sizeMax)
             {
                 modelState.AddModelError("Error", $"请保持在 {_avatarSettings.ImageSizeMax} 字节以内");
                 return null;
@@ -959,7 +984,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             {
                 Directory.CreateDirectory(uploadFolder);
             }
-            var fileName = userId + extension;
+            var fileName = name + extension;
             using (var stream = File.Create(Path.Combine(uploadFolder, fileName)))
             {
                 file.CopyTo(stream);
