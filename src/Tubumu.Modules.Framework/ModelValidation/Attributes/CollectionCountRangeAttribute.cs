@@ -31,7 +31,7 @@ namespace Tubumu.Modules.Framework.ModelValidation.Attributes
             Maximum = maximum;
         }
 
-        /// <summary>s
+        /// <summary>
         /// IsValid
         /// </summary>
         /// <param name="value"></param>

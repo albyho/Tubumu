@@ -8,7 +8,7 @@ namespace Tubumu.Core.Extensions.Ip
     /// </summary>
     public static class IpAddressExtensions
     {
-        private static readonly Regex IpRegex = new Regex(@"^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$", RegexOptions.Compiled);
+        private static readonly Regex IpV4Regex = new Regex(@"^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$", RegexOptions.Compiled);
 
         /// <summary>
         /// IPAddress 转 Int32 (可能产生负数)
@@ -53,13 +53,12 @@ namespace Tubumu.Core.Extensions.Ip
         /// <returns></returns>
         public static IPAddress ToIPAddress(this int ip)
         {
-
-            var b = new byte[4];
+            var bytes = new byte[4];
             for (var i = 0; i < 4; i++)
             {
-                b[3 - i] = (byte)(ip >> 8 * i & 255);
+                bytes[3 - i] = (byte)(ip >> 8 * i & 255);
             }
-            return new IPAddress(b);
+            return new IPAddress(bytes);
         }
 
         /// <summary>
@@ -69,13 +68,12 @@ namespace Tubumu.Core.Extensions.Ip
         /// <returns></returns>
         public static IPAddress ToIPAddress(this long ip)
         {
-
-            var b = new byte[4];
+            var bytes = new byte[4];
             for (var i = 0; i < 4; i++)
             {
-                b[3 - i] = (byte)(ip >> 8 * i & 255);
+                bytes[3 - i] = (byte)(ip >> 8 * i & 255);
             }
-            return new IPAddress(b);
+            return new IPAddress(bytes);
         }
 
         /// <summary>
@@ -83,10 +81,10 @@ namespace Tubumu.Core.Extensions.Ip
         /// </summary>
         /// <param name="ip"></param>
         /// <returns></returns>
-        public static bool IsIPAddress(this string ip)
+        public static bool IsIPv4(this string ip)
         {
             if (ip.IsNullOrWhiteSpace() || ip.Length < 7 || ip.Length > 15) return false;
-            return IpRegex.IsMatch(ip);
+            return IpV4Regex.IsMatch(ip);
         }
     }
 }

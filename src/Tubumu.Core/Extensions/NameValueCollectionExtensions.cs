@@ -51,7 +51,7 @@ namespace Tubumu.Core.Extensions
         {
             if (queryString.Count > 0)
             {
-                StringBuilder qs = new StringBuilder();
+                var qs = new StringBuilder();
                 qs.Append("?");
                 for (var i = 0; i < queryString.Count; i++)
                 {

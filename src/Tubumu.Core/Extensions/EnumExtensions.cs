@@ -79,6 +79,8 @@ namespace Tubumu.Core.Extensions
             return GetEnumRawConstantValue(enumValue, type);
         }
 
+        #region Private Methods
+
         private static string GetEnumRawConstantValue(this object enumValue, Type type)
         {
             var filedInfo = type.GetField(Enum.GetName(type, enumValue));
@@ -96,5 +98,7 @@ namespace Tubumu.Core.Extensions
             else
                 return enumValue.ToString();
         }
+
+        #endregion
     }
 }

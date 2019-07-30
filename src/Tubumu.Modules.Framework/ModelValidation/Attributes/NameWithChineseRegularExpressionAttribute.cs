@@ -3,9 +3,8 @@
 namespace Tubumu.Modules.Framework.ModelValidation.Attributes
 {
     /// <summary>
-    /// NameWithChineseAttribute
+    /// 字母或中文开头，由字母、数字、连词符或下滑线组成的字符串
     /// </summary>
-    /// <remarks>字母或中文开头，由字母、数字、连词符或下滑线组成的字符串</remarks>
     public class NameWithChineseAttribute : RegularExpressionAttribute
     {
         /// <summary>

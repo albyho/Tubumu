@@ -99,7 +99,7 @@ namespace Tubumu.Core.Extensions
         /// <summary>
         /// 计算结束时间与开始时间的间隔
         /// </summary>
-        /// <remarks>该方法主要是为了与SQL中计算时间间隔的DateDiff方法提供一致的调用</remarks>
+        /// <remarks>该方法主要是为了与 SQL 中计算时间间隔的 DateDiff 方法提供一致的调用</remarks>
         /// <param name="interval">时间间隔类型</param>
         /// <param name="startDate">起始时间</param>
         /// <param name="endDate">结束时间</param>

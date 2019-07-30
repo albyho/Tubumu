@@ -28,13 +28,13 @@ namespace Tubumu.Core.Extensions
         /// <returns>子数组</returns>
         public static T[] SubArray<T>(this T[] sourceArray, long length)
         {
-            ValidParamters(sourceArray, length);
+            ValidateParamters(sourceArray, length);
             T[] result = new T[length];
             Array.Copy(sourceArray, result, length);
             return result;
         }
 
-        private static void ValidParamters<T>(T[] sourceArray, long length)
+        private static void ValidateParamters<T>(T[] sourceArray, long length)
         {
             if (sourceArray == null)
             {

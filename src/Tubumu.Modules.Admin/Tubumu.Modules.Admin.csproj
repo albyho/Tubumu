@@ -17,12 +17,12 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.6" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71746" />
-    <PackageReference Include="Senparc.Weixin.Open" Version="4.5.7" />
-    <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.4.8" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71906" />
+    <PackageReference Include="Senparc.Weixin.Open" Version="4.5.8.1" />
+    <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.5.1.1" />
   </ItemGroup>
 
   <ItemGroup>

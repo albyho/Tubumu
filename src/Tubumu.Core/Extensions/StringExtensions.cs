@@ -397,14 +397,14 @@ namespace Tubumu.Core.Extensions
         }
 
         /// <summary>
-        /// ToEmptyableString
+        /// 如果源对象为 null ，则返回 String.Empty ，否则返回其 ToString 方法返回值
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
         public static string ToEmptyableString<T>(this T source) where T : class
         {
-            return source?.ToString();
+            return source != null ? source.ToString() : String.Empty;
         }
 
         /// <summary>

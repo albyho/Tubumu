@@ -9,7 +9,6 @@ namespace Tubumu.Core.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)] // 造成编译器优化调用
         public static void NoWarning(this Task task)
         {
-
         }
     }
 }
