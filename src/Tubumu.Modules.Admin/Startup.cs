@@ -52,7 +52,7 @@ namespace Tubumu.Modules.Admin
 
             services.AddHttpClient();
             services.AddDbContextPool<TubumuContext>(options =>
-                options.UseSqlServer(_configuration.GetConnectionString("Tubumu")).ConfigureWarnings(warnings =>
+                options.UseSqlServer(_configuration.GetConnectionString("Tubumu"), m => m.UseRowNumberForPaging()).ConfigureWarnings(warnings =>
                 {
                     warnings.Throw(CoreEventId.IncludeIgnoredWarning);
                     //warnings.Throw(RelationalEventId.QueryClientEvaluationWarning);
