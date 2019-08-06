@@ -51,7 +51,7 @@ namespace Tubumu.Core.Utilities.Security
         /// </summary>
         public byte[] CreateValidationCodeGraphic()
         {
-            Random rand = new Random(Guid.NewGuid().GetHashCode());
+            var rand = new Random(Guid.NewGuid().GetHashCode());
 
             var randAngle = 40;
             var mapWidth = ValidationCode.Length * 18;
@@ -86,8 +86,8 @@ namespace Tubumu.Core.Utilities.Security
 
                     for (int i = 0; i < chars.Length; i++)
                     {
-                        int colorIndex = rand.Next(7);
-                        int fontIndex = rand.Next(4);
+                        int colorIndex = rand.Next(colors.Length);
+                        int fontIndex = rand.Next(fonts.Length);
 
                         var fontColor = colors[colorIndex];
                         var foneSize = rand.Next(18, 25);
