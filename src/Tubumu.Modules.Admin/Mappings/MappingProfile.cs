@@ -15,8 +15,9 @@ namespace Tubumu.Modules.Admin.Mappings
         public MappingProfile()
         {
             CreateMap<Bulletin, XM.Bulletin>();
-            CreateMap<XM.Bulletin, Bulletin>();
             CreateMap<Bulletin, XM.Input.BulletinInput>();
+            CreateMap<XM.Bulletin, Bulletin>();
+            CreateMap<XM.Bulletin, XM.Input.BulletinInput>();
             CreateMap<XM.Input.BulletinInput, Bulletin>();
 
             CreateMap<XM.Input.UserActionLogInput, UserActionLog>();
