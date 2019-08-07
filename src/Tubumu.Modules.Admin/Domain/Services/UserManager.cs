@@ -107,6 +107,14 @@ namespace Tubumu.Modules.Admin.Domain.Services
         Task<bool> VerifyExistsUsernameAsync(int userId, string username);
 
         /// <summary>
+        /// VerifyExistsMobileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        Task<bool> VerifyExistsMobileAsync(int userId, string mobile);
+
+        /// <summary>
         /// VerifyExistsEmailAsync
         /// </summary>
         /// <param name="userId"></param>
@@ -574,6 +582,17 @@ namespace Tubumu.Modules.Admin.Domain.Services
         public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
         {
             return await _context.User.AnyAsync(m => m.UserId != userId && m.Username == username);
+        }
+
+        /// <summary>
+        /// VerifyExistsUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public async Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
+        {
+            return await _context.User.AnyAsync(m => m.UserId != userId && m.Mobile == mobile);
         }
 
         /// <summary>

@@ -109,6 +109,14 @@ namespace Tubumu.Modules.Admin.Application.Services
         Task<bool> VerifyExistsUsernameAsync(int userId, string username);
 
         /// <summary>
+        /// 验证除指定用户 Id 外，手机号是否被使用
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        Task<bool> VerifyExistsMobileAsync(int userId, string mobile);
+
+        /// <summary>
         /// 验证除指定用户 Id 外，邮箱是否被使用
         /// </summary>
         /// <param name="userId"></param>
@@ -312,7 +320,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         /// <param name="generateGroupId"></param>
         /// <param name="generateStatus"></param>
-        /// <param name="uniqueId"></param>
+        /// <param name="mobile"></param>
         /// <returns></returns>
         Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, UserStatus generateStatus, string mobile);
     }
@@ -494,6 +502,18 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (username.IsNullOrWhiteSpace()) return Task.FromResult(false);
             return _manager.VerifyExistsUsernameAsync(userId, username);
+        }
+
+        /// <summary>
+        /// 验证除指定用户 Id 外，手机号是否被使用
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
+        {
+            if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
+            return _manager.VerifyExistsMobileAsync(userId, mobile);
         }
 
         /// <summary>

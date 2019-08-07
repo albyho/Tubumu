@@ -159,6 +159,93 @@ namespace Tubumu.Modules.Admin.Controllers
             return result;
         }
 
+        /// <summary>
+        /// 验证用户名是否被使用
+        /// </summary>
+        /// <param name="validateUsernameExistsInput"></param>
+        /// <returns></returns>
+        [HttpPost("ValidateUsernameExists")]
+        [PermissionAuthorize(Permissions = "用户管理")]
+        public async Task<ApiResult> ValidateUsernameExists(ValidateUsernameExistsInput validateUsernameExistsInput)
+        {
+            var result = new ApiResult();
+            bool isExists;
+            if (validateUsernameExistsInput.UserId.HasValue)//编辑
+                isExists = await _userService.VerifyExistsUsernameAsync(validateUsernameExistsInput.UserId.Value, validateUsernameExistsInput.Username);
+            else//添加
+                isExists = await _userService.IsExistsUsernameAsync(validateUsernameExistsInput.Username);
+
+            if (!isExists)
+            {
+                result.Code = 200;
+                result.Message = "验证通过";
+            }
+            else
+            {
+                result.Code = 400;
+                result.Message = "用户名已经被使用";
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 验证手机号是否被使用
+        /// </summary>
+        /// <param name="validateMobileExistsInput"></param>
+        /// <returns></returns>
+        [HttpPost("ValidateMobileExists")]
+        [PermissionAuthorize(Permissions = "用户管理")]
+        public async Task<ApiResult> ValidateMobileExists(ValidateMobileExistsInput validateMobileExistsInput)
+        {
+            var result = new ApiResult();
+            bool isExists;
+            if (validateMobileExistsInput.UserId.HasValue)//编辑
+                isExists = await _userService.VerifyExistsMobileAsync(validateMobileExistsInput.UserId.Value, validateMobileExistsInput.Mobile);
+            else//添加
+                isExists = await _userService.IsExistsMobileAsync(validateMobileExistsInput.Mobile);
+
+            if (!isExists)
+            {
+                result.Code = 200;
+                result.Message = "验证通过";
+            }
+            else
+            {
+                result.Code = 400;
+                result.Message = "手机号已经被使用";
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 验证邮箱是否被使用
+        /// </summary>
+        /// <param name="validateEmailExistsInput"></param>
+        /// <returns></returns>
+        [HttpPost("ValidateEmailExists")]
+        [PermissionAuthorize(Permissions = "用户管理")]
+        public async Task<ApiResult> ValidateEmailExists(ValidateEmailExistsInput validateEmailExistsInput)
+        {
+            var result = new ApiResult();
+            bool isExists;
+            if (validateEmailExistsInput.UserId.HasValue)//编辑
+                isExists = await _userService.VerifyExistsEmailAsync(validateEmailExistsInput.UserId.Value, validateEmailExistsInput.Email);
+            else//添加
+                isExists = await _userService.IsExistsEmailAsync(validateEmailExistsInput.Email);
+
+            if (!isExists)
+            {
+                result.Code = 200;
+                result.Message = "验证通过";
+            }
+            else
+            {
+                result.Code = 400;
+                result.Message = "邮箱已经被使用";
+            }
+            return result;
+        }
+
         #endregion
 
         #region 分组

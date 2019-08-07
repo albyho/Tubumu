@@ -4,7 +4,7 @@
 
 1. [Orchard Core Framework](https://orchardcore.readthedocs.io/en/latest/)
 2. [EntityFramework Core](https://docs.microsoft.com/en-us/ef/core/) (Microsoft SQL Server)
-3. [Redis](https://github.com/MicrosoftArchive/redis/releases)
+3. [Redis](https://github.com/MicrosoftArchive/redis/releases) ([StackExchange.Redis.Extensions](https://github.com/imperugo/StackExchange.Redis.Extensions))
 4. [RabbitMQ](https://www.rabbitmq.com/)
 5. [Jwt](https://jwt.io/)
 6. [Swagger](https://swagger.io/)
@@ -28,7 +28,6 @@
 ## Roadmap
 
 1. CKFinder 不可用。尝试集成 RoxyFileman 但有些问题。
-2. Remote 验证邮箱、用户名或手机是否存在尚未移植完成。
-3. Cors 尚未测试。
-4. 跨上下文事务。
-5. 缓存的线程安全保障。
+2. Cors 尚未测试。
+3. 跨上下文事务。
+4. 缓存的线程安全保障。
