@@ -169,12 +169,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> ValidateUsernameExists(ValidateUsernameExistsInput validateUsernameExistsInput)
         {
             var result = new ApiResult();
-            bool isExists;
-            if (validateUsernameExistsInput.UserId.HasValue)//编辑
-                isExists = await _userService.VerifyExistsUsernameAsync(validateUsernameExistsInput.UserId.Value, validateUsernameExistsInput.Username);
-            else//添加
-                isExists = await _userService.IsExistsUsernameAsync(validateUsernameExistsInput.Username);
-
+            var isExists = await _userService.IsExistsUsernameAsync(validateUsernameExistsInput.Username, validateUsernameExistsInput.UserId);
             if (!isExists)
             {
                 result.Code = 200;
@@ -198,12 +193,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> ValidateMobileExists(ValidateMobileExistsInput validateMobileExistsInput)
         {
             var result = new ApiResult();
-            bool isExists;
-            if (validateMobileExistsInput.UserId.HasValue)//编辑
-                isExists = await _userService.VerifyExistsMobileAsync(validateMobileExistsInput.UserId.Value, validateMobileExistsInput.Mobile);
-            else//添加
-                isExists = await _userService.IsExistsMobileAsync(validateMobileExistsInput.Mobile);
-
+            var isExists = await _userService.IsExistsMobileAsync(validateMobileExistsInput.Mobile, validateMobileExistsInput.UserId);
             if (!isExists)
             {
                 result.Code = 200;
@@ -227,12 +217,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResult> ValidateEmailExists(ValidateEmailExistsInput validateEmailExistsInput)
         {
             var result = new ApiResult();
-            bool isExists;
-            if (validateEmailExistsInput.UserId.HasValue)//编辑
-                isExists = await _userService.VerifyExistsEmailAsync(validateEmailExistsInput.UserId.Value, validateEmailExistsInput.Email);
-            else//添加
-                isExists = await _userService.IsExistsEmailAsync(validateEmailExistsInput.Email);
-
+            var isExists = await _userService.IsExistsEmailAsync(validateEmailExistsInput.Email, validateEmailExistsInput.UserId);
             if (!isExists)
             {
                 result.Code = 200;

@@ -173,22 +173,25 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// IsExistsUsernameAsync
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        Task<bool> IsExistsUsernameAsync(string username);
+        Task<bool> IsExistsUsernameAsync(string username, int? excluedeUserId = null);
 
         /// <summary>
         /// IsExistsEmailAsync
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        Task<bool> IsExistsEmailAsync(string email);
+        Task<bool> IsExistsEmailAsync(string email, int? excluedeUserId = null);
 
         /// <summary>
         /// IsExistsMobileAsync
         /// </summary>
         /// <param name="mobile"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        Task<bool> IsExistsMobileAsync(string mobile);
+        Task<bool> IsExistsMobileAsync(string mobile, int? excluedeUserId = null);
 
         /// <summary>
         /// IsExistsAsync
@@ -197,30 +200,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="status"></param>
         /// <returns></returns>
         Task<bool> IsExistsAsync(int userId, XM.UserStatus? status = null);
-
-        /// <summary>
-        /// VerifyExistsUsernameAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        Task<bool> VerifyExistsUsernameAsync(int userId, string username);
-
-        /// <summary>
-        /// VerifyExistsMobileAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        Task<bool> VerifyExistsMobileAsync(int userId, string mobile);
-
-        /// <summary>
-        /// VerifyExistsEmailAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        Task<bool> VerifyExistsEmailAsync(int userId, string email);
 
         /// <summary>
         /// VerifyExistsAsync
@@ -413,15 +392,9 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByUserIdAsync(int userId, XM.UserStatus? status = null)
         {
-            XM.UserInfo user;
-            if (status.HasValue)
-            {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.UserId == userId && m.Status == status.Value);
-            }
-            else
-            {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.UserId == userId);
-            }
+            var query = _context.User.AsNoTracking().Where(m => m.UserId == userId);
+            query.WhereIf(status.HasValue, m => m.Status == status.Value);
+            var user = await query.Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -433,16 +406,9 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         public async Task<XM.UserInfo> GetItemByUsernameAsync(string username, XM.UserStatus? status = null)
         {
-            XM.UserInfo user;
-            if (status.HasValue)
-            {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Username == username && m.Status == status.Value);
-            }
-            else
-            {
-                user = await _context.User.AsNoTracking().Select(_selector).FirstOrDefaultAsync(m => m.Username == username);
-            }
-
+            var query = _context.User.AsNoTracking().Where(m => m.Username == username);
+            query.WhereIf(status.HasValue, m => m.Status == status.Value);
+            var user = await query.Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -472,7 +438,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         public async Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool? mobileIsValid, XM.UserStatus? status = null)
         {
             var query = _context.User.AsNoTracking().Where(m => m.Mobile == mobile);
-            query.WhereIf(mobileIsValid.HasValue, m => m.EmailIsValid == mobileIsValid.Value);
+            query.WhereIf(mobileIsValid.HasValue, m => m.MobileIsValid == mobileIsValid.Value);
             query.WhereIf(status.HasValue, m => m.Status == status.Value);
             var user = await query.Select(_selector).FirstOrDefaultAsync();
             return user;
@@ -1001,7 +967,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         public async Task<XM.UserInfo> GetItemByUniqueIdAsync(string uniqueId)
         {
             if (uniqueId.IsNullOrWhiteSpace()) return null;
-            XM.UserInfo user = await _context.User.AsNoTracking().Where(m => m.UniqueId == uniqueId).Select(_selector).FirstOrDefaultAsync();
+            var user = await _context.User.AsNoTracking().Where(m => m.UniqueId == uniqueId).Select(_selector).FirstOrDefaultAsync();
             return user;
         }
 
@@ -1043,32 +1009,42 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// IsExistsUsernameAsync
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        public async Task<bool> IsExistsUsernameAsync(string username)
+        public async Task<bool> IsExistsUsernameAsync(string username, int? excluedeUserId = null)
         {
-            return await _context.User.AnyAsync(m => m.Username == username);
+            if (username.IsNullOrWhiteSpace()) return false;
+            var query = _context.User.Where(m => m.Username == username);
+            query = query.WhereIf(excluedeUserId.HasValue, m => m.UserId != excluedeUserId);
+            return await query.AnyAsync();
         }
 
         /// <summary>
         /// IsExistsEmailAsync
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        public async Task<bool> IsExistsEmailAsync(string email)
+        public async Task<bool> IsExistsEmailAsync(string email, int? excluedeUserId = null)
         {
             if (email.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.Email == email);
+            var query = _context.User.Where(m => m.Email == email);
+            query = query.WhereIf(excluedeUserId.HasValue, m => m.UserId != excluedeUserId);
+            return await query.AnyAsync();
         }
 
         /// <summary>
         /// IsExistsMobileAsync
         /// </summary>
         /// <param name="mobile"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        public async Task<bool> IsExistsMobileAsync(string mobile)
+        public async Task<bool> IsExistsMobileAsync(string mobile, int? excluedeUserId = null)
         {
             if (mobile.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.Mobile == mobile);
+            var query = _context.User.Where(m => m.Mobile == mobile);
+            query = query.WhereIf(excluedeUserId.HasValue, m => m.UserId != excluedeUserId);
+            return await query.AnyAsync();
         }
 
         /// <summary>
@@ -1082,42 +1058,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
             var query = _context.User.Where(m => m.UserId == userId);
             query = query.WhereIf(status.HasValue, m => m.Status == status);
             return await query.AnyAsync();
-        }
-
-        /// <summary>
-        /// VerifyExistsUsernameAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
-        {
-            if (username.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.UserId != userId && m.Username == username);
-        }
-
-        /// <summary>
-        /// VerifyExistsUsernameAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
-        {
-            if (mobile.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.UserId != userId && m.Mobile == mobile);
-        }
-
-        /// <summary>
-        /// VerifyExistsEmailAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyExistsEmailAsync(int userId, string email)
-        {
-            if (email.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.UserId != userId && m.Email == email);
         }
 
         /// <summary>
@@ -1164,7 +1104,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     m.Email,
                     m.Mobile,
                 }).FirstOrDefaultAsync();
-
             }
 
             if (item != null)
@@ -1211,8 +1150,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         public async Task<string> GetAvatarUrlAsync(int userId)
         {
-            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.AvatarUrl).FirstOrDefaultAsync();
-            return head;
+            var avatarUrl = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.AvatarUrl).FirstOrDefaultAsync();
+            return avatarUrl;
         }
 
         /// <summary>
@@ -1222,8 +1161,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         public async Task<string> GetLogoUrlAsync(int userId)
         {
-            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.LogoUrl).FirstOrDefaultAsync();
-            return head;
+            var logoUrl = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.LogoUrl).FirstOrDefaultAsync();
+            return logoUrl;
         }
 
         /// <summary>

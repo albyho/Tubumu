@@ -96,7 +96,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 modelState.AddModelError("UserId", "目标邮箱和当前邮箱相同");
                 return false;
             }
-            if (_context.User.Any(m => m.UserId != userId && m.Email == newEmail))
+            if (await _context.User.AnyAsync(m => m.UserId != userId && m.Email == newEmail))
             {
                 modelState.AddModelError("UserId", $"邮箱[{newEmail}]已经被使用");
                 return false;

@@ -96,7 +96,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 modelState.AddModelError("UserId", "目标手机号和当前手机号相同");
                 return false;
             }
-            if (_context.User.Any(m => m.UserId != userId && m.Mobile == newMobile))
+            if (await _context.User.AnyAsync(m => m.UserId != userId && m.Mobile == newMobile))
             {
                 modelState.AddModelError("UserId", $"手机号[{newMobile}]已经被使用");
                 return false;
@@ -124,7 +124,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 已被注册。");
                 return null;
             }
-
             var newUser = new User
             {
                 Status = status,
@@ -155,7 +154,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 尚未注册。");
                 return 0;
             }
-
             var user = await _context.User.Where(m => m.Mobile == mobile).FirstOrDefaultAsync();
             if (user == null)
             {

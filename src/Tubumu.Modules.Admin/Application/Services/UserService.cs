@@ -82,46 +82,25 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// 通过用户名判断用户是否存在
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        Task<bool> IsExistsUsernameAsync(string username);
+        Task<bool> IsExistsUsernameAsync(string username, int? excluedeUserId = null);
 
         /// <summary>
         /// 通过邮箱判断用户是否存在
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        Task<bool> IsExistsEmailAsync(string email);
+        Task<bool> IsExistsEmailAsync(string email, int? excluedeUserId = null);
 
         /// <summary>
         /// 通过手机号判断用户是否存在
         /// </summary>
         /// <param name="mobile"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        Task<bool> IsExistsMobileAsync(string mobile);
-
-        /// <summary>
-        /// 验证除指定用户 Id 外，用户名是否被使用
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        Task<bool> VerifyExistsUsernameAsync(int userId, string username);
-
-        /// <summary>
-        /// 验证除指定用户 Id 外，手机号是否被使用
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        Task<bool> VerifyExistsMobileAsync(int userId, string mobile);
-
-        /// <summary>
-        /// 验证除指定用户 Id 外，邮箱是否被使用
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        Task<bool> VerifyExistsEmailAsync(int userId, string email);
+        Task<bool> IsExistsMobileAsync(string mobile, int? excluedeUserId = null);
 
         /// <summary>
         /// 验证除指定用户 Id 外，用户名、邮箱或手机是否被使用
@@ -453,69 +432,36 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// 通过用户名判断用户是否存在
         /// </summary>
         /// <param name="username"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        public Task<bool> IsExistsUsernameAsync(string username)
+        public Task<bool> IsExistsUsernameAsync(string username, int? excluedeUserId = null)
         {
             if (username.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.IsExistsUsernameAsync(username);
+            return _manager.IsExistsUsernameAsync(username, excluedeUserId);
         }
 
         /// <summary>
         /// 通过邮箱判断用户是否存在
         /// </summary>
         /// <param name="email"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        public Task<bool> IsExistsEmailAsync(string email)
+        public Task<bool> IsExistsEmailAsync(string email, int? excluedeUserId = null)
         {
             if (email.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.IsExistsEmailAsync(email);
+            return _manager.IsExistsEmailAsync(email, excluedeUserId);
         }
 
         /// <summary>
         /// 通过手机号判断用户是否存在
         /// </summary>
         /// <param name="mobile"></param>
+        /// <param name="excluedeUserId"></param>
         /// <returns></returns>
-        public Task<bool> IsExistsMobileAsync(string mobile)
+        public Task<bool> IsExistsMobileAsync(string mobile, int? excluedeUserId = null)
         {
             if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.IsExistsMobileAsync(mobile);
-        }
-
-        /// <summary>
-        /// 验证除指定用户 Id 外，用户名是否被使用
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        public Task<bool> VerifyExistsUsernameAsync(int userId, string username)
-        {
-            if (username.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.VerifyExistsUsernameAsync(userId, username);
-        }
-
-        /// <summary>
-        /// 验证除指定用户 Id 外，手机号是否被使用
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        public Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
-        {
-            if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.VerifyExistsMobileAsync(userId, mobile);
-        }
-
-        /// <summary>
-        /// 验证除指定用户 Id 外，邮箱是否被使用
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public Task<bool> VerifyExistsEmailAsync(int userId, string email)
-        {
-            if (email.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.VerifyExistsEmailAsync(userId, email);
+            return _manager.IsExistsMobileAsync(mobile, excluedeUserId);
         }
 
         /// <summary>
