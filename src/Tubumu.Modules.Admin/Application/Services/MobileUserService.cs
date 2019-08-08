@@ -17,17 +17,11 @@ namespace Tubumu.Modules.Admin.Application.Services
 {
     public interface IMobileUserService
     {
-        Task<bool> IsExistsMobileAsync(string mobile);
-
-        Task<bool> VerifyExistsMobileAsync(int userId, string mobile);
-
         Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState);
 
         Task<UserInfo> GenerateItemAsync(Guid groupId, UserStatus status, MobilePassswordValidationCodeRegisterInput input, ModelStateDictionary modelState);
 
         Task<bool> ResetPasswordAsync(MobileResetPassswordInput input, ModelStateDictionary modelState);
-
-        Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, UserStatus? status = null);
 
         Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, UserStatus generateStatus, string mobile, bool mobileIsValid, ModelStateDictionary modelState);
 
@@ -43,12 +37,14 @@ namespace Tubumu.Modules.Admin.Application.Services
         private const string MobileValidationCodeCacheKeyFormat = "MobileValidationCode:{0}";
 
         private readonly IMobileUserManager _manager;
+        private readonly IUserManager _userManager;
         private readonly IDistributedCache _cache;
         private readonly ISmsSender _smsSender;
         private readonly MobileValidationCodeSettings _mobileValidationCodeSettings;
         private readonly ILogger<MobileUserService> _logger;
 
         public MobileUserService(IMobileUserManager manager,
+            IUserManager userManager,
             IDistributedCache cache,
             ISmsSender smsSender,
             IOptions<MobileValidationCodeSettings> mobileValidationCodeSettingsOptions,
@@ -59,22 +55,11 @@ namespace Tubumu.Modules.Admin.Application.Services
             _cache = cache;
             _smsSender = smsSender;
             _manager = manager;
+            _userManager = userManager;
             _logger = logger;
         }
 
         #region IMobileUserService Members
-
-        public Task<bool> IsExistsMobileAsync(string mobile)
-        {
-            if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.IsExistsMobileAsync(mobile);
-        }
-
-        public Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
-        {
-            if (mobile.IsNullOrWhiteSpace()) return Task.FromResult(false);
-            return _manager.VerifyExistsMobileAsync(userId, mobile);
-        }
 
         public async Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState)
         {
@@ -115,20 +100,9 @@ namespace Tubumu.Modules.Admin.Application.Services
             return true;
         }
 
-        public async Task<UserInfo> GetItemByMobileAsync(string mobile, bool mobileIsValid = true, UserStatus? status = null)
-        {
-            if (mobile.IsNullOrWhiteSpace()) return null;
-            var userInfo = await _manager.GetItemByMobileAsync(mobile, mobileIsValid, status);
-            if (userInfo != null && userInfo.Status == UserStatus.Normal)
-            {
-                CacheUser(userInfo);
-            }
-            return userInfo;
-        }
-
         public async Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, UserStatus generateStatus, string mobile, bool mobileIsValid, ModelStateDictionary modelState)
         {
-            var userInfo = await _manager.GetItemByMobileAsync(mobile);
+            var userInfo = await _userManager.GetItemByMobileAsync(mobile, null, null);
             if (userInfo == null)
             {
                 var password = UserService.GenerateRandomPassword(6);
@@ -145,7 +119,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             if (getMobileValidationCodeInput.Type == MobileValidationCodeType.Register)
             {
-                if (await _manager.IsExistsMobileAsync(getMobileValidationCodeInput.Mobile))
+                if (await _userManager.IsExistsMobileAsync(getMobileValidationCodeInput.Mobile))
                 {
                     modelState.AddModelError("Mobile", "手机号码已经被使用");
                     return false;
@@ -153,7 +127,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             else if (getMobileValidationCodeInput.Type == MobileValidationCodeType.Login || getMobileValidationCodeInput.Type == MobileValidationCodeType.ChangeMobile)
             {
-                if (!await _manager.IsExistsMobileAsync(getMobileValidationCodeInput.Mobile))
+                if (!await _userManager.IsExistsMobileAsync(getMobileValidationCodeInput.Mobile))
                 {
                     modelState.AddModelError("Mobile", "手机号码尚未注册");
                     return false;

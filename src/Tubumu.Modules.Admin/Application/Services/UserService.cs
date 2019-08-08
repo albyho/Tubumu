@@ -17,7 +17,6 @@ using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Core.Models;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Application.Services
 {
@@ -314,15 +313,6 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="uniqueId"></param>
         /// <returns></returns>
         Task<UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, UserStatus generateStatus, string uniqueId);
-
-        /// <summary>
-        /// GetOrGenerateItemByMobileAsync
-        /// </summary>
-        /// <param name="generateGroupId"></param>
-        /// <param name="generateStatus"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, UserStatus generateStatus, string mobile);
     }
 
     public class UserService : IUserService
@@ -1038,18 +1028,6 @@ namespace Tubumu.Modules.Admin.Application.Services
         public Task<UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, UserStatus generateStatus, string uniqueId)
         {
             return _manager.GetOrGenerateItemByUniqueIdAsync(generateGroupId, generateStatus, uniqueId);
-        }
-
-        /// <summary>
-        /// 根据手机号获取(不存在则生成)用户信息
-        /// </summary>
-        /// <param name="generateGroupId"></param>
-        /// <param name="generateStatus"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        public Task<UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, UserStatus generateStatus, string mobile)
-        {
-            return _manager.GetOrGenerateItemByMobileAsync(generateGroupId, generateStatus, mobile);
         }
     }
 }

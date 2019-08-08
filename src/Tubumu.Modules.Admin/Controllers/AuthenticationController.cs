@@ -447,9 +447,12 @@ namespace Tubumu.Modules.Admin.Controllers
                 return returnResult;
             }
 
-            var userInfo = await _userService.GetOrGenerateItemByMobileAsync(_authenticationSettings.RegisterDefaultGroupId,
+            var userInfo = await _mobileUserService.GetOrGenerateItemByMobileAsync(_authenticationSettings.RegisterDefaultGroupId,
                 _authenticationSettings.RegisterDefaultStatus,
-                mobile);
+                mobile,
+                true,
+                ModelState
+                );
             if (userInfo == null)
             {
                 returnResult.Code = 400;

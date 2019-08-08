@@ -79,6 +79,7 @@ namespace Tubumu.Modules.Admin
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMobileUserService, MobileUserService>();
+            services.AddScoped<IEmailUserManager, EmailUserManager>();
             services.AddScoped<IWeixinUserService, WeixinUserService>();
             services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IUserActionLogService, UserActionLogService>();

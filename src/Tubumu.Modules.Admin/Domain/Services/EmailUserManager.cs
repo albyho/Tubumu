@@ -10,55 +10,55 @@ using XM = Tubumu.Modules.Admin.Models;
 namespace Tubumu.Modules.Admin.Domain.Services
 {
     /// <summary>
-    /// IMobileUserManager
+    /// IEmailUserManager
     /// </summary>
-    public interface IMobileUserManager
+    public interface IEmailUserManager
     {
         /// <summary>
-        /// ChangeMobileAsync
+        /// ChangeEmailAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newMobile"></param>
-        /// <param name="mobileIsValid"></param>
+        /// <param name="newEmail"></param>
+        /// <param name="emailIsValid"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState);
+        Task<bool> ChangeEmailAsync(int userId, string newEmail, bool emailIsValid, ModelStateDictionary modelState);
 
         /// <summary>
         /// GenerateItemAsync
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="status"></param>
-        /// <param name="mobile"></param>
+        /// <param name="email"></param>
         /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<XM.UserInfo> GenerateItemAsync(Guid groupId, XM.UserStatus status, string mobile, string password, ModelStateDictionary modelState);
+        Task<XM.UserInfo> GenerateItemAsync(Guid groupId, XM.UserStatus status, string email, string password, ModelStateDictionary modelState);
 
         /// <summary>
         /// ResetPasswordAsync
         /// </summary>
-        /// <param name="mobile"></param>
+        /// <param name="email"></param>
         /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<int> ResetPasswordAsync(string mobile, string password, ModelStateDictionary modelState);
+        Task<int> ResetPasswordAsync(string email, string password, ModelStateDictionary modelState);
 
         /// <summary>
-        /// GetOrGenerateItemByMobileAsync
+        /// GetOrGenerateItemByEmailAsync
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="generateStatus"></param>
-        /// <param name="mobile"></param>
-        /// <param name="mobileIsValid"></param>
+        /// <param name="email"></param>
+        /// <param name="emailIsValid"></param>
         /// <returns></returns>
-        Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, XM.UserStatus generateStatus, string mobile, bool mobileIsValid);
+        Task<XM.UserInfo> GetOrGenerateItemByEmailAsync(Guid groupId, XM.UserStatus generateStatus, string email, bool emailIsValid);
     }
 
     /// <summary>
-    /// MobileUserManager
+    /// EmailUserManager
     /// </summary>
-    public class MobileUserManager : IMobileUserManager
+    public class EmailUserManager : IEmailUserManager
     {
         private readonly TubumuContext _context;
         private readonly IUserManager _userManager;
@@ -68,21 +68,21 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="context"></param>
         /// <param name="userManager"></param>
-        public MobileUserManager(TubumuContext context, IUserManager userManager)
+        public EmailUserManager(TubumuContext context, IUserManager userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         /// <summary>
-        /// ChangeMobileAsync
+        /// ChangeEmailAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newMobile"></param>
-        /// <param name="mobileIsValid"></param>
+        /// <param name="newEmail"></param>
+        /// <param name="emailIsValid"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<bool> ChangeMobileAsync(int userId, string newMobile, bool mobileIsValid, ModelStateDictionary modelState)
+        public async Task<bool> ChangeEmailAsync(int userId, string newEmail, bool emailIsValid, ModelStateDictionary modelState)
         {
             var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
@@ -90,19 +90,19 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 modelState.AddModelError("UserId", "当前用户不存在");
                 return false;
             }
-            if (!user.Mobile.IsNullOrWhiteSpace() &&
-                user.Mobile.Equals(newMobile, StringComparison.InvariantCultureIgnoreCase))
+            if (!user.Email.IsNullOrWhiteSpace() &&
+                user.Email.Equals(newEmail, StringComparison.InvariantCultureIgnoreCase))
             {
-                modelState.AddModelError("UserId", "目标手机号和当前手机号相同");
+                modelState.AddModelError("UserId", "目标邮箱和当前邮箱相同");
                 return false;
             }
-            if (_context.User.Any(m => m.UserId != userId && m.Mobile == newMobile))
+            if (_context.User.Any(m => m.UserId != userId && m.Email == newEmail))
             {
-                modelState.AddModelError("UserId", $"手机号[{newMobile}]已经被使用");
+                modelState.AddModelError("UserId", $"邮箱[{newEmail}]已经被使用");
                 return false;
             }
-            user.MobileIsValid = mobileIsValid;
-            user.Mobile = newMobile;
+            user.EmailIsValid = emailIsValid;
+            user.Email = newEmail;
             await _context.SaveChangesAsync();
 
             return true;
@@ -113,15 +113,15 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="status"></param>
-        /// <param name="mobile"></param>
+        /// <param name="email"></param>
         /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<XM.UserInfo> GenerateItemAsync(Guid groupId, XM.UserStatus status, string mobile, string password, ModelStateDictionary modelState)
+        public async Task<XM.UserInfo> GenerateItemAsync(Guid groupId, XM.UserStatus status, string email, string password, ModelStateDictionary modelState)
         {
-            if (await _context.User.AnyAsync(m => m.Mobile == mobile))
+            if (await _context.User.AnyAsync(m => m.Email == email))
             {
-                modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 已被注册。");
+                modelState.AddModelError(nameof(email), $"邮箱 {email} 已被注册。");
                 return null;
             }
 
@@ -129,8 +129,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
             {
                 Status = status,
                 CreationTime = DateTime.Now,
-                Mobile = mobile,
-                MobileIsValid = true,
+                Email = email,
+                EmailIsValid = true,
                 GroupId = groupId,
                 Username = "U" + Guid.NewGuid().ToString("N").Substring(19),
                 Password = password,
@@ -144,27 +144,27 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <summary>
         /// ResetPasswordAsync
         /// </summary>
-        /// <param name="mobile"></param>
+        /// <param name="email"></param>
         /// <param name="password"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        public async Task<int> ResetPasswordAsync(string mobile, string password, ModelStateDictionary modelState)
+        public async Task<int> ResetPasswordAsync(string email, string password, ModelStateDictionary modelState)
         {
-            if (!await _context.User.AnyAsync(m => m.Mobile == mobile))
+            if (!await _context.User.AnyAsync(m => m.Email == email))
             {
-                modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 尚未注册。");
+                modelState.AddModelError(nameof(email), $"邮箱 {email} 尚未注册。");
                 return 0;
             }
 
-            var user = await _context.User.Where(m => m.Mobile == mobile).FirstOrDefaultAsync();
+            var user = await _context.User.Where(m => m.Email == email).FirstOrDefaultAsync();
             if (user == null)
             {
-                modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 尚未注册。");
+                modelState.AddModelError(nameof(email), $"邮箱 {email} 尚未注册。");
                 return 0;
             }
             if (user.Status != XM.UserStatus.Normal)
             {
-                modelState.AddModelError(nameof(mobile), $"手机号 {mobile} 的用户状态不允许重置密码。");
+                modelState.AddModelError(nameof(email), $"邮箱 {email} 的用户状态不允许重置密码。");
                 return 0;
             }
 
@@ -174,33 +174,33 @@ namespace Tubumu.Modules.Admin.Domain.Services
         }
 
         /// <summary>
-        /// GetOrGenerateItemByMobileAsync
+        /// GetOrGenerateItemByEmailAsync
         /// </summary>
         /// <param name="groupId"></param>
         /// <param name="generateStatus"></param>
-        /// <param name="mobile"></param>
-        /// <param name="mobileIsValid"></param>
+        /// <param name="email"></param>
+        /// <param name="emailIsValid"></param>
         /// <returns></returns>
-        public async Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid groupId, XM.UserStatus generateStatus, string mobile, bool mobileIsValid)
+        public async Task<XM.UserInfo> GetOrGenerateItemByEmailAsync(Guid groupId, XM.UserStatus generateStatus, string email, bool emailIsValid)
         {
-            if (mobile.IsNullOrWhiteSpace()) return null;
-            var user = await _userManager.GetItemByMobileAsync(mobile, null, null);
+            if (email.IsNullOrWhiteSpace()) return null;
+            var user = await _userManager.GetItemByEmailAsync(email, null, null);
             if (user == null)
             {
                 var newUser = new User
                 {
                     Status = generateStatus,
                     CreationTime = DateTime.Now,
-                    Mobile = mobile,
-                    MobileIsValid = mobileIsValid,
+                    Email = email,
+                    EmailIsValid = emailIsValid,
                     GroupId = groupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
                     Username = "U" + Guid.NewGuid().ToString("N").Substring(19),
-                    Password = mobile,
+                    Password = email,
                 };
 
                 _context.User.Add(newUser);
                 await _context.SaveChangesAsync();
-                user = await _userManager.GetItemByMobileAsync(mobile, null, null);
+                user = await _userManager.GetItemByEmailAsync(email, null, null);
             }
             return user;
         }

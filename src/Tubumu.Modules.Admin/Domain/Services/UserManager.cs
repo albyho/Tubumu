@@ -11,7 +11,6 @@ using Tubumu.Modules.Admin.Domain.Entities;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Core.Models;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Models;
 using XM = Tubumu.Modules.Admin.Models;
 
 namespace Tubumu.Modules.Admin.Domain.Services
@@ -56,18 +55,119 @@ namespace Tubumu.Modules.Admin.Domain.Services
         Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool? mobileIsValid, XM.UserStatus? status = null);
 
         /// <summary>
-        /// GetAvatarUrlAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        Task<string> GetAvatarUrlAsync(int userId);
-
-        /// <summary>
         /// GetUserInfoWarpperListAsync
         /// </summary>
         /// <param name="userIds"></param>
         /// <returns></returns>
         Task<List<XM.UserInfoWarpper>> GetUserInfoWarpperListAsync(IEnumerable<int> userIds);
+
+        /// <summary>
+        /// GetPageAsync
+        /// </summary>
+        /// <param name="criteria"></param>
+        /// <returns></returns>
+        Task<Page<XM.UserInfo>> GetPageAsync(XM.UserPageSearchCriteria criteria);
+
+        /// <summary>
+        /// SaveAsync
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<XM.UserInfo> SaveAsync(UserInput userInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="newUsername"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangeUsernameAsync(int userId, string newUsername, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeDisplayNameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="displayName"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangePasswordAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangePasswordAsync(int userId, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeProfileAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="userChangeProfileInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangePasswordAsync
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<int> ChangePasswordAsync(string username, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ResetPasswordByAccountAsync
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="password"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<int> ResetPasswordByAccountAsync(string account, string password, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// RemoveAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState);
+
+        /// <summary>
+        /// ChangeStatusAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status, ModelStateDictionary modelState);
+
+        #region UniqueId
+
+        /// <summary>
+        /// GetItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        Task<XM.UserInfo> GetItemByUniqueIdAsync(string uniqueId);
+
+        /// <summary>
+        /// GetOrGenerateItemByUniqueIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="uniqueId"></param>
+        /// <returns></returns>
+        Task<XM.UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string uniqueId);
+
+        #endregion
+
+        #region Verify exists
 
         /// <summary>
         /// IsExistsUsernameAsync
@@ -130,65 +230,23 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <returns></returns>
         Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState);
 
-        /// <summary>
-        /// GetPageAsync
-        /// </summary>
-        /// <param name="criteria"></param>
-        /// <returns></returns>
-        Task<Page<XM.UserInfo>> GetPageAsync(XM.UserPageSearchCriteria criteria);
+        #endregion
+
+        #region Avatar & Logo
 
         /// <summary>
-        /// SaveAsync
-        /// </summary>
-        /// <param name="userInput"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        Task<XM.UserInfo> SaveAsync(UserInput userInput, ModelStateDictionary modelState);
-
-        /// <summary>
-        /// ChangeUsernameAsync
+        /// GetAvatarUrlAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="newUsername"></param>
-        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeUsernameAsync(int userId, string newUsername, ModelStateDictionary modelState);
+        Task<string> GetAvatarUrlAsync(int userId);
 
         /// <summary>
-        /// ChangeDisplayNameAsync
+        /// GetLogoUrlAsync
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="displayName"></param>
-        /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> ChangeDisplayNameAsync(int userId, string displayName, ModelStateDictionary modelState);
-
-        /// <summary>
-        /// ChangeLogoAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="logoUrl"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState);
-
-        /// <summary>
-        /// ChangePasswordAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="password"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        Task<bool> ChangePasswordAsync(int userId, string password, ModelStateDictionary modelState);
-
-        /// <summary>
-        /// ChangeProfileAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="userChangeProfileInput"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        Task<bool> ChangeProfileAsync(int userId, UserChangeProfileInput userChangeProfileInput, ModelStateDictionary modelState);
+        Task<string> GetLogoUrlAsync(int userId);
 
         /// <summary>
         /// ChangeAvatarAsync
@@ -200,64 +258,15 @@ namespace Tubumu.Modules.Admin.Domain.Services
         Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState);
 
         /// <summary>
-        /// ChangePasswordAsync
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        Task<int> ChangePasswordAsync(string username, string password, ModelStateDictionary modelState);
-
-        /// <summary>
-        /// ResetPasswordByAccountAsync
-        /// </summary>
-        /// <param name="account"></param>
-        /// <param name="password"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        Task<int> ResetPasswordByAccountAsync(string account, string password, ModelStateDictionary modelState);
-
-        /// <summary>
-        /// RemoveAsync
+        /// ChangeLogoAsync
         /// </summary>
         /// <param name="userId"></param>
+        /// <param name="logoUrl"></param>
         /// <param name="modelState"></param>
         /// <returns></returns>
-        Task<bool> RemoveAsync(int userId, ModelStateDictionary modelState);
+        Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState);
 
-        /// <summary>
-        /// ChangeStatusAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="status"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        Task<bool> ChangeStatusAsync(int userId, XM.UserStatus status, ModelStateDictionary modelState);
-
-        /// <summary>
-        /// GetItemByUniqueIdAsync
-        /// </summary>
-        /// <param name="uniqueId"></param>
-        /// <returns></returns>
-        Task<XM.UserInfo> GetItemByUniqueIdAsync(string uniqueId);
-
-        /// <summary>
-        /// GetOrGenerateItemByUniqueIdAsync
-        /// </summary>
-        /// <param name="generateGroupId"></param>
-        /// <param name="generateStatus"></param>
-        /// <param name="uniqueId"></param>
-        /// <returns></returns>
-        Task<XM.UserInfo> GetOrGenerateItemByUniqueIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string uniqueId);
-
-        /// <summary>
-        /// GetOrGenerateItemByMobileAsync
-        /// </summary>
-        /// <param name="generateGroupId"></param>
-        /// <param name="generateStatus"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, XM.UserStatus generateStatus, string mobile);
+        #endregion
     }
 
     /// <summary>
@@ -396,8 +405,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
             };
         }
 
-        #region IUserManager 成员
-
         /// <summary>
         /// GetItemByUserIdAsync
         /// </summary>
@@ -449,18 +456,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
         public async Task<XM.UserInfo> GetItemByEmailAsync(string email, bool? emailIsValid, XM.UserStatus? status = null)
         {
             var query = _context.User.AsNoTracking().Where(m => m.Email == email);
-            if (status.HasValue)
-            {
-                query = query.Where(m => m.Status == status.Value);
-            }
-            if (emailIsValid.HasValue)
-            {
-                query = query.Where(m => m.EmailIsValid == emailIsValid.Value);
-            }
-            else
-            {
-                query = query.Where(m => m.Email == email);
-            }
+            query.WhereIf(emailIsValid.HasValue, m => m.EmailIsValid == emailIsValid.Value);
+            query.WhereIf(status.HasValue, m => m.Status == status.Value);
             var user = await query.Select(_selector).FirstOrDefaultAsync();
             return user;
         }
@@ -475,31 +472,10 @@ namespace Tubumu.Modules.Admin.Domain.Services
         public async Task<XM.UserInfo> GetItemByMobileAsync(string mobile, bool? mobileIsValid, XM.UserStatus? status = null)
         {
             var query = _context.User.AsNoTracking().Where(m => m.Mobile == mobile);
-            if (status.HasValue)
-            {
-                query = query.Where(m => m.Status == status.Value);
-            }
-            if (mobileIsValid.HasValue)
-            {
-                query = query.Where(m => m.MobileIsValid == mobileIsValid.Value);
-            }
-            else
-            {
-                query = query.Where(m => m.Mobile == mobile);
-            }
+            query.WhereIf(mobileIsValid.HasValue, m => m.EmailIsValid == mobileIsValid.Value);
+            query.WhereIf(status.HasValue, m => m.Status == status.Value);
             var user = await query.Select(_selector).FirstOrDefaultAsync();
             return user;
-        }
-
-        /// <summary>
-        /// GetAvatarUrlAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<string> GetAvatarUrlAsync(int userId)
-        {
-            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.AvatarUrl).FirstOrDefaultAsync();
-            return head;
         }
 
         /// <summary>
@@ -521,170 +497,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
             }).AsNoTracking().ToListAsync();
 
             return list;
-        }
-
-        /// <summary>
-        /// IsExistsUsernameAsync
-        /// </summary>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistsUsernameAsync(string username)
-        {
-            return await _context.User.AnyAsync(m => m.Username == username);
-        }
-
-        /// <summary>
-        /// IsExistsEmailAsync
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistsEmailAsync(string email)
-        {
-            if (email.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.Email == email);
-        }
-
-        /// <summary>
-        /// IsExistsMobileAsync
-        /// </summary>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistsMobileAsync(string mobile)
-        {
-            if (mobile.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.Mobile == mobile);
-        }
-
-        /// <summary>
-        /// IsExistsAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="status"></param>
-        /// <returns></returns>
-        public async Task<bool> IsExistsAsync(int userId, XM.UserStatus? status = null)
-        {
-            if (status.HasValue)
-            {
-                return await _context.User.AnyAsync(m => m.UserId == userId && m.Status == status);
-            }
-            else
-            {
-                return await _context.User.AnyAsync(m => m.UserId == userId);
-            }
-        }
-
-        /// <summary>
-        /// VerifyExistsUsernameAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="username"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
-        {
-            return await _context.User.AnyAsync(m => m.UserId != userId && m.Username == username);
-        }
-
-        /// <summary>
-        /// VerifyExistsUsernameAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="mobile"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
-        {
-            return await _context.User.AnyAsync(m => m.UserId != userId && m.Mobile == mobile);
-        }
-
-        /// <summary>
-        /// VerifyExistsEmailAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyExistsEmailAsync(int userId, string email)
-        {
-            if (email.IsNullOrWhiteSpace()) return false;
-            return await _context.User.AnyAsync(m => m.UserId != userId && m.Email == email);
-        }
-
-        /// <summary>
-        /// VerifyExistsAsync
-        /// </summary>
-        /// <param name="userInput"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        public async Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState)
-        {
-            var username = userInput.Username;
-            var mobile = userInput.Mobile.IsNullOrWhiteSpace() ? null : userInput.Mobile;
-            var email = userInput.Email.IsNullOrWhiteSpace() ? null : userInput.Email;
-
-            bool isExistsUsername = false;
-            bool isExistsMobile = false;
-            bool isExistsEmail = false;
-            var item = new
-            {
-                Username = String.Empty,
-                Email = String.Empty,
-                Mobile = String.Empty,
-            };
-            if (userInput is UserInputEdit userInputEdit) //根据用户 Id 编辑
-            {
-
-                item = await _context.User.AsNoTracking().Where(m => m.UserId != userInputEdit.UserId &&
-                (m.Username == username ||
-                (mobile != null && m.Mobile == userInput.Mobile) ||
-                (email != null && m.Email == userInput.Email))).Select(m => new
-                {
-                    m.Username,
-                    m.Email,
-                    m.Mobile,
-                }).FirstOrDefaultAsync();
-            }
-            else //添加
-            {
-                item = await _context.User.AsNoTracking().Where(m => m.Username == username ||
-                (mobile != null && m.Mobile == userInput.Mobile) ||
-                (email != null && m.Email == userInput.Email)).Select(m => new
-                {
-                    m.Username,
-                    m.Email,
-                    m.Mobile,
-                }).FirstOrDefaultAsync();
-
-            }
-
-            if (item != null)
-            {
-                if (!item.Username.IsNullOrWhiteSpace() && item.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    isExistsUsername = true;
-                }
-                else if (!item.Mobile.IsNullOrWhiteSpace() && item.Mobile.Equals(mobile, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    isExistsMobile = true;
-                }
-                else if (!item.Email.IsNullOrWhiteSpace() && item.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    isExistsEmail = true;
-                }
-
-                if (isExistsUsername)
-                {
-                    modelState.AddModelError("Username", "用户名[" + username + "]已经被使用");
-                }
-                else if (isExistsMobile)
-                {
-                    modelState.AddModelError("Mobile", "手机号[" + mobile + "]已经被使用");
-
-                }
-                else if (isExistsEmail)
-                {
-                    modelState.AddModelError("Mobile", "邮箱[" + email + "]已经被使用");
-                }
-            }
-
-            return isExistsUsername || isExistsMobile || isExistsEmail;
         }
 
         /// <summary>
@@ -1035,27 +847,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
         }
 
         /// <summary>
-        /// ChangeLogoAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="logoUrl"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        public async Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState)
-        {
-            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
-            if (user == null)
-            {
-                modelState.AddModelError("Error", "用户不存在");
-                return false;
-            }
-            user.LogoUrl = logoUrl;
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        /// <summary>
         /// ChangePasswordAsync
         /// </summary>
         /// <param name="userId"></param>
@@ -1140,28 +931,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
         }
 
         /// <summary>
-        /// ChangeHeadAsync
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="avatarUrl"></param>
-        /// <param name="modelState"></param>
-        /// <returns></returns>
-        public async Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState)
-        {
-            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
-            if (user == null)
-            {
-                modelState.AddModelError("Error", "用户不存在");
-                return false;
-            }
-
-            user.AvatarUrl = avatarUrl;
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        /// <summary>
         /// RemoveAsync
         /// </summary>
         /// <param name="userId"></param>
@@ -1222,6 +991,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
             return true;
         }
 
+        #region UniqueId
+
         /// <summary>
         /// GetItemByUniqueIdAsync
         /// </summary>
@@ -1264,34 +1035,238 @@ namespace Tubumu.Modules.Admin.Domain.Services
             return user;
         }
 
+        #endregion
+
+        #region Verify exists
+
         /// <summary>
-        /// GetOrGenerateItemByMobileAsync
+        /// IsExistsUsernameAsync
         /// </summary>
-        /// <param name="generateGroupId"></param>
-        /// <param name="generateStatus"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistsUsernameAsync(string username)
+        {
+            return await _context.User.AnyAsync(m => m.Username == username);
+        }
+
+        /// <summary>
+        /// IsExistsEmailAsync
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistsEmailAsync(string email)
+        {
+            if (email.IsNullOrWhiteSpace()) return false;
+            return await _context.User.AnyAsync(m => m.Email == email);
+        }
+
+        /// <summary>
+        /// IsExistsMobileAsync
+        /// </summary>
         /// <param name="mobile"></param>
         /// <returns></returns>
-        public async Task<XM.UserInfo> GetOrGenerateItemByMobileAsync(Guid generateGroupId, XM.UserStatus generateStatus, string mobile)
+        public async Task<bool> IsExistsMobileAsync(string mobile)
         {
-            if (mobile.IsNullOrWhiteSpace()) return null;
-            var user = await GetItemByMobileAsync(mobile, null, null);
+            if (mobile.IsNullOrWhiteSpace()) return false;
+            return await _context.User.AnyAsync(m => m.Mobile == mobile);
+        }
+
+        /// <summary>
+        /// IsExistsAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        public async Task<bool> IsExistsAsync(int userId, XM.UserStatus? status = null)
+        {
+            var query = _context.User.Where(m => m.UserId == userId);
+            query = query.WhereIf(status.HasValue, m => m.Status == status);
+            return await query.AnyAsync();
+        }
+
+        /// <summary>
+        /// VerifyExistsUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public async Task<bool> VerifyExistsUsernameAsync(int userId, string username)
+        {
+            if (username.IsNullOrWhiteSpace()) return false;
+            return await _context.User.AnyAsync(m => m.UserId != userId && m.Username == username);
+        }
+
+        /// <summary>
+        /// VerifyExistsUsernameAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public async Task<bool> VerifyExistsMobileAsync(int userId, string mobile)
+        {
+            if (mobile.IsNullOrWhiteSpace()) return false;
+            return await _context.User.AnyAsync(m => m.UserId != userId && m.Mobile == mobile);
+        }
+
+        /// <summary>
+        /// VerifyExistsEmailAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public async Task<bool> VerifyExistsEmailAsync(int userId, string email)
+        {
+            if (email.IsNullOrWhiteSpace()) return false;
+            return await _context.User.AnyAsync(m => m.UserId != userId && m.Email == email);
+        }
+
+        /// <summary>
+        /// VerifyExistsAsync
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> VerifyExistsAsync(UserInput userInput, ModelStateDictionary modelState)
+        {
+            var username = userInput.Username;
+            var mobile = userInput.Mobile.IsNullOrWhiteSpace() ? null : userInput.Mobile;
+            var email = userInput.Email.IsNullOrWhiteSpace() ? null : userInput.Email;
+
+            bool isExistsUsername = false;
+            bool isExistsMobile = false;
+            bool isExistsEmail = false;
+            var item = new
+            {
+                Username = String.Empty,
+                Email = String.Empty,
+                Mobile = String.Empty,
+            };
+            if (userInput is UserInputEdit userInputEdit) //根据用户 Id 编辑
+            {
+
+                item = await _context.User.AsNoTracking().Where(m => m.UserId != userInputEdit.UserId &&
+                (m.Username == username ||
+                (mobile != null && m.Mobile == userInput.Mobile) ||
+                (email != null && m.Email == userInput.Email))).Select(m => new
+                {
+                    m.Username,
+                    m.Email,
+                    m.Mobile,
+                }).FirstOrDefaultAsync();
+            }
+            else //添加
+            {
+                item = await _context.User.AsNoTracking().Where(m => m.Username == username ||
+                (mobile != null && m.Mobile == userInput.Mobile) ||
+                (email != null && m.Email == userInput.Email)).Select(m => new
+                {
+                    m.Username,
+                    m.Email,
+                    m.Mobile,
+                }).FirstOrDefaultAsync();
+
+            }
+
+            if (item != null)
+            {
+                if (!item.Username.IsNullOrWhiteSpace() && item.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    isExistsUsername = true;
+                }
+                else if (!item.Mobile.IsNullOrWhiteSpace() && item.Mobile.Equals(mobile, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    isExistsMobile = true;
+                }
+                else if (!item.Email.IsNullOrWhiteSpace() && item.Email.Equals(email, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    isExistsEmail = true;
+                }
+
+                if (isExistsUsername)
+                {
+                    modelState.AddModelError("Username", "用户名[" + username + "]已经被使用");
+                }
+                else if (isExistsMobile)
+                {
+                    modelState.AddModelError("Mobile", "手机号[" + mobile + "]已经被使用");
+
+                }
+                else if (isExistsEmail)
+                {
+                    modelState.AddModelError("Mobile", "邮箱[" + email + "]已经被使用");
+                }
+            }
+
+            return isExistsUsername || isExistsMobile || isExistsEmail;
+        }
+
+        #endregion
+
+        #region Avatar & Logo
+
+        /// <summary>
+        /// GetAvatarUrlAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<string> GetAvatarUrlAsync(int userId)
+        {
+            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.AvatarUrl).FirstOrDefaultAsync();
+            return head;
+        }
+
+        /// <summary>
+        /// GetLogoUrlAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<string> GetLogoUrlAsync(int userId)
+        {
+            var head = await _context.User.AsNoTracking().Where(m => m.UserId == userId).Select(m => m.LogoUrl).FirstOrDefaultAsync();
+            return head;
+        }
+
+        /// <summary>
+        /// ChangeHeadAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="avatarUrl"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> ChangeAvatarAsync(int userId, string avatarUrl, ModelStateDictionary modelState)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
             if (user == null)
             {
-                var newUser = new User
-                {
-                    Status = generateStatus,
-                    CreationTime = DateTime.Now,
-                    Mobile = mobile,
-                    GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
-                    Username = "U" + Guid.NewGuid().ToString("N").Substring(19),
-                    Password = mobile,
-                };
-
-                _context.User.Add(newUser);
-                await _context.SaveChangesAsync();
-                user = await GetItemByMobileAsync(mobile, null, null);
+                modelState.AddModelError("Error", "用户不存在");
+                return false;
             }
-            return user;
+
+            user.AvatarUrl = avatarUrl;
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        /// <summary>
+        /// ChangeLogoAsync
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="logoUrl"></param>
+        /// <param name="modelState"></param>
+        /// <returns></returns>
+        public async Task<bool> ChangeLogoAsync(int userId, string logoUrl, ModelStateDictionary modelState)
+        {
+            var user = await _context.User.FirstOrDefaultAsync(m => m.UserId == userId);
+            if (user == null)
+            {
+                modelState.AddModelError("Error", "用户不存在");
+                return false;
+            }
+            user.LogoUrl = logoUrl;
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         #endregion
