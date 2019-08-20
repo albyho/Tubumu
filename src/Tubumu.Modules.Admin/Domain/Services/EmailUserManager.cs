@@ -98,7 +98,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             }
             if (await _context.User.AnyAsync(m => m.UserId != userId && m.Email == newEmail))
             {
-                modelState.AddModelError("UserId", $"邮箱[{newEmail}]已经被使用");
+                modelState.AddModelError("UserId", $"邮箱 {newEmail} 已经被使用");
                 return false;
             }
             user.EmailIsValid = emailIsValid;

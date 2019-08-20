@@ -927,12 +927,12 @@ namespace Tubumu.Modules.Admin.Application.Services
 
             if (extension == null || !extensions.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries).Contains(extension))
             {
-                modelState.AddModelError("Error", $"格式错误(仅支持 {_avatarSettings.ImageExtensions})");
+                modelState.AddModelError("Error", $"格式错误({extension},仅支持 {extensions})");
                 return null;
             }
             if (file.Length > sizeMax)
             {
-                modelState.AddModelError("Error", $"请保持在 {_avatarSettings.ImageSizeMax} 字节以内");
+                modelState.AddModelError("Error", $"请保持在 {sizeMax} 字节以内");
                 return null;
             }
             var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", subFolder);

@@ -98,7 +98,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             }
             if (await _context.User.AnyAsync(m => m.UserId != userId && m.Mobile == newMobile))
             {
-                modelState.AddModelError("UserId", $"手机号[{newMobile}]已经被使用");
+                modelState.AddModelError("UserId", $"手机号 {newMobile} 已经被使用");
                 return false;
             }
             user.MobileIsValid = mobileIsValid;
