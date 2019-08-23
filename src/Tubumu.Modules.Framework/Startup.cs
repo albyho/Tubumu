@@ -155,9 +155,9 @@ namespace Tubumu.Modules.Framework
                         ValidateAudience = true,
 
                         IssuerSigningKey = SignatureHelper.GenerateSigningKey(tokenValidationSettings.IssuerSigningKey),
-                        ValidateIssuerSigningKey = tokenValidationSettings.ValidateLifetime,
+                        ValidateIssuerSigningKey = true,
 
-                        ValidateLifetime = true,
+                        ValidateLifetime = tokenValidationSettings.ValidateLifetime,
                         ClockSkew = TimeSpan.FromSeconds(tokenValidationSettings.ClockSkewSeconds),
                     };
 
