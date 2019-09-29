@@ -69,15 +69,7 @@ namespace Tubumu.Core.Extensions.Object
         {
             if (source == null || source.GetType() != typeof(T))
                 return null;
-
-            using (var memStream = new MemoryStream())
-            {
-                var binaryFormatter = new BinaryFormatter(null,
-                     new StreamingContext(StreamingContextStates.Clone));
-                binaryFormatter.Serialize(memStream, source);
-                memStream.Position = 0;
-                return (T)binaryFormatter.Deserialize(memStream);
-            }
+            return (T)DeepClone(source);
         }
 
         /// <summary>

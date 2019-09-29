@@ -262,6 +262,11 @@ namespace Tubumu.Modules.Framework
             app.UseSession();
             app.UseCors("DefaultPolicy");
             app.UseAuthentication();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "application/octet-stream"
+            });
 
             // Swagger
             var swaggerIndexAssembly = typeof(Startup).Assembly;
