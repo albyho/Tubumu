@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Tubumu.Modules.Core.Models
 {
@@ -18,39 +18,33 @@ namespace Tubumu.Modules.Core.Models
         /// <summary>
         /// 页码（从 1 开始）
         /// </summary>
-        [JsonProperty(PropertyName = "pageNumber")]
         [Range(1, Int32.MaxValue, ErrorMessage = "请输入 PageNumber")]
         public int PageNumber { get; set; }
 
         /// <summary>
         /// 每页元素数
         /// </summary>
-        [JsonProperty(PropertyName = "pageSize")]
         [Range(1, Int32.MaxValue, ErrorMessage = "请输入 PageSize")]
         public int PageSize { get; set; }
 
         /// <summary>
         /// 跳过数量（将少读取跳过的数量）
         /// </summary>
-        [JsonProperty(PropertyName = "skipTop")]
         public int SkipTop { get; set; }
 
         /// <summary>
         /// 排序信息
         /// </summary>
-        [JsonProperty(PropertyName = "sortInfo")]
         public SortInfo SortInfo { get; set; }
 
         /// <summary>
         /// 排序信息（多个排序字段。优先级低于 SortInfo 属性。）
         /// </summary>
-        [JsonProperty(PropertyName = "sortInfos")]
         public SortInfo[] SortInfos { get; set; }
 
         /// <summary>
         /// 是否排除元数据（如果不是第一页，没有必要重复获取 TotalItemCount 和 TotalPageCount）
         /// </summary>
-        [JsonProperty(PropertyName = "isExcludeMetaData")]
         public bool IsExcludeMetaData { get; set; }
     }
 }

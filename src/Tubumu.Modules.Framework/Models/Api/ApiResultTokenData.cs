@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿
+using System.Text.Json.Serialization;
 
 namespace Tubumu.Modules.Framework.Models
 {
@@ -10,13 +11,11 @@ namespace Tubumu.Modules.Framework.Models
         /// <summary>
         /// Token
         /// </summary>
-        [JsonProperty(PropertyName = "token", NullValueHandling = NullValueHandling.Ignore)]
         public string Token { get; set; }
 
         /// <summary>
         /// RefreshToken
         /// </summary>
-        [JsonProperty(PropertyName = "refreshToken", NullValueHandling = NullValueHandling.Ignore)]
         public string RefreshToken { get; set; }
     }
 }

@@ -35,14 +35,17 @@ namespace Tubumu.Modules.Admin.Domain.Services
     public class BulletinManager : IBulletinManager
     {
         private readonly TubumuContext _context;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        public BulletinManager(TubumuContext context)
+        /// <param name="mapper"></param>
+        public BulletinManager(TubumuContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -66,7 +69,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             var dbBulletin = await _context.Bulletin.OrderByDescending(m => m.BulletinId).FirstOrDefaultAsync();
             if (dbBulletin == null) return false;
 
-            Mapper.Map(bulletinInput, dbBulletin);
+            _mapper.Map(bulletinInput, dbBulletin);
             await _context.SaveChangesAsync();
 
             return true;

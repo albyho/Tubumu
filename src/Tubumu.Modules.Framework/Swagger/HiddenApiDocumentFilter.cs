@@ -2,6 +2,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -17,7 +18,7 @@ namespace Tubumu.Modules.Framework.Swagger
         /// </summary>
         /// <param name="swaggerDoc"></param>
         /// <param name="context"></param>
-        public void Apply(SwaggerDocument swaggerDoc, DocumentFilterContext context)
+        public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
             foreach (var apiDescription in context.ApiDescriptions)
             {

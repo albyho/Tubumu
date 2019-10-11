@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
 
 namespace Tubumu.Modules.Core.Models
 {
@@ -12,13 +11,11 @@ namespace Tubumu.Modules.Core.Models
         /// <summary>
         /// 排序方向
         /// </summary>
-        [JsonProperty(PropertyName = "sortDir")]
         public SortDir SortDir { get; set; }
 
         /// <summary>
         /// 排序字段
         /// </summary>
-        [JsonProperty(PropertyName = "sort")]
         public string Sort { get; set; }
     }
 

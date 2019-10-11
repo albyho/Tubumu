@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -128,7 +128,6 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
             // 备注：忽略搜索条件的 IsReaded, ToUserId
             // 备注：因为查询所有 ToUserId, 所有不会标记已读未读
-
             IQueryable<Notification> query = CreateQuery(criteria);
             IOrderedQueryable<Notification> orderedQuery;
             if (criteria.PagingInfo.SortInfo.IsValid())
@@ -304,7 +303,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         {
             // 需删除 NotificationUser 的记录
             var sql = "DELETE [NotificationUser] WHERE NotificationId = @NotificationId; DELETE [Notification] WHERE NotificationId = @NotificationId;";
-            await _context.Database.ExecuteSqlCommandAsync(sql
+            await _context.Database.ExecuteSqlRawAsync(sql
                 , new SqlParameter("NotificationId", notificationId)
                 );
 

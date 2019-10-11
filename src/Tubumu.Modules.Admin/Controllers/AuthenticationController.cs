@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.FlashValidation;
 using Tubumu.Modules.Admin.Models;
@@ -430,88 +428,6 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
-        /// 闪验登录
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [AllowAnonymous]
-        public async Task<ApiResultData<ApiResultTokenData>> FlashValidationLogin(FlashValidationLoginInput input)
-        {
-            var returnResult = new ApiResultData<ApiResultTokenData>();
-            var mobile = await InvokeFlashValidatinApi(input, ModelState);
-            if (!ModelState.IsValid)
-            {
-                returnResult.Code = 400;
-                returnResult.Message = $"登录失败：{ModelState.FirstErrorMessage()}";
-                return returnResult;
-            }
-
-            var userInfo = await _mobileUserService.GetOrGenerateItemByMobileAsync(_authenticationSettings.RegisterDefaultGroupId,
-                _authenticationSettings.RegisterDefaultStatus,
-                mobile,
-                true,
-                ModelState
-                );
-            if (userInfo == null)
-            {
-                returnResult.Code = 400;
-                returnResult.Message = "异常：闪验登录失败";
-                return returnResult;
-            }
-
-            if (userInfo.Status != UserStatus.Normal)
-            {
-                returnResult.Code = 201;
-                returnResult.Message = "注册成功，请等待审核。";
-                return returnResult;
-            }
-
-            await SaveUserActionLogAsync(userInfo.UserId, 1, "闪验登录", input);
-
-            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
-            returnResult.Code = 200;
-            returnResult.Message = "登录成功";
-            return returnResult;
-        }
-
-        /// <summary>
-        /// 使用闪验获取绑定手机号
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<ApiResultData<ApiResultTokenWithMobileData>> BindMobileWithFlashValidation(FlashValidationLoginInput input)
-        {
-            var returnResult = new ApiResultData<ApiResultTokenWithMobileData>();
-            var mobile = await InvokeFlashValidatinApi(input, ModelState);
-            if (!ModelState.IsValid)
-            {
-                returnResult.Code = 400;
-                returnResult.Message = $"绑定闪验失败：{ModelState.FirstErrorMessage()}";
-                return returnResult;
-            }
-
-            var userInfo = await _userService.GetItemByMobileAsync(mobile, true, UserStatus.Normal);
-            if (userInfo == null)
-            {
-                var bindResult = await _mobileUserService.ChangeMobileAsync(HttpContext.User.GetUserId(), mobile, true, ModelState);
-                if (!bindResult)
-                {
-                    returnResult.Code = 400;
-                    returnResult.Message = $"绑定闪验失败：{ModelState.FirstErrorMessage()}";
-                    return returnResult;
-                }
-                userInfo = await _userService.GetItemByUserIdAsync(HttpContext.User.GetUserId(), UserStatus.Normal);
-            }
-
-            returnResult.Data = await _tokenService.GenerateApiResultTokenWithMobileData(userInfo);
-            returnResult.Code = 200;
-            returnResult.Message = "绑定闪验成功";
-            return returnResult;
-        }
-
-        /// <summary>
         /// 已登录用户绑定手机号
         /// </summary>
         /// <param name="input"></param>
@@ -653,104 +569,6 @@ namespace Tubumu.Modules.Admin.Controllers
                 ClientAgent = input.ClientAgent,
                 Remark = remark
             }, ModelState);
-        }
-
-        private async Task<string> InvokeFlashValidatinApi(FlashValidationLoginInput input, ModelStateDictionary modelState)
-        {
-            const string DEFAULT_USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; SV1; .NET CLR 1.1.4322; .NET CLR 2.0.50727)";
-            const string CMCC_API_URL = "https://api.253.com/open/flashsdk/mobile-query-m";
-            const string CTCC_API_URL = "https://api.253.com/open/flashsdk/mobile-query-t";
-            const string CUCC_API_URL = "https://api.253.com/open/flashsdk/mobile-query-u";
-
-            string mobile = "";
-            string url = "";
-            if (input.Telecom == "CTCC")
-            {
-                url = CTCC_API_URL;
-            }
-            else if (input.Telecom == "CUCC")
-            {
-                url = CUCC_API_URL;
-            }
-            else if (input.Telecom == "CMCC")
-            {
-                url = CMCC_API_URL;
-            }
-
-            // 闪验sdk返回的参数
-            var dic = new Dictionary<string, string>();
-            dic.Add("appId", _flashValidationSettings.AppId);
-            dic.Add("randoms", input.Randoms);
-            dic.Add("timestamp", input.Timestamp);
-            dic.Add("device", input.Device);
-            dic.Add("telecom", input.Telecom);
-            dic.Add("version", input.Version);
-            dic.Add("accessToken", input.AccessToken);
-            dic.Add("sign", input.Sign);
-
-            // 1.调用置换手机号api
-            var client = _clientFactory.CreateClient();
-            client.DefaultRequestHeaders.Add("User-Agent", DEFAULT_USER_AGENT);
-            using (var content = new MultipartFormDataContent())
-            {
-                foreach (var item in dic)
-                {
-                    var stringContent = new StringContent(item.Value);
-                    content.Add(stringContent, item.Key);
-                }
-                var message = client.PostAsync(url, content);
-                var result = await message.Result.Content.ReadAsStringAsync();
-                JObject jsonObject = string.IsNullOrEmpty(result) ? null : (JObject)JsonConvert.DeserializeObject(result);
-
-                // 2.处理返回结果
-                if (jsonObject != null)
-                {
-                    //响应code码。200000：成功，其他失败
-                    string code = jsonObject["code"].ToString();
-                    if (code == "200000" && jsonObject["data"] != null)
-                    {
-                        // 调用成功
-                        // 解析结果数据，进行业务处理
-                        // 检测结果
-                        string mobileName = jsonObject["data"]["mobileName"].ToString();
-                        //解密手机号
-                        mobile = DesDecrypt(mobileName, _flashValidationSettings.Secret);
-                    }
-                    else
-                    {
-                        // 记录错误日志，正式项目中请换成log打印
-                        modelState.AddModelError("Error", "闪验调用失败,code:" + code + ",msg:" + jsonObject["message"]);
-                    }
-                }
-            }
-
-            return mobile;
-        }
-
-        //DES解密
-        private static string DesDecrypt(string decryptString, string decryptKey)
-        {
-            try
-            {
-                //将字符转换为UTF - 8编码的字节序列
-                var rgbKey = Encoding.UTF8.GetBytes(decryptKey.Substring(0, 8));
-                var rgbIV = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
-                var inputByteArray = Convert.FromBase64String(decryptString);
-                //用指定的密钥和初始化向量使用CBC模式的DES解密标准解密
-                var dCSP = new DESCryptoServiceProvider();
-                dCSP.Mode = CipherMode.CBC;
-                dCSP.Padding = PaddingMode.PKCS7;
-                var mStream = new MemoryStream();
-                var cStream = new CryptoStream(mStream, dCSP.CreateDecryptor(rgbKey, rgbIV), CryptoStreamMode.Write);
-                cStream.Write(inputByteArray, 0, inputByteArray.Length);
-                cStream.FlushFinalBlock();
-                return Encoding.UTF8.GetString(mStream.ToArray());
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return "";
-            }
         }
 
         #endregion

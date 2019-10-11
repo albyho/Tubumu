@@ -1,6 +1,6 @@
 ﻿using System.Text;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
+using Tubumu.Core.Extensions.Object;
 
 namespace Tubumu.Modules.Framework.RabbitMQ
 {
@@ -8,11 +8,7 @@ namespace Tubumu.Modules.Framework.RabbitMQ
     {
         public static void BasicPublishJson(this IModel model, string exchange, string routingKey, bool mandatory, IBasicProperties basicProperties, object body)
         {
-            var serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver()
-            };
-            var bodyJson = JsonConvert.SerializeObject(body, Formatting.None, serializerSettings);
+            var bodyJson = body.ToJson();
             var bodyBytes = Encoding.UTF8.GetBytes(bodyJson);
             model.BasicPublish(
                 exchange: exchange,

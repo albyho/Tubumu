@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -265,11 +265,11 @@ namespace Tubumu.Modules.Admin.Domain.Services
             using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 var sql = "Update Role Set DisplayOrder=DisplayOrder-1 Where DisplayOrder>@DisplayOrder";
-                await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", roleToRemove.DisplayOrder));
+                await _context.Database.ExecuteSqlRawAsync(sql, new SqlParameter("DisplayOrder", roleToRemove.DisplayOrder));
 
                 // Delete GroupAvailableRole Where RoleId=@RoleId
                 sql = "Delete RolePermission Where RoleId=@RoleId; Delete GroupRole Where RoleId=@RoleId; UPDATE [User] SET RoleId = null WHERE RoleId=@RoleId;";
-                await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("RoleId", roleId));
+                await _context.Database.ExecuteSqlRawAsync(sql, new SqlParameter("RoleId", roleId));
 
                 _context.Role.Remove(roleToRemove);
 
@@ -446,7 +446,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     sql = "Update Role Set DisplayOrder = DisplayOrder - 1 Where DisplayOrder <= @TargetDisplayOrder And DisplayOrder > @SourceDisplayOrder;";
                 }
 
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("SourceDisplayOrder", sourceRole.DisplayOrder),
                     new SqlParameter("TargetDisplayOrder", targetRole.DisplayOrder));
 

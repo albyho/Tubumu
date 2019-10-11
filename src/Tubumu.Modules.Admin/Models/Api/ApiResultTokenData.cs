@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Tubumu.Modules.Framework.Models;
+﻿using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Models
 {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Modules.Admin.Domain.Entities;
@@ -33,14 +34,17 @@ namespace Tubumu.Modules.Admin.Domain.Services
     public class RegionManager : IRegionManager
     {
         private readonly TubumuContext _context;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        public RegionManager(TubumuContext context)
+        /// <param name="mapper"></param>
+        public RegionManager(TubumuContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -51,7 +55,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         {
             var list = await _context.Region.AsNoTracking().
                 OrderBy(m => m.DisplayOrder).
-                ProjectTo<XM.RegionInfo>().
+                ProjectTo<XM.RegionInfo>(_mapper.ConfigurationProvider).
                 ToListAsync();
             return list;
         }
@@ -66,7 +70,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             var list = await _context.Region.AsNoTracking().
                 Where(m => m.ParentId == parentId).
                 OrderBy(m => m.DisplayOrder).
-                ProjectTo<XM.RegionInfo>().
+                ProjectTo<XM.RegionInfo>(_mapper.ConfigurationProvider).
                 ToListAsync();
             return list;
         }

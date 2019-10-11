@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using System.Text.Json.Serialization;
 using Tubumu.Core.Extensions;
 
 namespace Tubumu.Modules.Admin.Models
@@ -14,31 +13,26 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 用户 Id
         /// </summary>
-        [JsonProperty(PropertyName = "userId")]
         public int UserId { get; set; }
 
         /// <summary>
         /// 用户名
         /// </summary>
-        [JsonProperty(PropertyName = "username")]
         public string Username { get; set; }
 
         /// <summary>
         /// 显示名称
         /// </summary>
-        [JsonProperty(PropertyName = "displayName")]
         public string DisplayName { get; set; }
 
         /// <summary>
         /// AvatarUrl
         /// </summary>
-        [JsonProperty(PropertyName = "avatarUrl")]
         public string AvatarUrl { get; set; }
 
         /// <summary>
         /// LogoUrl
         /// </summary>
-        [JsonProperty(PropertyName = "logoUrl")]
         public string LogoUrl { get; set; }
     }
 
@@ -50,14 +44,11 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 附加分组
         /// </summary>
-        [JsonProperty(PropertyName = "groups")]
         public IEnumerable<GroupInfo> Groups { get; set; }
 
         /// <summary>
         /// 角色
         /// </summary>
-        [JsonConverter(typeof(Tubumu.Core.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
-        [JsonProperty(PropertyName = "role")]
         public RoleInfo Role { get; set; }
     }
 
@@ -188,7 +179,7 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 用户状态
         /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public UserStatus Status { get; set; }
 
         /// <summary>
@@ -254,7 +245,6 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 主要角色
         /// </summary>
-        [JsonConverter(typeof(Tubumu.Core.Json.NullValueJsonConverterGuid), "RoleId", "00000000-0000-0000-0000-000000000000")]
         public RoleInfo Role { get; set; }
 
         /// <summary>

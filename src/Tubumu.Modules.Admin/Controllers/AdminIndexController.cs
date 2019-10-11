@@ -163,13 +163,13 @@ namespace Tubumu.Modules.Admin.Controllers
                     AddMenuToList(list, item);
                 }
             }
-
             var result = new ApiResultData<List<Menu>>
             {
                 Code = 200,
                 Message = "获取菜单成功",
                 Data = list
             };
+
             return result;
         }
 

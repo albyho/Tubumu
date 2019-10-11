@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
@@ -16,7 +15,6 @@ namespace Tubumu.Modules.Admin.SignalR.Hubs
     /// </summary>
     public class ApiResultNotification : ApiResult
     {
-        [JsonProperty(PropertyName = "title", NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
     }
 

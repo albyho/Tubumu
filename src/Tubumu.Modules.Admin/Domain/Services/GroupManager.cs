@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Entities;
@@ -238,7 +238,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     SELECT GroupId,Name,DisplayOrder,ParentId,IsContainsUser,IsSystem 
                     FROM CET ORDER BY DisplayOrder";
 
-            return await _context.Group.FromSql(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupBase
+            return await _context.Group.FromSqlRaw(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupBase
             {
                 GroupId = m.GroupId,
                 Name = m.Name,
@@ -268,7 +268,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     SELECT GroupId,Name,DisplayOrder,ParentId
                     FROM CET ORDER BY DisplayOrder";
 
-            return await _context.Group.FromSql(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupInfo
+            return await _context.Group.FromSqlRaw(sql, new SqlParameter("GroupId", groupId)).Select(m => new XM.GroupInfo
             {
                 GroupId = m.GroupId,
                 Name = m.Name,
@@ -347,7 +347,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                     //父节点树之后的所有节点的DisplayOrder加1
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder + 1 Where DisplayOrder > @DisplayOrder";
-                    await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
+                    await _context.Database.ExecuteSqlRawAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
                 }
 
                 #endregion
@@ -378,7 +378,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                         //当前节点树之后已无任何节点
                         //将当前节点树的所有节点的Level都进行提升
                         sql = "Update [Group] Set Level = Level - @Level Where DisplayOrder>=@DisplayOrder";
-                        await _context.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlRawAsync(sql
                             , new SqlParameter("Level", xLevel)
                             , new SqlParameter("DisplayOrder", groupToSave.DisplayOrder)
                             );
@@ -391,7 +391,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                         sql = "Update [Group] Set DisplayOrder = DisplayOrder - @CTIC Where DisplayOrder>=@DOONPONB";
 
-                        await _context.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlRawAsync(sql
                             , new SqlParameter("CTIC", currentTreeItemCount)
                             , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                             );
@@ -400,7 +400,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                         foreach (var id in currTreeIds)
                             sql += $" Or GroupId = '{id}'";
 
-                        await _context.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlRawAsync(sql
                             , new SqlParameter("Level", xLevel)
                             , new SqlParameter("NextItemCount", nextItemCount)
                             );
@@ -432,7 +432,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                             foreach (var id in currTreeIds)
                                 sql += $" Or GroupId = '{id}'";
 
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("Level", xLevel - 1)
                                 );
                         }
@@ -440,7 +440,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                         {
                             //新的父节点和本节点之间的节点往下移动，DisplayOrder增加
                             sql = "Update [Group] Set DisplayOrder=DisplayOrder+@CurTreeCount Where DisplayOrder>@TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("CurTreeCount", currentTreeItemCount)
                                 , new SqlParameter("TDisplayOrder", newParent.DisplayOrder)
                                 , new SqlParameter("CDisplayOrder", groupToSave.DisplayOrder)
@@ -449,7 +449,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                             sql = "Update [Group] Set DisplayOrder = DisplayOrder-@XCount,Level = Level - @Level Where 1<>1 ";
                             foreach (var id in currTreeIds)
                                 sql += $" Or GroupId = '{id}'";
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("XCount", xDisplayOrder - 1)//也就是新节点和本节点之间的节点的数量
                                 , new SqlParameter("Level", xLevel - 1)
                                 );
@@ -471,7 +471,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                         // 更新本节点树至新的父节点 (包括新的父节点)之间的节点的DisplayOrder
                         sql = "Update [Group] Set DisplayOrder=DisplayOrder-@CurTreeCount Where DisplayOrder>=@DOONPONB And DisplayOrder<=@TDisplayOrder";
-                        await _context.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlRawAsync(sql
                         , new SqlParameter("CurTreeCount", currentTreeItemCount)
                             , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                             , new SqlParameter("TDisplayOrder", newParent.DisplayOrder)
@@ -482,7 +482,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                         sql = "Update [Group] Set DisplayOrder = DisplayOrder+ @XCount,Level = Level - @Level Where 1<>1 ";
                         foreach (var id in currTreeIds)
                             sql += $" Or GroupId = '{id}'";
-                        await _context.Database.ExecuteSqlCommandAsync(sql
+                        await _context.Database.ExecuteSqlRawAsync(sql
                         , new SqlParameter("XCount", nextItemCount)
                             , new SqlParameter("Level", xLevel - 1)
                             );
@@ -658,26 +658,26 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 Guid targetGroupId = new Guid("11111111-1111-1111-1111-111111111111");
 
                 var sql = "Update [User] Set GroupId=@TGroupId Where GroupId=@GroupId";
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("GroupId", groupId)
                     , new SqlParameter("TGroupId", targetGroupId)
                     );
 
                 // 1、更新DisplayOrder大于预删节点DisplayOrder的节点
                 sql = "Update [Group] Set DisplayOrder=DisplayOrder-1 Where DisplayOrder>@DisplayOrder";
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("DisplayOrder", groupToRemove.DisplayOrder)
                     );
 
                 // 2、删除关联节点
                 sql = "Delete [UserGroup] Where GroupId=@GroupId";
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("GroupId", groupId)
                 );
 
                 // 3、删除关联节点
                 sql = "Delete [GroupRole] Where GroupId=@GroupId";
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("GroupId", groupId)
                 );
 
@@ -753,7 +753,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                     // 更新兄弟节点树的DisplayOrder
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder + @CurTreeCount Where DisplayOrder >= @TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                    await _context.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlRawAsync(sql
                         , new SqlParameter("CurTreeCount", curTreeCount)
                         , new SqlParameter("TDisplayOrder", targetGroup.DisplayOrder)
                         , new SqlParameter("CDisplayOrder", groupToMove.DisplayOrder)
@@ -762,7 +762,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder - @TargetTreeCount Where 1 <> 1 ";
                     foreach (var id in currTreeIds)
                         sql += $" Or GroupId = '{id}'";
-                    await _context.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlRawAsync(sql
                         , new SqlParameter("TargetTreeCount", targetTreeCount)
                         );
 
@@ -803,7 +803,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     // 更新兄弟节点树的DisplayOrder
                     sql = "Update [Group] Set DisplayOrder = DisplayOrder - @CurTreeCount Where DisplayOrder >= @DisplayOrder And DisplayOrder < @TDisplayOrder";
 
-                    await _context.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlRawAsync(sql
                         , new SqlParameter("CurTreeCount", curTreeCount)
                         , new SqlParameter("DisplayOrder", targetGroup.DisplayOrder)
                         , new SqlParameter("TDisplayOrder", targetGroup.DisplayOrder + targetTreeCount)
@@ -813,7 +813,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                     foreach (var id in currTreeIds)
                         sql += $" Or GroupId = '{id}'";
 
-                    await _context.Database.ExecuteSqlCommandAsync(sql
+                    await _context.Database.ExecuteSqlRawAsync(sql
                         , new SqlParameter("TargetTreeCount", targetTreeCount)
                         );
 
@@ -1041,7 +1041,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
             using (var dbContextTransaction = _context.Database.BeginTransaction())
             {
                 var sql = "Update [Group] Set DisplayOrder = DisplayOrder + @MoveTargetXDisplayOrder Where DisplayOrder >= @MoveTargetDisplayOrderMin And DisplayOrder <= @MoveTargetDisplayOrderMax";
-                await _context.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlRawAsync(sql
                     , new SqlParameter("MoveTargetXDisplayOrder", moveTargetXDisplayOrder)
                     , new SqlParameter("MoveTargetDisplayOrderMin", moveTargetDisplayOrderMin)
                     , new SqlParameter("MoveTargetDisplayOrderMax", moveTargetDisplayOrderMax)

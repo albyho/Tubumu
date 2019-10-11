@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Tubumu.Modules.Admin.Models
 {
@@ -14,13 +14,11 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 分组 Id
         /// </summary>
-        [JsonProperty(PropertyName = "groupId")]
         public Guid GroupId { get; set; }
 
         /// <summary>
         /// 名称
         /// </summary>
-        [JsonProperty(PropertyName = "name")]
         public string Name { get; set; }
     }
 

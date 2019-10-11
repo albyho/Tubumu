@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,10 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="OrchardCore" Version="1.0.0-beta3-71906" />
-    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-beta3-71906" />
-    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-beta3-71906" />
+    <PackageReference Include="OrchardCore" Version="1.0.0-rc1-10190" />
+    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-rc1-10190" />
+    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-rc1-10190" />
   </ItemGroup>
 
   <ItemGroup>

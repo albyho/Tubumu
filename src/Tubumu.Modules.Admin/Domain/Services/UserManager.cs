@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Entities;
@@ -917,7 +917,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                                        "DELETE UserRole WHERE UserId = @UserId;" +
                                        "DELETE UserPermission WHERE UserId = @UserId;"
                         ;
-                    await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("UserId", userId));
+                    await _context.Database.ExecuteSqlRawAsync(sql, new SqlParameter("UserId", userId));
 
                     _context.User.Remove(user);
                     await _context.SaveChangesAsync();

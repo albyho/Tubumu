@@ -54,7 +54,7 @@ namespace Tubumu.Modules.Admin
             services.AddDbContextPool<TubumuContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("Tubumu"), m => m.UseRowNumberForPaging()).ConfigureWarnings(warnings =>
                 {
-                    warnings.Throw(CoreEventId.IncludeIgnoredWarning);
+                    //warnings.Throw(CoreEventId.IncludeIgnoredWarning);
                     //warnings.Throw(RelationalEventId.QueryClientEvaluationWarning);
                 }), poolSize: 64);
 
@@ -119,31 +119,32 @@ namespace Tubumu.Modules.Admin
         /// <param name="app"></param>
         /// <param name="routes"></param>
         /// <param name="serviceProvider"></param>
-        public override void Configure(IApplicationBuilder app, IRouteBuilder routes, IServiceProvider serviceProvider)
+        public override void Configure(IApplicationBuilder app, IEndpointRouteBuilder routes, IServiceProvider serviceProvider)
         {
             //string[] controllerNamespaces = new string[] { "Tubumu.Modules.Admin.Controllers" };
 
             #region View
 
-            routes.MapAreaRoute(
+            routes.MapAreaControllerRoute(
                 name: "Admin.View",
                 areaName: "Tubumu.Modules.Admin",
-                template: "Admin/View",
+                pattern: "Admin/View",
                 defaults: new { controller = "View", action = "View" }
             ); // 无 namespaces
 
-            routes.MapAreaRoute(
+            routes.MapAreaControllerRoute(
                 name: "Admin.View.Action",
                 areaName: "Tubumu.Modules.Admin",
-                template: "{action}",
+                pattern: "{action}",
                 defaults: new { controller = "View", action = "Index" }
             ); // 无 namespaces；Login, Index 等无 Controller 前缀
 
             #endregion
 
-            app.UseSignalR(configure =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                configure.MapHub<NotificationHub>("/hubs/notificationHub");
+                endpoints.MapHub<NotificationHub>("/hubs/notificationHub");
             });
         }
     }

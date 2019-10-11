@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,7 @@ namespace Tubumu.Modules.Admin.Controllers
     [HiddenApi]
     public partial class AdminController : ControllerBase
     {
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
         private readonly JwtSecurityTokenHandler _tokenHandler = new JwtSecurityTokenHandler();
         private readonly TokenValidationSettings _tokenValidationSettings;
         private readonly ITokenService _tokenService;
@@ -63,8 +64,9 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="userActionLogService"></param>
         /// <param name="moduleMetaDataProviders"></param>
         /// <param name="menuProviders"></param>
+        /// <param name="logger"></param>
         public AdminController(
-            IHostingEnvironment environment,
+            IWebHostEnvironment environment,
             TokenValidationSettings tokenValidationSettings,
             ITokenService tokenService,
             IOptions<FrontendSettings> frontendSettingsOptions,

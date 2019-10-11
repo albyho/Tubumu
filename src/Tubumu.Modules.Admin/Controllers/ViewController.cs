@@ -89,7 +89,6 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <returns></returns>
         public ActionResult Login()
         {
-            HttpContext.Session.SetString("bbb", "123");
             return Content(GenerateHtml(new ViewInput
             {
                 IsCore = true,

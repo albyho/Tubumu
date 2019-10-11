@@ -27,13 +27,13 @@ namespace Tubumu.Modules.Framework.Mappings
                 .Where(t => profileTypeInfo.IsAssignableFrom(t) && !t.IsAbstract)
                 .Select(t => t.AsType());
 
-            Mapper.Initialize(cfg =>
-            {
+            var configuration = new MapperConfiguration(cfg => {
                 foreach (var profile in profiles)
                 {
                     cfg.AddProfile(profile);
                 }
             });
+            configuration.CompileMappings();
         }
     }
 }

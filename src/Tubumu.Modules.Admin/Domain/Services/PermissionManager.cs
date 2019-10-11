@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -209,7 +209,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                     //父节点树之后的所有节点的DisplayOrder加1
                     sql = "Update Permission Set DisplayOrder=DisplayOrder+1 Where DisplayOrder > @DisplayOrder";
-                    await _context.Database.ExecuteSqlCommandAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
+                    await _context.Database.ExecuteSqlRawAsync(sql, new SqlParameter("DisplayOrder", maxDisplayOrderInParentTree));
                 }
                 #endregion
             }
@@ -259,7 +259,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                         {
                             //将当前节点树的所有节点的Level都进行提升
                             sql = "Update Permission Set Level = Level - @Level Where DisplayOrder>=@DisplayOrder";
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("Level", xLevel)
                                 , new SqlParameter("DisplayOrder", permissionToSave.DisplayOrder)
                                 );
@@ -271,7 +271,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                             sql = "Update Permission Set DisplayOrder = DisplayOrder - @CTIC Where DisplayOrder>=@DOONPONB";
 
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("CTIC", currentTreeItemCount)
                                 , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                                 );
@@ -280,7 +280,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                             foreach (var id in currTreeIds)
                                 sql += $" Or PermissionId = '{id}'";
 
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("Level", xLevel)
                                 , new SqlParameter("NextItemCount", nextItemCount)
                                 );
@@ -309,7 +309,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                                 foreach (var id in currTreeIds)
                                     sql += $" Or PermissionId = '{id}'";
 
-                                await _context.Database.ExecuteSqlCommandAsync(sql
+                                await _context.Database.ExecuteSqlRawAsync(sql
                                     , new SqlParameter("Level", xLevel - 1)
                                     );
                             }
@@ -317,7 +317,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                             {
                                 //新的父节点和本节点之间的节点往下移动，DisplayOrder增加
                                 sql = "Update Permission Set DisplayOrder=DisplayOrder+@CurTreeCount Where DisplayOrder>@TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                                await _context.Database.ExecuteSqlCommandAsync(sql
+                                await _context.Database.ExecuteSqlRawAsync(sql
                                     , new SqlParameter("CurTreeCount", currentTreeItemCount)
                                     , new SqlParameter("TDisplayOrder", tarParent.DisplayOrder)
                                     , new SqlParameter("CDisplayOrder", permissionToSave.DisplayOrder)
@@ -326,7 +326,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                                 sql = "Update Permission Set DisplayOrder = DisplayOrder-@XCount,Level = Level - @Level Where 1<>1 ";
                                 foreach (var id in currTreeIds)
                                     sql += $" Or PermissionId = '{id}'";
-                                await _context.Database.ExecuteSqlCommandAsync(sql
+                                await _context.Database.ExecuteSqlRawAsync(sql
                                     , new SqlParameter("XCount", xDisplayOrder - 1)//也就是新节点和本节点之间的节点的数量
                                     , new SqlParameter("Level", xLevel - 1)
                                     );
@@ -346,7 +346,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                             // 更新本节点树至新的父节点 (包括新的父节点)之间的节点的DisplayOrder
                             sql = "Update Permission Set DisplayOrder=DisplayOrder-@CurTreeCount Where DisplayOrder>=@DOONPONB And DisplayOrder<=@TDisplayOrder";
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("CurTreeCount", currentTreeItemCount)
                                 , new SqlParameter("DOONPONB", displayOrderOfNextParentOrNextBrother)
                                 , new SqlParameter("TDisplayOrder", tarParent.DisplayOrder)
@@ -357,7 +357,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                             sql = "Update Permission Set DisplayOrder = DisplayOrder+ @XCount,Level = Level - @Level Where 1<>1 ";
                             foreach (var id in currTreeIds)
                                 sql += $" Or PermissionId = '{id}'";
-                            await _context.Database.ExecuteSqlCommandAsync(sql
+                            await _context.Database.ExecuteSqlRawAsync(sql
                                 , new SqlParameter("XCount", nextItemCount)
                                 , new SqlParameter("Level", xLevel - 1)
                                 );
@@ -396,17 +396,17 @@ namespace Tubumu.Modules.Admin.Domain.Services
             {
                 //3、更新DisplayOrder大于预删节点DisplayOrder的节点
                 string sql = "Update Permission Set DisplayOrder=DisplayOrder-1 Where DisplayOrder>@DisplayOrder";
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("DisplayOrder", permissionToRemove.DisplayOrder)
                 );
 
                 //4、删除关联节点
                 sql = "Delete RolePermission Where PermissionId=@PermissionId";
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("PermissionId", permissionId)
                 );
                 sql = "Delete UserPermission Where PermissionId=@PermissionId";
-                await _context.Database.ExecuteSqlCommandAsync(sql,
+                await _context.Database.ExecuteSqlRawAsync(sql,
                     new SqlParameter("PermissionId", permissionId)
                 );
 
@@ -483,7 +483,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
                 //更新兄弟节点树的DisplayOrder
                 sql = "Update Permission Set DisplayOrder = DisplayOrder+@CurTreeCount Where DisplayOrder>=@TDisplayOrder And DisplayOrder<@CDisplayOrder";
-                await _context.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlRawAsync(sql
                     , new SqlParameter("CurTreeCount", curTreeCount)
                     , new SqlParameter("TDisplayOrder", targetPermission.DisplayOrder)
                     , new SqlParameter("CDisplayOrder", permissionToMove.DisplayOrder)
@@ -492,7 +492,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 sql = "Update Permission Set DisplayOrder = DisplayOrder-@TargetTreeCount Where 1<>1 ";
                 foreach (var id in currTreeIds)
                     sql += $" Or PermissionId = '{id}'";
-                await _context.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlRawAsync(sql
                     , new SqlParameter("TargetTreeCount", targetTreeCount)
                     );
 
@@ -526,7 +526,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 //更新兄弟节点树的DisplayOrder
                 sql = "Update Permission Set DisplayOrder = DisplayOrder-@CurTreeCount Where DisplayOrder>=@DisplayOrder And DisplayOrder<@TDisplayOrder";
 
-                await _context.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlRawAsync(sql
                     , new SqlParameter("CurTreeCount", curTreeCount)
                     , new SqlParameter("DisplayOrder", nextBrotherPermission.DisplayOrder)
                     , new SqlParameter("TDisplayOrder", nextBrotherPermission.DisplayOrder + nextBrotherTreeCount)
@@ -536,7 +536,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 foreach (var id in currTreeIds)
                     sql += $" Or PermissionId = '{id}'";
 
-                await _context.Database.ExecuteSqlCommandAsync(sql
+                await _context.Database.ExecuteSqlRawAsync(sql
                     , new SqlParameter("NextBrotherTreeCount", nextBrotherTreeCount)
                     );
 

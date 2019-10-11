@@ -5,9 +5,10 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Xml;
 using System.Xml.Serialization;
-using Newtonsoft.Json;
 using Tubumu.Core.FastReflection;
 
 namespace Tubumu.Core.Extensions.Object
@@ -24,7 +25,8 @@ namespace Tubumu.Core.Extensions.Object
         /// <returns></returns>
         public static string ToJson(this object source)
         {
-            return JsonConvert.SerializeObject(source);
+            var options = GenerateDefaultJsonSerializerOptions();
+            return JsonSerializer.Serialize(source, options);
         }
 
         /// <summary>
@@ -37,7 +39,24 @@ namespace Tubumu.Core.Extensions.Object
         {
             if (string.IsNullOrWhiteSpace(json))
                 return default(T);
-            return JsonConvert.DeserializeObject<T>(json);
+
+            var options = GenerateDefaultJsonSerializerOptions();
+            return JsonSerializer.Deserialize<T>(json, options);
+        }
+
+        private static JsonSerializerOptions GenerateDefaultJsonSerializerOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.Create(UnicodeRanges.All),
+                PropertyNameCaseInsensitive = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                IgnoreNullValues = true,
+            };
+            options.Converters.Add(new Tubumu.Modules.Core.Json.DateTimeConverter());
+            options.Converters.Add(new Tubumu.Modules.Core.Json.DateTimeNullConverter());
+
+            return options;
         }
 
         /// <summary>
@@ -69,6 +88,7 @@ namespace Tubumu.Core.Extensions.Object
         {
             if (source == null || source.GetType() != typeof(T))
                 return null;
+
             return (T)DeepClone(source);
         }
 

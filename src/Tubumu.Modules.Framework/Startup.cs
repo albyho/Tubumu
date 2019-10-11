@@ -4,6 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,27 +14,26 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
+using Microsoft.OpenApi.Models;
 using OrchardCore.BackgroundTasks;
-using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using StackExchange.Redis.Extensions.Core.Configuration;
 using StackExchange.Redis.Extensions.Core.Implementations;
 using StackExchange.Redis.Extensions.Newtonsoft;
-using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Tubumu.Core.Extensions;
+using Tubumu.Core.Extensions.Object;
+using Tubumu.Modules.Core.Json;
 using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.BackgroundTasks;
@@ -41,7 +43,6 @@ using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.RabbitMQ;
 using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using StartupBase = OrchardCore.Modules.StartupBase;
 
 namespace Tubumu.Modules.Framework
@@ -52,7 +53,7 @@ namespace Tubumu.Modules.Framework
     public class Startup : StartupBase
     {
         private readonly IConfiguration _configuration;
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
         private readonly ILogger<Startup> _logger;
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace Tubumu.Modules.Framework
         /// <param name="logger"></param>
         public Startup(
             IConfiguration configuration,
-            IHostingEnvironment environment,
+            IWebHostEnvironment environment,
             ILogger<Startup> logger)
         {
             _configuration = configuration;
@@ -77,6 +78,8 @@ namespace Tubumu.Modules.Framework
         /// <param name="services"></param>
         public override void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers()
+        .AddNewtonsoftJson();
             // Background Service
             services.AddSingleton<IBackgroundTask, IdleBackgroundTask>();
             services.AddSingleton<IBackgroundTask, NewDayBackgroundTask>();
@@ -90,34 +93,11 @@ namespace Tubumu.Modules.Framework
             services.AddSingleton<IRedisDefaultCacheClient, RedisDefaultCacheClient>();
             services.AddSingleton<ISerializer, NewtonsoftSerializer>();
 
-            // Cache
-            services.AddDistributedRedisCache(options =>
-            {
-                options.Configuration = "localhost";
-                options.InstanceName = _environment.ApplicationName + ":";
-            });
-            services.AddMemoryCache();
-
             // Cors
             services.AddCors(options => options.AddPolicy("DefaultPolicy",
                 builder => builder.WithOrigins("http://localhost:9090", "http://localhost:8080").AllowAnyMethod().AllowAnyHeader().AllowCredentials())
             // builder => builder.AllowAnyOrigin.AllowAnyMethod().AllowAnyHeader().AllowCredentials())
             );
-
-            // Cookie
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.CheckConsentNeeded = context => false; // 需保持为 false, 否则 Web API 不会 Set-Cookie 。
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            // Session
-            services.AddSession(options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
-                options.Cookie.Name = ".Tubumu.Session";
-                options.Cookie.HttpOnly = true;
-            });
 
             // HTTP Client
             services.AddHttpClient();
@@ -133,12 +113,12 @@ namespace Tubumu.Modules.Framework
             });
 
             // Authentication
-            var registeredServiceDescriptor = services.FirstOrDefault(s => s.Lifetime == ServiceLifetime.Transient && s.ServiceType == typeof(IApplicationModelProvider) && s.ImplementationType == typeof(AuthorizationApplicationModelProvider));
-            if (registeredServiceDescriptor != null)
-            {
-                services.Remove(registeredServiceDescriptor);
-            }
-            services.AddTransient<IApplicationModelProvider, PermissionAuthorizationApplicationModelProvider>();
+            //var registeredServiceDescriptor = services.FirstOrDefault(s => s.Lifetime == ServiceLifetime.Transient && s.ServiceType == typeof(IApplicationModelProvider) && s.ImplementationType == typeof(AuthorizationApplicationModelProvider));
+            //if (registeredServiceDescriptor != null)
+            //{
+            //    services.Remove(registeredServiceDescriptor);
+            //}
+            //services.AddTransient<IApplicationModelProvider, PermissionAuthorizationApplicationModelProvider>();
 
             services.AddSingleton<ITokenService, TokenService>();
             var tokenValidationSettings = _configuration.GetSection("TokenValidationSettings").Get<TokenValidationSettings>();
@@ -201,7 +181,7 @@ namespace Tubumu.Modules.Framework
                                 // TODO: (alby)前端 IsDevelopment 为 true 时不返回 Url
                                 Url = _environment.IsProduction() ? tokenValidationSettings.LoginUrl : null,
                             };
-                            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(result));
+                            var body = Encoding.UTF8.GetBytes(result.ToJson());
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                             context.Response.ContentType = "application/json";
                             context.Response.Body.Write(body, 0, body.Length);
@@ -212,8 +192,16 @@ namespace Tubumu.Modules.Framework
                 });
 
             // JSON Date format
-            void JsonSetup(MvcJsonOptions options) => options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-            services.Configure((Action<MvcJsonOptions>)JsonSetup);
+            services.AddMvc().
+                AddJsonOptions(option =>
+            {
+                option.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
+                option.JsonSerializerOptions.Converters.Add(new DateTimeNullConverter());
+                option.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
+                option.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                option.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                option.JsonSerializerOptions.IgnoreNullValues = true;
+            });
 
             // SignalR
             services.AddSignalR();
@@ -230,20 +218,33 @@ namespace Tubumu.Modules.Framework
             // Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = _environment.ApplicationName + " API", Version = "v1" });
-                c.AddSecurityDefinition("Bearer", new ApiKeyScheme
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = _environment.ApplicationName + " API", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = "权限认证(数据将在请求头中进行传输) 参数结构: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
-                    In = "header",
-                    Type = "apiKey"
+                    In = ParameterLocation.Header,
+                    Type =  SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
                 });
-                var security = new Dictionary<string, IEnumerable<string>>
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
-                    {"Bearer", new string[] { }},
-                };
-                c.AddSecurityRequirement(security);
-                c.DescribeAllEnumsAsStrings();
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header,
+                        },
+                        new List<string>()
+                    }
+                });
+
                 c.DocumentFilter<HiddenApiDocumentFilter>();
                 IncludeXmlCommentsForModules(c);
                 c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
@@ -256,17 +257,9 @@ namespace Tubumu.Modules.Framework
         /// <param name="app"></param>
         /// <param name="routes"></param>
         /// <param name="serviceProvider"></param>
-        public override void Configure(IApplicationBuilder app, IRouteBuilder routes, IServiceProvider serviceProvider)
+        public override void Configure(IApplicationBuilder app, IEndpointRouteBuilder routes, IServiceProvider serviceProvider)
         {
-            app.UseCookiePolicy();
-            app.UseSession();
             app.UseCors("DefaultPolicy");
-            app.UseAuthentication();
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                ServeUnknownFileTypes = true,
-                DefaultContentType = "application/octet-stream"
-            });
 
             // Swagger
             var swaggerIndexAssembly = typeof(Startup).Assembly;
@@ -275,7 +268,7 @@ namespace Tubumu.Modules.Framework
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", _environment.ApplicationName + " API v1");
                 c.DefaultModelsExpandDepth(-1);
-                c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Swagger>Tubumu.SwaggerUI.Index.html");
+                //c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Swagger>Tubumu.SwaggerUI.Index.html");
             });
         }
 

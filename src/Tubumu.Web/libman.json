@@ -4,7 +4,7 @@
   "libraries": [
     {
       "provider": "unpkg",
-      "library": "@aspnet/signalr@1.1.4",
+      "library": "@aspnet/signalr@next",
       "destination": "wwwroot/lib/signalr/",
       "files": [
         "dist/browser/signalr.js",

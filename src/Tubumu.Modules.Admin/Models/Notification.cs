@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
-using Tubumu.Core.Json;
+using System.Text.Json.Serialization;
 using Tubumu.Modules.Core.Models;
 using Tubumu.Modules.Framework.ModelValidation.Attributes;
 
@@ -15,38 +14,31 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 通知 Id
         /// </summary>
-        [JsonProperty(PropertyName = "notificationId")]
         public int NotificationId { get; set; }
 
         /// <summary>
         /// 发送自
         /// </summary>
-        [JsonProperty(PropertyName = "fromUser")]
         public UserInfoWarpper FromUser { get; set; }
 
         /// <summary>
         /// 发送至
         /// </summary>
-        [JsonProperty(PropertyName = "toUser")]
-        [JsonConverter(typeof(NullValueJsonConverter<int>), "UserId", 0)]
         public UserInfoWarpper ToUser { get; set; }
 
         /// <summary>
         /// 创建时间
         /// </summary>
-        [JsonProperty(PropertyName = "creationTime")]
         public DateTime CreationTime { get; set; }
 
         /// <summary>
         /// 标题
         /// </summary>
-        [JsonProperty(PropertyName = "title")]
         public string Title { get; set; }
 
         /// <summary>
         /// Url
         /// </summary>
-        [JsonProperty(PropertyName = "url")]
         public string Url { get; set; }
     }
 
@@ -58,7 +50,6 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 消息
         /// </summary>
-        [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
     }
 
@@ -67,17 +58,14 @@ namespace Tubumu.Modules.Admin.Models
     /// </summary>
     public class NotificationUser : Notification
     {
-
         /// <summary>
         /// 读取时间
         /// </summary>
-        [JsonProperty(PropertyName = "readTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? ReadTime { get; set; }
 
         /// <summary>
         /// 删除时间
         /// </summary>
-        [JsonProperty(PropertyName = "deleteTime", NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? DeleteTime { get; set; }
     }
 

@@ -14,16 +14,13 @@ namespace Tubumu.Modules.Admin.Mappings
         /// </summary>
         public MappingProfile()
         {
-            CreateMap<Bulletin, XM.Bulletin>();
-            CreateMap<Bulletin, XM.Input.BulletinInput>();
-            CreateMap<XM.Bulletin, Bulletin>();
+            CreateMap<Bulletin, XM.Bulletin>().ReverseMap();
+            CreateMap<Bulletin, XM.Input.BulletinInput>().ReverseMap();
             CreateMap<XM.Bulletin, XM.Input.BulletinInput>();
-            CreateMap<XM.Input.BulletinInput, Bulletin>();
 
             CreateMap<XM.Input.UserActionLogInput, UserActionLog>();
 
-            CreateMap<Permission, XM.Permission>();
-            CreateMap<XM.Permission, Permission>();
+            CreateMap<Permission, XM.Permission>().ReverseMap();
 
             CreateMap<Region, XM.RegionInfo>();
         }

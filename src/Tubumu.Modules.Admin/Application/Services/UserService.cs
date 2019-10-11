@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
@@ -301,7 +302,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// </summary>
         public const string UserCacheKeyFormat = "User:{0}";
 
-        private readonly IHostingEnvironment _environment;
+        private readonly IWebHostEnvironment _environment;
         private readonly AvatarSettings _avatarSettings;
         private readonly IUserManager _manager;
         private readonly IGroupService _groupService;
@@ -318,7 +319,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="cache"></param>
         /// <param name="logger"></param>
         public UserService(
-            IHostingEnvironment environment,
+            IWebHostEnvironment environment,
             IOptions<AvatarSettings> avatarSettingsOptions,
             IUserManager manager,
             IGroupService groupService,
