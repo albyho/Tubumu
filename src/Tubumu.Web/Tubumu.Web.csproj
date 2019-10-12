@@ -11,9 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OrchardCore" Version="1.0.0-rc1-10190" />
-    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-rc1-10190" />
-    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-rc1-10190" />
+    <PackageReference Include="OrchardCore" Version="1.0.0-rc1-10222" />
+    <PackageReference Include="OrchardCore.Application.Mvc.Targets" Version="1.0.0-rc1-10222" />
+    <PackageReference Include="OrchardCore.Logging.NLog" Version="1.0.0-rc1-10222" />
   </ItemGroup>
 
   <ItemGroup>
