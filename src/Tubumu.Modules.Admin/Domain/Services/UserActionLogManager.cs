@@ -49,14 +49,17 @@ namespace Tubumu.Modules.Admin.Domain.Services
     {
         private readonly TubumuContext _context;
         private readonly Expression<Func<UserActionLog, XM.UserActionLogInfo>> _userActionLogInfoSelector;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="context"></param>
-        public UserActionLogManager(TubumuContext context)
+        /// <param name="mapper"></param>
+        public UserActionLogManager(TubumuContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
 
             _userActionLogInfoSelector = m => new XM.UserActionLogInfo
             {
@@ -118,7 +121,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         public async Task<bool> SaveAsync(UserActionLogInput userActionLogInput, ModelStateDictionary modelState)
         {
             var newUserActionLog = new UserActionLog();
-            Mapper.Map(userActionLogInput, newUserActionLog);
+            _mapper.Map(userActionLogInput, newUserActionLog);
             newUserActionLog.CreationTime = DateTime.Now;
 
             _context.UserActionLog.Add(newUserActionLog);

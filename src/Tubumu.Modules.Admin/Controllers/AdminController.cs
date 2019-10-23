@@ -63,6 +63,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="userActionLogService"></param>
         /// <param name="moduleMetaDataProviders"></param>
         /// <param name="menuProviders"></param>
+        /// <param name="logger"></param>
         public AdminController(
             IHostingEnvironment environment,
             TokenValidationSettings tokenValidationSettings,
