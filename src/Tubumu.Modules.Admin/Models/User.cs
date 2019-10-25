@@ -212,6 +212,16 @@ namespace Tubumu.Modules.Admin.Models
         public string UniqueId { get; set; }
 
         /// <summary>
+        /// WeixinNickname
+        /// </summary>
+        public string WeixinNickname { get; set; }
+
+        /// <summary>
+        /// WeixinAvatarUrl
+        /// </summary>
+        public string WeixinAvatarUrl { get; set; }
+
+        /// <summary>
         /// WeixinMobileEndOpenId
         /// </summary>
         public string WeixinMobileEndOpenId { get; set; }

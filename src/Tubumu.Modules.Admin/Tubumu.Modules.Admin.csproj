@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
     <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-72452" />
-    <PackageReference Include="Senparc.Weixin.Open" Version="3.7.102" />
+    <PackageReference Include="Senparc.Weixin.Open" Version="4.0.0" />
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.7.102" />
   </ItemGroup>
 

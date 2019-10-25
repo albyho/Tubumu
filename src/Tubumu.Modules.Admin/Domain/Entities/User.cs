@@ -35,6 +35,8 @@ namespace Tubumu.Modules.Admin.Domain.Entities
         public string LogoUrl { get; set; }
         public string Description { get; set; }
         public string UniqueId { get; set; }
+        public string WeixinNickname { get; set; }
+        public string WeixinAvatarUrl { get; set; }
         public string WeixinUnionId { get; set; }
         public string WeixinWebOpenId { get; set; }
         public string WeixinMobileEndOpenId { get; set; }

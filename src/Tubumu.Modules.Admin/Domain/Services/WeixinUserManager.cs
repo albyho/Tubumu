@@ -62,6 +62,16 @@ namespace Tubumu.Modules.Admin.Domain.Services
         Task<XM.UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid groupId, XM.UserStatus generateStatus, string openId);
 
         /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        Task<XM.UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid groupId, XM.UserStatus generateStatus, string openId, string mobile);
+
+        /// <summary>
         /// GetOrGenerateItemByWeixinWebOpenIdAsync
         /// </summary>
         /// <param name="groupId"></param>
@@ -174,6 +184,8 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 MobileIsValid = u.MobileIsValid,
                 Password = u.Password,
                 UniqueId = u.UniqueId,
+                WeixinNickname = u.WeixinNickname,
+                WeixinAvatarUrl = u.WeixinAvatarUrl,
                 WeixinMobileEndOpenId = u.WeixinMobileEndOpenId,
                 WeixinAppOpenId = u.WeixinAppOpenId,
                 WeixinWebOpenId = u.WeixinWebOpenId,
@@ -368,6 +380,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
         /// <param name="generateGroupId"></param>
         /// <param name="generateStatus"></param>
         /// <param name="openId"></param>
+        /// <param name="mobile"></param>
         /// <returns></returns>
         public async Task<XM.UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string openId)
         {
@@ -388,7 +401,64 @@ namespace Tubumu.Modules.Admin.Domain.Services
                 _context.User.Add(newUser);
                 await _context.SaveChangesAsync();
                 user = await GetItemByWeixinAppOpenIdAsync(openId);
+            }
 
+            return user;
+        }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="openId"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        public async Task<XM.UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid generateGroupId, XM.UserStatus generateStatus, string openId, string mobile)
+        {
+            if (openId.IsNullOrWhiteSpace()) return null;
+            var user = await GetItemByWeixinAppOpenIdAsync(openId);
+            if (user == null)
+            {
+                // 验证手机号是否被使用
+                if (!mobile.IsNullOrWhiteSpace())
+                {
+                    if (await _context.User.AnyAsync(m => m.Mobile == mobile))
+                    {
+                        return null;
+                    }
+                }
+                var newUser = new User
+                {
+                    Status = generateStatus,
+                    CreationTime = DateTime.Now,
+                    WeixinAppOpenId = openId,
+                    GroupId = generateGroupId, // new Guid("11111111-1111-1111-1111-111111111111") 等待分配组
+                    Username = "g" + Guid.NewGuid().ToString("N").Substring(19),
+                    Mobile = mobile,
+                    MobileIsValid = !mobile.IsNullOrWhiteSpace(),
+                    Password = openId,
+                };
+
+                _context.User.Add(newUser);
+                await _context.SaveChangesAsync();
+                user = await GetItemByWeixinAppOpenIdAsync(openId);
+            }
+            else
+            {
+                if (user.Mobile != mobile)
+                {
+                    if (await _context.User.AnyAsync(m => m.UserId != user.UserId && m.Mobile == mobile))
+                    {
+                        // 更换手机号，但手机号被他人使用
+                        return null;
+                    }
+                }
+                var userEntity = await _context.User.Where(m => m.UserId == user.UserId).FirstAsync();
+                userEntity.Mobile = mobile;
+                userEntity.MobileIsValid = !mobile.IsNullOrWhiteSpace();
+                await _context.SaveChangesAsync();
+                user = await GetItemByWeixinAppOpenIdAsync(openId);
             }
 
             return user;

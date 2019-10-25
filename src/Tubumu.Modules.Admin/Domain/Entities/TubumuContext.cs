@@ -253,8 +253,11 @@ namespace Tubumu.Modules.Admin.Domain.Entities
                     .IsRequired()
                     .HasMaxLength(20);
 
-                
                 entity.Property(e => e.UniqueId).HasMaxLength(50);
+
+                entity.Property(e => e.WeixinNickname).HasMaxLength(50);
+
+                entity.Property(e => e.WeixinAvatarUrl).HasMaxLength(200);
 
                 entity.Property(e => e.WeixinAppOpenId).HasMaxLength(50);
 

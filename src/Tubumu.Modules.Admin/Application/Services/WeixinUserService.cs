@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Senparc.Weixin.WxOpen.AdvancedAPIs.Sns;
+using Senparc.Weixin.WxOpen.Entities;
 using Tubumu.Core.Extensions;
 using Tubumu.Modules.Admin.Domain.Services;
 using Tubumu.Modules.Admin.Models;
@@ -84,6 +85,26 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="openId"></param>
         /// <returns></returns>
         Task<UserInfo> GetOrGenerateItemByWeixinAppOpenIdAsync(Guid generateGroupId, UserStatus generateStatus, string openId);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppCodeAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        Task<UserInfo> GetOrGenerateItemByWeixinAppCodeAsync(Guid generateGroupId, UserStatus generateStatus, string code);
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppCodeAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="code"></param>
+        /// <param name="encryptedData"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
+        Task<UserInfo> GetOrGenerateItemByWeixinAppCodeAsync(Guid generateGroupId, UserStatus generateStatus, string code, string encryptedData, string iv);
 
         /// <summary>
         /// GetOrGenerateItemByWeixinWebOpenIdAsync
@@ -166,7 +187,6 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="userId"></param>
         /// <returns></returns>
         Task<bool> CleanWeixinUnionIdAsync(int userId);
-
     }
 
     /// <summary>
@@ -353,6 +373,62 @@ namespace Tubumu.Modules.Admin.Application.Services
                 Cache(userInfo);
             }
             return userInfo;
+        }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async Task<UserInfo> GetOrGenerateItemByWeixinAppCodeAsync(Guid generateGroupId, UserStatus generateStatus, string code)
+        {
+            try
+            {
+                var jsCode2JsonResult = await SnsApi.JsCode2JsonAsync(_weixinAppSettings.AppId, _weixinAppSettings.Secret, code);
+                var userInfo = await _manager.GetOrGenerateItemByWeixinAppOpenIdAsync(generateGroupId, generateStatus, jsCode2JsonResult.openid);
+                if (userInfo != null && userInfo.Status == UserStatus.Normal)
+                {
+                    Cache(userInfo);
+                }
+                return userInfo;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "微信小程序登录失败");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// GetOrGenerateItemByWeixinAppOpenIdAsync
+        /// </summary>
+        /// <param name="generateGroupId"></param>
+        /// <param name="generateStatus"></param>
+        /// <param name="code"></param>
+        /// <param name="encryptedData"></param>
+        /// <param name="iv"></param>
+        /// <returns></returns>
+        public async Task<UserInfo> GetOrGenerateItemByWeixinAppCodeAsync(Guid generateGroupId, UserStatus generateStatus, string code, string encryptedData, string iv)
+        {
+            try
+            {
+                var jsCode2JsonResult = await SnsApi.JsCode2JsonAsync(_weixinAppSettings.AppId, _weixinAppSettings.Secret, code);
+                var decodedJsonString = Senparc.Weixin.WxOpen.Helpers.EncryptHelper.DecodeEncryptedData(jsCode2JsonResult.session_key, encryptedData, iv);
+                var decodedPhoneNumber = Newtonsoft.Json.JsonConvert.DeserializeObject<DecodedPhoneNumber>(decodedJsonString);
+                var userInfo = await _manager.GetOrGenerateItemByWeixinAppOpenIdAsync(generateGroupId, generateStatus, jsCode2JsonResult.openid, decodedPhoneNumber.purePhoneNumber);
+                if (userInfo != null && userInfo.Status == UserStatus.Normal)
+                {
+                    Cache(userInfo);
+                }
+                return userInfo;
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "微信小程序登录失败");
+                return null;
+            }
         }
 
         /// <summary>

@@ -346,6 +346,44 @@ namespace Tubumu.Modules.Admin.Controllers
         }
 
         /// <summary>
+        /// 微信小程序登录, 并获取用户手机号
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ApiResultData<ApiResultTokenData>> WeixinAppLoginWithMobile(WeixinAppLoginWithMobileInput input)
+        {
+            var returnResult = new ApiResultData<ApiResultTokenData>();
+            var userInfo = await _weixinUserService.GetOrGenerateItemByWeixinAppCodeAsync(_authenticationSettings.RegisterDefaultGroupId,
+                _authenticationSettings.RegisterDefaultStatus,
+                input.Code, 
+                input.EncryptedData, 
+                input.IV);
+            if (userInfo == null)
+            {
+                returnResult.Code = 400;
+                returnResult.Message = "异常：微信小程序登录失败";
+                return returnResult;
+            }
+
+            if (userInfo.Status != UserStatus.Normal)
+            {
+                returnResult.Code = 201;
+                returnResult.Message = "注册成功，请等待审核。";
+                return returnResult;
+            }
+
+            await SaveUserActionLogAsync(userInfo.UserId, 1, "微信小程序登录", input);
+
+            returnResult.Data = await _tokenService.GenerateApiResultTokenData(userInfo);
+            returnResult.Code = 200;
+            returnResult.Message = "登录成功";
+            return returnResult;
+        }
+
+
+        /// <summary>
         /// 微信移动端登录
         /// </summary>
         /// <param name="input"></param>
