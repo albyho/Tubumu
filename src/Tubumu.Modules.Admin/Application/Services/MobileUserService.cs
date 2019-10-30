@@ -173,7 +173,13 @@ namespace Tubumu.Modules.Admin.Application.Services
                 CacheMobileValidationCodeCache(cacheKey, mobileValidationCode);
             }
             var sms = "{\"code\":\"" + validationCode + "\",\"time\":\"" + (_mobileValidationCodeSettings.Expiration / 60) + "\"}";
-            return await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, sms);
+            var sendResult = await _smsSender.SendAsync(getMobileValidationCodeInput.Mobile, sms);
+            if (!sendResult)
+            {
+                modelState.AddModelError("Mobile", "短信网关异常");
+                return false;
+            }
+            return true;
         }
 
         public async Task<bool> VerifyMobileValidationCodeAsync(VerifyMobileValidationCodeInput verifyMobileValidationCodeInput, ModelStateDictionary modelState, string defaultCode = null)
@@ -264,6 +270,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         {
             _cache.SetJsonAsync(cacheKey, mobileValidationCode, new DistributedCacheEntryOptions
             {
+                // 备注：缓存到期时间和验证码到期时间其实没有直接的关系——当然，缓存不应该比验证码到期时长短。
                 SlidingExpiration = TimeSpan.FromSeconds(_mobileValidationCodeSettings.Expiration)
             }).ContinueWithOnFaultedHandleLog(_logger);
         }

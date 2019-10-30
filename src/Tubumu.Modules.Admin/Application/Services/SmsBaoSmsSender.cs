@@ -39,8 +39,9 @@ namespace Tubumu.Modules.Admin.Application.Services
                 }
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "SmsBao");
                 return false;
             }
         }

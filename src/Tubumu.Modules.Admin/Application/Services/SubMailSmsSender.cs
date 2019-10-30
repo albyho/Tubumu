@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Sms;
 using Tubumu.Modules.Framework.Sms;
@@ -12,13 +13,15 @@ namespace Tubumu.Modules.Admin.Application.Services
     {
         private readonly SubMailSmsSettings _subMailSmsSettings;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly ILogger<SubMailSmsSender> _logger;
 
-        public SubMailSmsSender(IOptions<SubMailSmsSettings> subMailSmsSettingsOptons, IHttpClientFactory clientFactory)
+        public SubMailSmsSender(IOptions<SubMailSmsSettings> subMailSmsSettingsOptons, IHttpClientFactory clientFactory, ILogger<SubMailSmsSender> logger)
         {
             _clientFactory = clientFactory;
             _subMailSmsSettings = subMailSmsSettingsOptons.Value;
+            _logger = logger;
 
-        }
+    }
         public async Task<bool> SendAsync(SmsMessage smsMessage)
         {
             var client = _clientFactory.CreateClient();
@@ -40,8 +43,9 @@ namespace Tubumu.Modules.Admin.Application.Services
                 // TODO: (alby)检查短信发送结果
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Submail");
                 return false;
             }
         }

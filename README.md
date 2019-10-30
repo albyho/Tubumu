@@ -11,7 +11,8 @@
 7. [SignalR](https://docs.microsoft.com/zh-cn/aspnet/core/signalr/introduction?view=aspnetcore-2.2)
 8. [AutoMapper](http://automapper.org/)
 9. [NLog](https://www.nuget.org/packages/NLog.Web.AspNetCore/) (Based on OrchardCore.Logging.NLog)
-10. [Vue](https://cn.vuejs.org/) ([Element-UI](http://element-cn.eleme.io/#/zh-CN))
+10. [Hangfire](https://www.hangfire.io/)
+11. [Vue](https://cn.vuejs.org/) ([Element-UI](http://element-cn.eleme.io/#/zh-CN))
 
 ## 安装
 

@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,6 +38,7 @@ using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;
+using Tubumu.Modules.Framework.Hangfire;
 using Tubumu.Modules.Framework.Mappings;
 using Tubumu.Modules.Framework.Models;
 using Tubumu.Modules.Framework.RabbitMQ;
@@ -248,6 +251,25 @@ namespace Tubumu.Modules.Framework
                 IncludeXmlCommentsForModules(c);
                 c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
             });
+
+            // Add Hangfire services.
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(_configuration.GetConnectionString("Tubumu"), new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,                      // 作业队列轮询间隔。默认值为15秒。
+                    JobExpirationCheckInterval = TimeSpan.FromHours(1),     // 作业到期检查间隔（管理过期记录）。默认值为1小时。
+                    UseRecommendedIsolationLevel = true,
+                    UsePageLocksOnDequeue = true,
+                    DisableGlobalLocks = true
+                }));
+
+            // Add the processing server as IHostedService
+            services.AddHangfireServer();
         }
 
         /// <summary>
@@ -258,15 +280,25 @@ namespace Tubumu.Modules.Framework
         /// <param name="serviceProvider"></param>
         public override void Configure(IApplicationBuilder app, IRouteBuilder routes, IServiceProvider serviceProvider)
         {
-            app.UseCookiePolicy();
-            app.UseSession();
-            app.UseCors("DefaultPolicy");
-            app.UseAuthentication();
             app.UseStaticFiles(new StaticFileOptions
             {
                 ServeUnknownFileTypes = true,
                 DefaultContentType = "application/octet-stream"
             });
+            app.UseAuthentication();
+
+            // Hangfire
+            // Configure hangfire to use the new JobActivator we defined.
+            GlobalConfiguration.Configuration.UseActivator(new AspNetCoreJobActivator(serviceProvider));
+            app.UseHangfireDashboard();
+            app.UseHangfireServer();
+
+            app.UseCookiePolicy();
+            app.UseCors("DefaultPolicy");
+            app.UseSession();
+
+            BackgroundJob.Schedule<ITokenService>(m => m.GetRefreshTokenAsync(0), TimeSpan.FromMinutes(1));
+            BackgroundJob.Schedule(() => TestHangFire(), TimeSpan.FromMinutes(1));
 
             // Swagger
             var swaggerIndexAssembly = typeof(Startup).Assembly;
@@ -277,6 +309,11 @@ namespace Tubumu.Modules.Framework
                 c.DefaultModelsExpandDepth(-1);
                 c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Swagger>Tubumu.SwaggerUI.Index.html");
             });
+        }
+
+        public static void TestHangFire()
+        {
+            throw new Exception("Hello, world");
         }
 
         private void IncludeXmlCommentsForModules(SwaggerGenOptions swaggerGenOptions)
