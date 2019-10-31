@@ -297,9 +297,6 @@ namespace Tubumu.Modules.Framework
             app.UseCors("DefaultPolicy");
             app.UseSession();
 
-            BackgroundJob.Schedule<ITokenService>(m => m.GetRefreshTokenAsync(0), TimeSpan.FromMinutes(1));
-            BackgroundJob.Schedule(() => TestHangFire(), TimeSpan.FromMinutes(1));
-
             // Swagger
             var swaggerIndexAssembly = typeof(Startup).Assembly;
             app.UseSwagger();
@@ -309,11 +306,6 @@ namespace Tubumu.Modules.Framework
                 c.DefaultModelsExpandDepth(-1);
                 c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Swagger>Tubumu.SwaggerUI.Index.html");
             });
-        }
-
-        public static void TestHangFire()
-        {
-            throw new Exception("Hello, world");
         }
 
         private void IncludeXmlCommentsForModules(SwaggerGenOptions swaggerGenOptions)
