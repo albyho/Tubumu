@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Hangfire;
+using Hangfire.Redis;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -26,6 +27,7 @@ using Newtonsoft.Json;
 using OrchardCore.BackgroundTasks;
 using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
+using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using StackExchange.Redis.Extensions.Core.Configuration;
@@ -253,6 +255,7 @@ namespace Tubumu.Modules.Framework
             });
 
             // Add Hangfire services.
+            /*
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
@@ -267,8 +270,20 @@ namespace Tubumu.Modules.Framework
                     UsePageLocksOnDequeue = true,
                     DisableGlobalLocks = true
                 }));
+            */
 
             // Add the processing server as IHostedService
+            services.AddHangfire(configuration =>
+            {
+                // 推荐使用 ConnectionMultiplexer，见：https://github.com/marcoCasamento/Hangfire.Redis.StackExchange 。
+                // 但是存在 StackExchange.Redis.StrongName 和 StackExchange.Redis 冲突问题。
+                configuration.UseRedisStorage("localhost", new RedisStorageOptions
+                {
+                    Prefix = $"hangfire:{_environment.ApplicationName}:",
+                    Db = 9,
+                });
+            });
+
             services.AddHangfireServer();
         }
 
