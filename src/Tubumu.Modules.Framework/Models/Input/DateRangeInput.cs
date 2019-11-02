@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Tubumu.Modules.Framework.ModelValidation.Attributes;
+using Tubumu.DataAnnotations;
 
 namespace Tubumu.Modules.Framework.Models
 {
@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Framework.Models
         /// 结束日期
         /// </summary>
         [Required(ErrorMessage = "请选择结束日期")]
-        [Tubumu.Modules.Framework.ModelValidation.Attributes.Compare("BeginDate", ValidationCompareOperator.GreaterThanEqual, ValidationDataType.Date, ErrorMessage = "结束日期不能小于开始日期")]
+        [Tubumu.DataAnnotations.Compare("BeginDate", ValidationCompareOperator.GreaterThanEqual, ValidationDataType.Date, ErrorMessage = "结束日期不能小于开始日期")]
         [DisplayName("结束日期")]
         public DateTime EndDate { get; set; }
     }

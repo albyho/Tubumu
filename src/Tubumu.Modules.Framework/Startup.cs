@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Hangfire;
 using Hangfire.Redis;
-using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,9 +24,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using OrchardCore.BackgroundTasks;
-using OrchardCore.Modules;
 using OrchardCore.Modules.Manifest;
-using StackExchange.Redis;
 using StackExchange.Redis.Extensions.Core;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using StackExchange.Redis.Extensions.Core.Configuration;
@@ -36,16 +33,17 @@ using StackExchange.Redis.Extensions.Newtonsoft;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Tubumu.Core.Extensions;
+using Tubumu.Hangfire;
+using Tubumu.Mappings;
 using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.BackgroundTasks;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Hangfire;
-using Tubumu.Modules.Framework.Mappings;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.RabbitMQ;
-using Tubumu.Modules.Framework.SignalR;
 using Tubumu.Modules.Framework.Swagger;
+using Tubumu.RabbitMQ;
+using Tubumu.SignalR;
+using Tubumu.Swagger;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 using StartupBase = OrchardCore.Modules.StartupBase;
 
@@ -226,7 +224,7 @@ namespace Tubumu.Modules.Framework
 
             // AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            Initalizer.Initialize();
+            AutoMapperInitalizer.Initialize();
 
             // RabbitMQ
             services.AddSingleton<IConnectionPool, ConnectionPool>();
@@ -272,7 +270,6 @@ namespace Tubumu.Modules.Framework
                 }));
             */
 
-            // Add the processing server as IHostedService
             services.AddHangfire(configuration =>
             {
                 // 推荐使用 ConnectionMultiplexer，见：https://github.com/marcoCasamento/Hangfire.Redis.StackExchange 。
@@ -284,6 +281,7 @@ namespace Tubumu.Modules.Framework
                 });
             });
 
+            // Add the processing server as IHostedService
             services.AddHangfireServer();
         }
 
@@ -313,13 +311,13 @@ namespace Tubumu.Modules.Framework
             app.UseSession();
 
             // Swagger
-            var swaggerIndexAssembly = typeof(Startup).Assembly;
+            var swaggerIndexAssembly = typeof(HiddenApiDocumentFilter).Assembly;
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", _environment.ApplicationName + " API v1");
                 c.DefaultModelsExpandDepth(-1);
-                c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Swagger>Tubumu.SwaggerUI.Index.html");
+                c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Tubumu.SwaggerUI.Index.html");
             });
         }
 

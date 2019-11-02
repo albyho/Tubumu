@@ -11,7 +11,7 @@ using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Framework.Extensions;
-using Tubumu.Modules.Framework.Sms;
+using Tubumu.Sms;
 
 namespace Tubumu.Modules.Admin.Application.Services
 {

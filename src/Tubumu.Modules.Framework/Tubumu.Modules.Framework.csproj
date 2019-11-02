@@ -23,7 +23,6 @@
     <PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
     <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
@@ -45,11 +44,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Tubumu.AutoMapper\Tubumu.AutoMapper.csproj" />
     <ProjectReference Include="..\Tubumu.Core\Tubumu.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="StackExchange.Redis.Extensions.Utf8Json" Version="5.3.0" />
+    <ProjectReference Include="..\Tubumu.DataAnnotations\Tubumu.DataAnnotations.csproj" />
+    <ProjectReference Include="..\Tubumu.Hangfire\Tubumu.Hangfire.csproj" />
+    <ProjectReference Include="..\Tubumu.RabbitMQ\Tubumu.RabbitMQ.csproj" />
+    <ProjectReference Include="..\Tubumu.SignalR\Tubumu.SignalR.csproj" />
+    <ProjectReference Include="..\Tubumu.Swagger\Tubumu.Swagger.csproj" />
   </ItemGroup>
 
 </Project>

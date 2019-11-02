@@ -932,7 +932,7 @@ namespace Tubumu.Modules.Admin.Application.Services
             }
             if (file.Length > sizeMax)
             {
-                modelState.AddModelError("Error", $"请保持在 {sizeMax} 字节以内");
+                modelState.AddModelError("Error", $"请保持在 {sizeMax.ToIntFileSize()} 以内");
                 return null;
             }
             var uploadFolder = Path.Combine(_environment.ContentRootPath, "wwwroot", "Upload", subFolder);
@@ -941,9 +941,9 @@ namespace Tubumu.Modules.Admin.Application.Services
                 Directory.CreateDirectory(uploadFolder);
             }
             var fileName = name + extension;
-            using (var stream = File.Create(Path.Combine(uploadFolder, fileName)))
+            using (var stream = file.OpenReadStream())
             {
-                file.CopyTo(stream);
+                stream.SaveImage(Path.Combine(uploadFolder, fileName));
             }
             var url = $"/Upload/{subFolder}/{fileName}";
             if (!await action(userId, url, modelState))

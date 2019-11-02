@@ -17,7 +17,7 @@ using Tubumu.Modules.Admin.UI.Frontend;
 using Tubumu.Modules.Admin.UI.Navigation;
 using Tubumu.Modules.Admin.Weixin;
 using Tubumu.Modules.Framework.Authorization;
-using Tubumu.Modules.Framework.Sms;
+using Tubumu.Sms;
 
 namespace Tubumu.Modules.Admin
 {

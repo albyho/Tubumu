@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Tubumu.Modules.Framework\Tubumu.Modules.Framework.csproj" />
+    <ProjectReference Include="..\Tubumu.Sms\Tubumu.Sms.csproj" />
   </ItemGroup>
 
 </Project>

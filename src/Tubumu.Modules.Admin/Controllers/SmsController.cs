@@ -4,8 +4,8 @@ using Tubumu.Modules.Admin.Models.Input;
 using Tubumu.Modules.Framework.Authorization;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
-using Tubumu.Modules.Framework.Sms;
-using Tubumu.Modules.Framework.Swagger;
+using Tubumu.Sms;
+using Tubumu.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
 {

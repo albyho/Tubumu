@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using Tubumu.Modules.Framework.ModelValidation.Attributes;
+using Tubumu.DataAnnotations;
 
 namespace Tubumu.Modules.Admin.Models.Input
 {

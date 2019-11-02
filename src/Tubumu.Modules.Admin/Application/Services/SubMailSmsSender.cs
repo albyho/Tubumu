@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Tubumu.Modules.Admin.Sms;
-using Tubumu.Modules.Framework.Sms;
+using Tubumu.Sms;
 
 namespace Tubumu.Modules.Admin.Application.Services
 {

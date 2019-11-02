@@ -11,7 +11,7 @@ using Tubumu.Modules.Admin.UI.Frontend;
 using Tubumu.Modules.Admin.UI.Navigation;
 using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Authorization;
-using Tubumu.Modules.Framework.Swagger;
+using Tubumu.Swagger;
 
 namespace Tubumu.Modules.Admin.Controllers
 {
