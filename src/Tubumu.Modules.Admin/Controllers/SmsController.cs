@@ -37,7 +37,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="input"></param>
         /// <returns></returns>
         [HttpPost]
-        [PermissionAuthorize(Permissions = "短信发送")]
+        [TubumuAuthorize(Permissions = "短信发送")]
         public async Task<ApiResult> Send(SendSmsInput input)
         {
             var returnResult = new ApiResult();

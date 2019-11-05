@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="criteria"></param>
         /// <returns></returns>
         [HttpPost("GetNotificationsForManager")]
-        [PermissionAuthorize(Permissions = "通知管理")]
+        [TubumuAuthorize(Permissions = "通知管理")]
         public async Task<ApiResultData<Page<NotificationUser>>> GetNotificationsForManager(NotificationPageSearchCriteria criteria)
         {
             var page = await _notificationService.GetPageAsync(criteria);
@@ -40,7 +40,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="notificationInput"></param>
         /// <returns></returns>
         [HttpPost("AddNotification")]
-        [PermissionAuthorize(Permissions = "通知管理")]
+        [TubumuAuthorize(Permissions = "通知管理")]
         public async Task<ApiResult> AddNotification(NotificationInput notificationInput)
         {
             notificationInput.FromUserId = HttpContext.User.GetUserId();
@@ -69,7 +69,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="notificationInput"></param>
         /// <returns></returns>
         [HttpPost("EditNotification")]
-        [PermissionAuthorize(Permissions = "通知管理")]
+        [TubumuAuthorize(Permissions = "通知管理")]
         public async Task<object> EditNotification(NotificationInput notificationInput)
         {
             notificationInput.FromUserId = HttpContext.User.GetUserId();
@@ -98,7 +98,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="notificationIdInput"></param>
         /// <returns></returns>
         [HttpPost("RemoveNotification")]
-        [PermissionAuthorize(Permissions = "通知管理")]
+        [TubumuAuthorize(Permissions = "通知管理")]
         public async Task<ApiResult> RemoveNotification(NotificationIdInput notificationIdInput)
         {
             var result = new ApiResult();

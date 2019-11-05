@@ -137,8 +137,8 @@ namespace Tubumu.Modules.Framework.Swagger
                 return extension;
             }
 
-            // TODO: (alby)目前仅考虑了单个 AuthorizationAuthorizeAttribute，并且显示不够清晰
-            var permissionAuthorizeAttribute = GetCustomAttribute<PermissionAuthorizeAttribute>(apiDescription, true);
+            // TODO: (alby)目前仅考虑了单个 TubumuAuthorizeAttribute，并且显示不够清晰
+            var permissionAuthorizeAttribute = GetCustomAttribute<TubumuAuthorizeAttribute>(apiDescription, true);
             if (permissionAuthorizeAttribute != null)
             {
                 var permissions = permissionAuthorizeAttribute.Permissions;

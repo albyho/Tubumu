@@ -1,12 +1,13 @@
 ﻿using System;
+using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 namespace Tubumu.Modules.Framework.Authorization
 {
     /// <summary>
-    /// PermissionAuthorizeAttribute
+    /// TubumuAuthorizeData
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class PermissionAuthorizeAttribute : Attribute, IPermissionAuthorizeData
+    public class TubumuAuthorizeData : ITubumuAuthorizeData
     {
         /// <summary>
         /// Policy

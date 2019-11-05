@@ -21,7 +21,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetBulletin")]
-        [PermissionAuthorize(Permissions = "系统公告")]
+        [TubumuAuthorize(Permissions = "系统公告")]
         public async Task<ApiResultData<BulletinInput>> GetBulletin()
         {
             var bulletin = await _bulletinService.GetItemInCacheAsync();
@@ -42,7 +42,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="bulletinInput"></param>
         /// <returns></returns>
         [HttpPost("EditBulletin")]
-        [PermissionAuthorize(Permissions = "系统公告")]
+        [TubumuAuthorize(Permissions = "系统公告")]
         public async Task<ApiResult> EditBulletin(BulletinInput bulletinInput)
         {
             var result = new ApiResult();

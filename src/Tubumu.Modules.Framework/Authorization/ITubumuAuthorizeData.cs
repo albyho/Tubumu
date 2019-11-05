@@ -5,7 +5,7 @@ namespace Tubumu.Modules.Framework.Authorization
     /// <summary>
     /// 授权数据
     /// </summary>
-    public interface IPermissionAuthorizeData : IAuthorizeData
+    public interface ITubumuAuthorizeData : IAuthorizeData
     {
         /// <summary>
         /// 规则

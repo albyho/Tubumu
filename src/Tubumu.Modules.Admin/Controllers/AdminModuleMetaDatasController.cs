@@ -50,7 +50,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("ExtractModuleMetaDatas")]
-        [PermissionAuthorize(Permissions = "模块元数据")]
+        [TubumuAuthorize(Permissions = "模块元数据")]
         public async Task<object> ExtractModuleMetaDatas()
         {
             var result = new ApiResult();
@@ -131,7 +131,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("ClearModulePermissions")]
-        [PermissionAuthorize(Permissions = "模块元数据")]
+        [TubumuAuthorize(Permissions = "模块元数据")]
         public async Task<object> ClearModulePermissions()
         {
             //如下实现方式是先从模块中获取全部权限信息，然后从数据库中获取全部权限信息

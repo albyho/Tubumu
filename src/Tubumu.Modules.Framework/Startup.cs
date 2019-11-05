@@ -9,6 +9,7 @@ using AutoMapper;
 using Hangfire;
 using Hangfire.Redis;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -92,12 +93,13 @@ namespace Tubumu.Modules.Framework
             services.AddSingleton<IRedisCacheConnectionPoolManager, RedisCacheConnectionPoolManager>();
             services.AddSingleton<IRedisDefaultCacheClient, RedisDefaultCacheClient>();
             services.AddSingleton<ISerializer, NewtonsoftSerializer>();
+            var redisKeyPrefix = !redisConfiguration.KeyPrefix.IsNullOrWhiteSpace() ? redisConfiguration.KeyPrefix : _environment.ApplicationName;
 
             // Cache
             services.AddDistributedRedisCache(options =>
             {
                 options.Configuration = "localhost";
-                options.InstanceName = _environment.ApplicationName + ":";
+                options.InstanceName = redisKeyPrefix + ":";
             });
             services.AddMemoryCache();
 
@@ -136,13 +138,8 @@ namespace Tubumu.Modules.Framework
             });
 
             // Authentication
-            var registeredServiceDescriptor = services.FirstOrDefault(s => s.Lifetime == ServiceLifetime.Transient && s.ServiceType == typeof(IApplicationModelProvider) && s.ImplementationType == typeof(AuthorizationApplicationModelProvider));
-            if (registeredServiceDescriptor != null)
-            {
-                services.Remove(registeredServiceDescriptor);
-            }
-            services.AddTransient<IApplicationModelProvider, PermissionAuthorizationApplicationModelProvider>();
-
+            services.AddSingleton<IAuthorizationPolicyProvider, TubumuAuthorizationPolicyProvider>();
+            
             services.AddSingleton<ITokenService, TokenService>();
             var tokenValidationSettings = _configuration.GetSection("TokenValidationSettings").Get<TokenValidationSettings>();
             services.AddSingleton(tokenValidationSettings);
@@ -276,7 +273,7 @@ namespace Tubumu.Modules.Framework
                 // 但是存在 StackExchange.Redis.StrongName 和 StackExchange.Redis 冲突问题。
                 configuration.UseRedisStorage("localhost", new RedisStorageOptions
                 {
-                    Prefix = $"hangfire:{_environment.ApplicationName}:",
+                    Prefix = $"{redisKeyPrefix}:hangfire:",
                     Db = 9,
                 });
             });

@@ -32,7 +32,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="criteria"></param>
         /// <returns></returns>
         [HttpPost("GetUserPage")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResultData<Page<UserInfo>>> GetUserPage(UserPageSearchCriteria criteria)
         {
             var result = new ApiResultData<Page<UserInfo>>();
@@ -50,7 +50,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="userInput"></param>
         /// <returns></returns>
         [HttpPost("AddUser")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResult> AddUser(UserInputAdd userInput)
         {
             var result = new ApiResult();
@@ -73,7 +73,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="userInput"></param>
         /// <returns></returns>
         [HttpPost("EditUser")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResult> EditUser(UserInputEdit userInput)
         {
             var result = new ApiResult();
@@ -95,7 +95,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="userIdInput"></param>
         /// <returns></returns>
         [HttpPost("RemoveUser")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResult> RemoveUser(UserIdInput userIdInput)
         {
             var result = new ApiResult();
@@ -117,7 +117,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="userImageInput"></param>
         /// <returns></returns>
         [HttpPost("ChangeUserAvatar")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResultUrl> ChangeUserAvatar([FromForm]UserImageInput userImageInput)
         {
             var result = new ApiResultUrl();
@@ -141,7 +141,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="userImageInput"></param>
         /// <returns></returns>
         [HttpPost("ChangeUserLogo")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResultUrl> ChangeUserLogo([FromForm]UserImageInput userImageInput)
         {
             var result = new ApiResultUrl();
@@ -165,7 +165,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="validateUsernameExistsInput"></param>
         /// <returns></returns>
         [HttpPost("ValidateUsernameExists")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResult> ValidateUsernameExists(ValidateUsernameExistsInput validateUsernameExistsInput)
         {
             var result = new ApiResult();
@@ -189,7 +189,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="validateMobileExistsInput"></param>
         /// <returns></returns>
         [HttpPost("ValidateMobileExists")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResult> ValidateMobileExists(ValidateMobileExistsInput validateMobileExistsInput)
         {
             var result = new ApiResult();
@@ -213,7 +213,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="validateEmailExistsInput"></param>
         /// <returns></returns>
         [HttpPost("ValidateEmailExists")]
-        [PermissionAuthorize(Permissions = "用户管理")]
+        [TubumuAuthorize(Permissions = "用户管理")]
         public async Task<ApiResult> ValidateEmailExists(ValidateEmailExistsInput validateEmailExistsInput)
         {
             var result = new ApiResult();
@@ -280,7 +280,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="groupInput"></param>
         /// <returns></returns>
         [HttpPost("AddGroup")]
-        [PermissionAuthorize(Permissions = "分组管理")]
+        [TubumuAuthorize(Permissions = "分组管理")]
         public async Task<ApiResult> AddGroup(GroupInput groupInput)
         {
             var result = new ApiResult();
@@ -310,7 +310,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="groupInput"></param>
         /// <returns></returns>
         [HttpPost("EditGroup")]
-        [PermissionAuthorize(Permissions = "分组管理")]
+        [TubumuAuthorize(Permissions = "分组管理")]
         public async Task<ApiResult> EditGroup(GroupInput groupInput)
         {
             var result = new ApiResult();
@@ -339,7 +339,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="groupIdInput"></param>
         /// <returns></returns>
         [HttpPost("RemoveGroup")]
-        [PermissionAuthorize(Permissions = "分组管理")]
+        [TubumuAuthorize(Permissions = "分组管理")]
         public async Task<ApiResult> RemoveGroup(GroupIdInput groupIdInput)
         {
             var result = new ApiResult();
@@ -364,7 +364,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="moveGroupInput"></param>
         /// <returns></returns>
         [HttpPost("MoveGroup")]
-        [PermissionAuthorize(Permissions = "分组管理")]
+        [TubumuAuthorize(Permissions = "分组管理")]
         public async Task<ApiResult> MoveGroup(MoveGroupInput moveGroupInput)
         {
             var result = new ApiResult();
@@ -429,7 +429,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="saveRoleNameInput"></param>
         /// <returns></returns>
         [HttpPost("SaveRoleName")]
-        [PermissionAuthorize(Permissions = "角色管理")]
+        [TubumuAuthorize(Permissions = "角色管理")]
         public async Task<ApiResult> SaveRoleName(RoleNameInput saveRoleNameInput)
         {
             var result = new ApiResult();
@@ -453,7 +453,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="roleInput"></param>
         /// <returns></returns>
         [HttpPost("AddRole")]
-        [PermissionAuthorize(Permissions = "角色管理")]
+        [TubumuAuthorize(Permissions = "角色管理")]
         public async Task<ApiResultData<Role>> AddRole(RoleInput roleInput)
         {
             var result = new ApiResultData<Role>();
@@ -488,7 +488,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="roleInput"></param>
         /// <returns></returns>
         [HttpPost("EditRole")]
-        [PermissionAuthorize(Permissions = "角色管理")]
+        [TubumuAuthorize(Permissions = "角色管理")]
         public async Task<ApiResultData<Role>> EditRole(RoleInput roleInput)
         {
             var result = new ApiResultData<Role>();
@@ -521,7 +521,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="roleIdInput"></param>
         /// <returns></returns>
         [HttpPost("RemoveRole")]
-        [PermissionAuthorize(Permissions = "角色管理")]
+        [TubumuAuthorize(Permissions = "角色管理")]
         public async Task<ApiResult> RemoveRole(RoleIdInput roleIdInput)
         {
             var result = new ApiResult();
@@ -546,7 +546,7 @@ namespace Tubumu.Modules.Admin.Controllers
         /// <param name="moveRoleInput"></param>
         /// <returns></returns>
         [HttpPost("MoveRole")]
-        [PermissionAuthorize(Permissions = "角色管理")]
+        [TubumuAuthorize(Permissions = "角色管理")]
         public async Task<ApiResult> MoveRole(MoveRoleInput moveRoleInput)
         {
             var result = new ApiResult();
