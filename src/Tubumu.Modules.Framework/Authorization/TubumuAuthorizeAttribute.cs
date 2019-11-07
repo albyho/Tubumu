@@ -24,22 +24,6 @@ namespace Tubumu.Modules.Framework.Authorization
         public string AuthenticationSchemes { get; set; }
 
         /// <summary>
-        /// Rule
-        /// </summary>
-        public string Rule
-        {
-            get
-            {
-                return _authorizeData.Rule;
-            }
-            set
-            {
-                _authorizeData.Rule = value;
-                Policy = $"{PolicyPrefix}{JsonConvert.SerializeObject(_authorizeData)}";
-            }
-        }
-
-        /// <summary>
         /// Groups
         /// </summary>
         public string Groups
@@ -70,7 +54,6 @@ namespace Tubumu.Modules.Framework.Authorization
                 Policy = $"{PolicyPrefix}{JsonConvert.SerializeObject(_authorizeData)}";
             }
         }
-
 
         /// <summary>
         /// Permissions

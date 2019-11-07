@@ -8,11 +8,6 @@ namespace Tubumu.Modules.Framework.Authorization
     public interface ITubumuAuthorizeData : IAuthorizeData
     {
         /// <summary>
-        /// 规则
-        /// </summary>
-        string Rule { get; set; }
-
-        /// <summary>
         /// 分组
         /// </summary>
         string Groups { get; set; }

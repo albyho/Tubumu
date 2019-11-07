@@ -941,6 +941,12 @@ namespace Tubumu.Modules.Admin.Application.Services
                 Directory.CreateDirectory(uploadFolder);
             }
             var fileName = name + extension;
+            var filePath = Path.Combine(uploadFolder, fileName);
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+
             using (var stream = file.OpenReadStream())
             {
                 stream.SaveImage(Path.Combine(uploadFolder, fileName));

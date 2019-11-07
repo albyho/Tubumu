@@ -25,11 +25,6 @@ namespace Tubumu.Modules.Framework.Authorization
         public string AuthenticationSchemes { get; set; }
 
         /// <summary>
-        /// Rule
-        /// </summary>
-        public string Rule { get; set; }
-
-        /// <summary>
         /// Groups
         /// </summary>
         public string Groups { get; set; }
