@@ -34,7 +34,6 @@ namespace Tubumu.Modules.Framework.Application.Services
         /// 更新数据
         /// </summary>
         /// <param name="typeId"></param>
-        /// <param name="version"></param>
         /// <returns></returns>
         public async Task<bool> SetAsync(int typeId)
         {
