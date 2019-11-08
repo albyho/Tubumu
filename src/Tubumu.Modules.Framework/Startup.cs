@@ -280,6 +280,9 @@ namespace Tubumu.Modules.Framework
 
             // Add the processing server as IHostedService
             services.AddHangfireServer();
+
+            // Data version
+            services.AddSingleton<IDataVersionService, DataVersionService>();
         }
 
         /// <summary>

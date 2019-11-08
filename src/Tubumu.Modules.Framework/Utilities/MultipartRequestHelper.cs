@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
-namespace Tubumu.Modules.Framework.Extensions
+namespace Tubumu.Modules.Framework.Utilities
 {
     /// <summary>
     /// MultipartRequestHelper

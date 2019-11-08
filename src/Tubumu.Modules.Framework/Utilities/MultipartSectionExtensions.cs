@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Net.Http.Headers;
 
-namespace Tubumu.Modules.Framework.Extensions
+namespace Tubumu.Modules.Framework.Utilities
 {
     public static class MultipartSectionExtensions
     {

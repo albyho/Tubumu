@@ -7,6 +7,7 @@ using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.Models;
 using Tubumu.Modules.Admin.Models.Api;
 using Tubumu.Modules.Admin.Models.Input;
+using Tubumu.Modules.Framework.Application.Services;
 using Tubumu.Modules.Framework.Models;
 
 namespace Tubumu.Modules.Admin.Controllers
@@ -20,14 +21,17 @@ namespace Tubumu.Modules.Admin.Controllers
     public class BasicDataController : ControllerBase
     {
         private readonly IRegionService _regionService;
+        private readonly IDataVersionService _dataVersionService;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="regionService"></param>
-        public BasicDataController(IRegionService regionService)
+        /// <param name="dataVersionService"></param>
+        public BasicDataController(IRegionService regionService, IDataVersionService dataVersionService)
         {
             _regionService = regionService;
+            _dataVersionService = dataVersionService;
         }
 
         /// <summary>
@@ -123,6 +127,39 @@ namespace Tubumu.Modules.Admin.Controllers
         {
             var returnResult = new ApiResultData<List<RegionTreeNode>>();
             var list = await _regionService.GetRegiontTreeChildNodeListAsync(parentIdInput.ParentId);
+            returnResult.Data = list;
+            returnResult.Code = 200;
+            returnResult.Message = "获取成功";
+            return returnResult;
+        }
+
+        /// <summary>
+        /// 获取数据版本
+        /// </summary>
+        /// <param name="dataVersionTypeIdInput"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ApiResultData<DataVersion>> GetDataVersion(DataVersionTypeIdInput dataVersionTypeIdInput)
+        {
+            var returnResult = new ApiResultData<DataVersion>();
+            var item = await _dataVersionService.GetAsync(dataVersionTypeIdInput.TypeId);
+            returnResult.Data = item;
+            returnResult.Code = 200;
+            returnResult.Message = "获取成功";
+            return returnResult;
+        }
+
+        /// <summary>
+        /// 获取数据版本
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<ApiResultData<IEnumerable<DataVersion>>> GetDataVersionList()
+        {
+            var returnResult = new ApiResultData<IEnumerable<DataVersion>>();
+            var list = await _dataVersionService.GetAllAsync();
             returnResult.Data = list;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";
