@@ -24,7 +24,7 @@ namespace Tubumu.Modules.Framework.Authorization.Infrastructure
                 return Task.CompletedTask;
             }
 
-            // 以半角逗号分隔的权限满足"需要"的其中之一即可，角色和分组也类似。
+            // 当前用户的权限满足"需要"的其中之一即可，角色和分组也类似。
             // 分组、角色和权限三者在此也是 Or 的关系，所以是在尽力去找任一匹配。
             var found = false;
             if (requirement.AuthorizeData.Permissions != null)
