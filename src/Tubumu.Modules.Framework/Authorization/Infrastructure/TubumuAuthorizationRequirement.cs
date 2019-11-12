@@ -29,35 +29,23 @@ namespace Tubumu.Modules.Framework.Authorization.Infrastructure
             var found = false;
             if (requirement.AuthorizeData.Permissions != null)
             {
-                var permissionsClaim = context.User.Claims.FirstOrDefault(c => string.Equals(c.Type, TubumuClaimTypes.Permission, StringComparison.OrdinalIgnoreCase));
-                if (permissionsClaim?.Value != null && permissionsClaim.Value.Length > 0)
-                {
-                    var permissionsClaimSplit = SafeSplit(permissionsClaim.Value);
-                    var permissionsDataSplit = SafeSplit(requirement.AuthorizeData.Permissions);
-                    found = permissionsDataSplit.Intersect(permissionsClaimSplit).Any();
-                }
+                var permissionsClaimSplit = context.User.Claims.Where(c => string.Equals(c.Type, TubumuClaimTypes.Permission, StringComparison.OrdinalIgnoreCase)).Select(m => m.Value);
+                var permissionsDataSplit = SafeSplit(requirement.AuthorizeData.Permissions);
+                found = permissionsDataSplit.Intersect(permissionsClaimSplit).Any();
             }
 
             if (!found && requirement.AuthorizeData.Roles != null)
             {
-                var rolesClaim = context.User.Claims.FirstOrDefault(c => string.Equals(c.Type, ClaimTypes.Role, StringComparison.OrdinalIgnoreCase));
-                if (rolesClaim?.Value != null && rolesClaim.Value.Length > 0)
-                {
-                    var rolesClaimSplit = SafeSplit(rolesClaim.Value);
-                    var rolesDataSplit = SafeSplit(requirement.AuthorizeData.Roles);
-                    found = rolesDataSplit.Intersect(rolesClaimSplit).Any();
-                }
+                var rolesClaimSplit = context.User.Claims.Where(c => string.Equals(c.Type, ClaimTypes.Role, StringComparison.OrdinalIgnoreCase)).Select(m => m.Value);
+                var rolesDataSplit = SafeSplit(requirement.AuthorizeData.Roles);
+                found = rolesDataSplit.Intersect(rolesClaimSplit).Any();
             }
 
             if (!found && requirement.AuthorizeData.Groups != null)
             {
-                var groupsClaim = context.User.Claims.FirstOrDefault(c => string.Equals(c.Type, TubumuClaimTypes.Group, StringComparison.OrdinalIgnoreCase));
-                if (groupsClaim?.Value != null && groupsClaim.Value.Length > 0)
-                {
-                    var groupsClaimSplit = SafeSplit(groupsClaim.Value);
-                    var groupsDataSplit = SafeSplit(requirement.AuthorizeData.Groups);
-                    found = groupsDataSplit.Intersect(groupsClaimSplit).Any();
-                }
+                var groupsClaimSplit = context.User.Claims.Where(c => string.Equals(c.Type, TubumuClaimTypes.Group, StringComparison.OrdinalIgnoreCase)).Select(m => m.Value);
+                var groupsDataSplit = SafeSplit(requirement.AuthorizeData.Groups);
+                found = groupsDataSplit.Intersect(groupsClaimSplit).Any();
             }
 
             if (found)
