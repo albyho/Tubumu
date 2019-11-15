@@ -17,11 +17,6 @@ namespace Tubumu.Modules.Framework.Models
 
         [ProtoMember(3)]
         public DateTime UpdateTime { get; set; }
-
-        public static string CacheKeyWithTypeId(int typeId)
-        {
-            return $"DataVersion:{typeId}";
-        }
     }
 
     public class DataVersionTypeIdInput

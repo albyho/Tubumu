@@ -8,12 +8,22 @@ namespace Tubumu.Modules.Framework.Application.Services
 {
     public interface IDataVersionService
     {
-        Task<bool> SetAsync(int typeId);
+        Task<bool> SetGlobalAsync(int typeId);
 
-        Task<DataVersion> GetAsync(int typeId);
+        Task<bool> SetAsync(string keyPrefix, int typeId);
+
+        Task<DataVersion> GetGlobalAsync(int typeId);
+
+        Task<DataVersion> GetAsync(string keyPrefix, int typeId);
 
         Task<IEnumerable<DataVersion>> GetAllAsync();
 
-        Task CleanupAsync(int typeId);
+        Task<IEnumerable<DataVersion>> GetGlobalAllAsync();
+
+        Task<IEnumerable<DataVersion>> GetAllAsync(string keyPrefix);
+
+        Task CleanupGlobalAsync(int typeId);
+
+        Task CleanupAsync(string keyPrefix, int typeId);
     }
 }

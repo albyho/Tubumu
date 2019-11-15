@@ -143,7 +143,7 @@ namespace Tubumu.Modules.Admin.Controllers
         public async Task<ApiResultData<DataVersion>> GetDataVersion(DataVersionTypeIdInput dataVersionTypeIdInput)
         {
             var returnResult = new ApiResultData<DataVersion>();
-            var item = await _dataVersionService.GetAsync(dataVersionTypeIdInput.TypeId);
+            var item = await _dataVersionService.GetGlobalAsync(dataVersionTypeIdInput.TypeId);
             returnResult.Data = item;
             returnResult.Code = 200;
             returnResult.Message = "获取成功";

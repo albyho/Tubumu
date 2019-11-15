@@ -7,12 +7,14 @@ using Microsoft.Extensions.Logging;
 using StackExchange.Redis.Extensions.Core.Abstractions;
 using Tubumu.Modules.Framework.Extensions;
 using Tubumu.Modules.Framework.Models;
+using System.Linq;
 
 namespace Tubumu.Modules.Framework.Application.Services
 {
     public class DataVersionService : IDataVersionService
     {
         private const string RedisHashKey = "DataVersion";
+        private const string GobalKeyPrefix = "Global";
         private readonly IRedisCacheClient _redis;
         private readonly IRedisDatabase _redisDatabase;
         private readonly ILogger<DataVersionService> _logger;
@@ -31,14 +33,25 @@ namespace Tubumu.Modules.Framework.Application.Services
         }
 
         /// <summary>
-        /// 更新数据
+        /// 更新数据。key 以 Gobal 作为前缀。
         /// </summary>
         /// <param name="typeId"></param>
         /// <returns></returns>
-        public async Task<bool> SetAsync(int typeId)
+        public Task<bool> SetGlobalAsync(int typeId)
         {
-            var cacheKey = DataVersion.CacheKeyWithTypeId(typeId);
-            var dataVersion = await _redisDatabase.HashGetAsync<DataVersion>(RedisHashKey, cacheKey);
+            return SetAsync(GobalKeyPrefix, typeId);
+        }
+
+        /// <summary>
+        /// 更新数据
+        /// </summary>
+        /// <param name="keyPrefix"></param>
+        /// <param name="typeId"></param>
+        /// <returns></returns>
+        public async Task<bool> SetAsync(string keyPrefix, int typeId)
+        {
+            var key = $"{keyPrefix}:{typeId}";
+            var dataVersion = await _redisDatabase.HashGetAsync<DataVersion>(RedisHashKey, key);
             if (dataVersion == null)
             {
                 dataVersion = new DataVersion
@@ -49,19 +62,32 @@ namespace Tubumu.Modules.Framework.Application.Services
             }
             dataVersion.Version++;
             dataVersion.UpdateTime = DateTime.Now;
-            CacheAsync(dataVersion).ContinueWithOnFaultedHandleLog(_logger);
+
+            _redisDatabase.HashSetAsync<DataVersion>(RedisHashKey, key, dataVersion).ContinueWithOnFaultedHandleLog(_logger);
+
             return true;
+        }
+
+        /// <summary>
+        /// 获取数据。key 以 Global 作为前缀。
+        /// </summary>
+        /// <param name="typeId"></param>
+        /// <returns></returns>
+        public Task<DataVersion> GetGlobalAsync(int typeId)
+        {
+            return GetAsync(GobalKeyPrefix, typeId);
         }
 
         /// <summary>
         /// 获取数据
         /// </summary>
+        /// <param name="keyPrefix"></param>
         /// <param name="typeId"></param>
         /// <returns></returns>
-        public async Task<DataVersion> GetAsync(int typeId)
+        public async Task<DataVersion> GetAsync(string keyPrefix, int typeId)
         {
-            var cacheKey = DataVersion.CacheKeyWithTypeId(typeId);
-            var dataVersion = await _redisDatabase.HashGetAsync<DataVersion>(RedisHashKey, cacheKey);
+            var key = $"{keyPrefix}:{typeId}";
+            var dataVersion = await _redisDatabase.HashGetAsync<DataVersion>(RedisHashKey, key);
             return dataVersion ?? new DataVersion
             {
                 TypeId = typeId,
@@ -79,26 +105,50 @@ namespace Tubumu.Modules.Framework.Application.Services
         }
 
         /// <summary>
-        /// 清除缓存
+        /// 获取全部数据。key 以 Global 作为前缀。
+        /// </summary>
+        /// <returns></returns>
+        public Task<IEnumerable<DataVersion>> GetGlobalAllAsync()
+        {
+            return  GetAllAsync(GobalKeyPrefix);
+        }
+
+        /// <summary>
+        /// 获取全部数据。仅获取 keyPrefix 作为前缀的 key 对应的数据。
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<DataVersion>> GetAllAsync(string keyPrefix)
+        {
+            var dic = (await _redisDatabase.Database
+                .HashGetAllAsync(RedisHashKey))
+                .Where(m => m.Name.StartsWith(keyPrefix + ":"))
+                .ToDictionary(
+                    x => x.Name.ToString(),
+                    x => _redisDatabase.Serializer.Deserialize<DataVersion>(x.Value),
+                    StringComparer.Ordinal);
+            return dic.Values;
+        }
+
+        /// <summary>
+        /// 清除缓存。key 以 Global 作为前缀。
         /// </summary>
         /// <param name="typeId"></param>
         /// <returns></returns>
-        public Task CleanupAsync(int typeId)
+        public Task CleanupGlobalAsync(int typeId)
         {
-            var cacheKey = DataVersion.CacheKeyWithTypeId(typeId);
-            _redisDatabase.HashDeleteAsync(RedisHashKey, cacheKey).ContinueWithOnFaultedHandleLog(_logger);
-            return Task.CompletedTask;
+            return CleanupAsync(GobalKeyPrefix, typeId);
         }
 
-        private Task CacheAsync(DataVersion dataVersion)
+        /// <summary>
+        /// 清除缓存
+        /// </summary>
+        /// <param name="keyPrefix"></param>
+        /// <param name="typeId"></param>
+        /// <returns></returns>
+        public Task CleanupAsync(string keyPrefix, int typeId)
         {
-            if (dataVersion == null)
-            {
-                throw new ArgumentNullException(nameof(dataVersion));
-            }
-
-            var cacheKey = DataVersion.CacheKeyWithTypeId(dataVersion.TypeId);
-            _redisDatabase.HashSetAsync<DataVersion>(RedisHashKey, cacheKey, dataVersion).ContinueWithOnFaultedHandleLog(_logger);
+            var key = $"{keyPrefix}:{typeId}";
+            _redisDatabase.HashDeleteAsync(RedisHashKey, key).ContinueWithOnFaultedHandleLog(_logger);
             return Task.CompletedTask;
         }
     }
