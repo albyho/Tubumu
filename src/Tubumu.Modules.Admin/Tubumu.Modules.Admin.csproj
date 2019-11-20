@@ -21,8 +21,13 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="2.2.0" />
     <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-72452" />
+    <PackageReference Include="Senparc.CO2NET" Version="1.0.102" />
+    <PackageReference Include="Senparc.CO2NET.Cache.Redis" Version="3.6.102" />
+    <PackageReference Include="Senparc.Weixin.Cache.Redis" Version="2.7.102" />
     <PackageReference Include="Senparc.Weixin.Open" Version="4.0.0" />
     <PackageReference Include="Senparc.Weixin.WxOpen" Version="3.7.102" />
+    <PackageReference Include="Senparc.Weixin.MP.Mvc" Version="7.4.102" />
+    <PackageReference Include="Senparc.Weixin.TenPay" Version="1.5.102" />
   </ItemGroup>
 
   <ItemGroup>

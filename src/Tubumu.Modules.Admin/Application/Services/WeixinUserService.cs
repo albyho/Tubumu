@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Caching.Distributed;
@@ -208,7 +210,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <param name="logger"></param>
         public WeixinUserService(
             IOptions<WeixinAppSettings> weixinAppSettingsOptions,
-                        IWeixinUserManager manager,
+            IWeixinUserManager manager,
             IDistributedCache cache,
             ILogger<WeixinUserService> logger
             )
@@ -412,6 +414,7 @@ namespace Tubumu.Modules.Admin.Application.Services
         /// <returns></returns>
         public async Task<UserInfo> GetOrGenerateItemByWeixinAppCodeAsync(Guid generateGroupId, UserStatus generateStatus, string code, string encryptedData, string iv)
         {
+
             try
             {
                 var jsCode2JsonResult = await SnsApi.JsCode2JsonAsync(_weixinAppSettings.AppId, _weixinAppSettings.Secret, code);
@@ -424,7 +427,12 @@ namespace Tubumu.Modules.Admin.Application.Services
                 }
                 return userInfo;
             }
-            catch(Exception ex)
+            catch(Newtonsoft.Json.JsonReaderException ex)
+            {
+                _logger.LogError(ex, "微信小程序登录失败");
+                return null;
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex, "微信小程序登录失败");
                 return null;
