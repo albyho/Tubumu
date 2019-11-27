@@ -19,20 +19,23 @@ namespace Tubumu.Modules.Core.Models
         /// 页码（从 1 开始）
         /// </summary>
         [JsonProperty(PropertyName = "pageNumber")]
-        [Range(1, Int32.MaxValue, ErrorMessage = "请输入 PageNumber")]
+        [Required(ErrorMessage = "请输入 pageNumber")]
+        [Range(1, Int32.MaxValue, ErrorMessage = "请输入合法的 PageNumber（大于等于1）")]
         public int PageNumber { get; set; }
 
         /// <summary>
         /// 每页元素数
         /// </summary>
         [JsonProperty(PropertyName = "pageSize")]
-        [Range(1, Int32.MaxValue, ErrorMessage = "请输入 PageSize")]
+        [Required(ErrorMessage = "请输入 pageSize")]
+        [Range(1, Int32.MaxValue, ErrorMessage = "请输入合法的 PageSize（大于等于1）")]
         public int PageSize { get; set; }
 
         /// <summary>
         /// 跳过数量（将少读取跳过的数量）
         /// </summary>
         [JsonProperty(PropertyName = "skipTop")]
+        [Range(0, Int32.MaxValue, ErrorMessage = "请输入合法的 skipTop（大于等于0）")]
         public int SkipTop { get; set; }
 
         /// <summary>

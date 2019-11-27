@@ -36,9 +36,9 @@ namespace Tubumu.Core.Utilities.Cryptography
                 throw new ArgumentNullException(nameof(rawString));
             }
 
-            Byte[] salted = Encoding.UTF8.GetBytes(rawString);
+            var salted = Encoding.UTF8.GetBytes(rawString);
             System.Security.Cryptography.SHA1 hasher = new SHA1Managed();
-            Byte[] hashed = hasher.ComputeHash(salted);
+            var hashed = hasher.ComputeHash(salted);
             return hashed;
         }
     }

@@ -8,6 +8,8 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using Tubumu.Core.FastReflection;
 
 namespace Tubumu.Core.Extensions.Object
@@ -25,6 +27,19 @@ namespace Tubumu.Core.Extensions.Object
         public static string ToJson(this object source)
         {
             return JsonConvert.SerializeObject(source);
+        }
+
+        /// <summary>
+        /// ToCamelCaseJson。Key 使用 CamelCase 命名风格，并且日期格式为：yyyy-MM-dd HH:mm:ss 。
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static string ToCamelCaseJson(this object source)
+        {
+            var settings = new JsonSerializerSettings();
+            settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            settings.DateFormatString = "yyyy'-'MM'-'dd' 'HH':'mm':'ss"; // 自定义日期格式。默认是 ISO8601 格式。
+            return JsonConvert.SerializeObject(source, settings);
         }
 
         /// <summary>
