@@ -5,5 +5,5 @@
     Author = "Alby",
     Website = "http://blog.tubumu.com",
     Version = "1.0.0",
-    Description = "Tubumu admin Senparc."
+    Description = "Senparc"
 )]
