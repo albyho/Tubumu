@@ -23,7 +23,6 @@ namespace Tubumu.Modules.Framework.Application.Services
         /// Constructor
         /// </summary>
         /// <param name="redis"></param>
-        /// <param name="cache"></param>
         /// <param name="logger"></param>
         public DataVersionService(IRedisCacheClient redis, ILogger<DataVersionService> logger)
         {

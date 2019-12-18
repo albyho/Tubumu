@@ -141,7 +141,7 @@ namespace Tubumu.Modules.Admin
             ;
 
             /* 微信配置结束 */
-            ;
+
             #endregion
         }
     }
