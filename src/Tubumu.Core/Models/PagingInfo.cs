@@ -24,7 +24,7 @@ namespace Tubumu.Modules.Core.Models
         public int PageNumber { get; set; }
 
         /// <summary>
-        /// 每页元素数
+        /// 每页记录数
         /// </summary>
         [JsonProperty(PropertyName = "pageSize")]
         [Required(ErrorMessage = "请输入 pageSize")]

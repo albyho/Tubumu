@@ -27,12 +27,12 @@ namespace Tubumu.Modules.Admin.Models
         public UserStatus? Status { get; set; }
 
         /// <summary>
-        /// 创建开始时间
+        /// 创建时间起始
         /// </summary>
         public DateTime? CreationTimeBegin { get; set; }
 
         /// <summary>
-        /// 创建结束时间
+        /// 创建时间结束
         /// </summary>
         public DateTime? CreationTimeEnd { get; set; }
 
