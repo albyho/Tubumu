@@ -108,7 +108,7 @@ namespace Tubumu.Modules.Admin.Controllers
                 {
                     UserId = userId,
                     ActionTypeId = 2,
-                    ClientTypeId = null, // TODO: ClientTypeInput
+                    ClientTypeId = null, // TODO: (alby)ClientTypeInput
                     ClientAgent = null,
                     Remark = "后台注销"
                 }, ModelState);

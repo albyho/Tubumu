@@ -321,9 +321,15 @@ namespace Tubumu.Core.Extensions
         /// <returns></returns>
         public static IOrderedQueryable<T> Order<T>(this IQueryable<T> source, string propertyName, bool descending, bool anotherLevel = false)
         {
-            ParameterExpression param = Expression.Parameter(typeof(T), String.Empty); // I don't care about some naming
-            MemberExpression property = Expression.PropertyOrField(param, propertyName);
-            LambdaExpression sort = Expression.Lambda(property, param);
+            var type = typeof(T);
+            var propertyInfo = type.GetProperty(propertyName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public);
+            if(propertyInfo == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(propertyName));
+            }
+            ParameterExpression parameter = Expression.Parameter(type, String.Empty); // I don't care about some naming
+            MemberExpression property = Expression.Property(parameter, propertyInfo);
+            LambdaExpression sort = Expression.Lambda(property, parameter);
             MethodCallExpression call = Expression.Call(
                 typeof(Queryable),
                 (!anotherLevel ? "OrderBy" : "ThenBy") + (descending ? "Descending" : String.Empty),

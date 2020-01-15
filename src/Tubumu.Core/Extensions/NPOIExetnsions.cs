@@ -47,7 +47,7 @@ namespace Tubumu.Core.Extensions
         public static void ValueCopy(this IRow row, string cellName, IRow sourceRow, string sourceCellName)
         {
             // 注意：1、只支持基于数字的公式 2、公式计算出数字值 3、空白当做数字读取
-            // TODO: 支持其他列类型。
+            // TODO: (alby)支持其他列类型。
             var sourceCell = sourceRow.GetCellByName(sourceCellName);
             var targetCell = row.GetCellByName(cellName);
 

@@ -67,8 +67,7 @@ namespace Tubumu.Core.Extensions.Object
 
             using (var memStream = new MemoryStream())
             {
-                var binaryFormatter = new BinaryFormatter(null,
-                     new StreamingContext(StreamingContextStates.Clone));
+                var binaryFormatter = new BinaryFormatter(null, new StreamingContext(StreamingContextStates.Clone));
                 binaryFormatter.Serialize(memStream, source);
                 memStream.Position = 0;
                 return binaryFormatter.Deserialize(memStream);
