@@ -31,6 +31,7 @@
     <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-72452" />
     <PackageReference Include="protobuf-net" Version="2.4.1" />
     <PackageReference Include="RabbitMQ.Client" Version="5.1.2" />
+    <PackageReference Include="StackExchange.Redis.Extensions.Core" Version="5.3.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.AspNetCore" Version="5.3.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.Newtonsoft" Version="5.3.0" />
     <PackageReference Include="StackExchange.Redis.Extensions.Jil" Version="5.3.0" />
@@ -43,6 +44,14 @@
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.7" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.7" />
   </ItemGroup>
+
+  <Target Name="ChangeAliasesOfStrongNameAssemblies" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
+    <ItemGroup>
+      <ReferencePath Condition="'%(FileName)' == 'StackExchange.Redis.StrongName'">
+        <Aliases>signed</Aliases>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
 
   <ItemGroup>
     <ProjectReference Include="..\Tubumu.AutoMapper\Tubumu.AutoMapper.csproj" />

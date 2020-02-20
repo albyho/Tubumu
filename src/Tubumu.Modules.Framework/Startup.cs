@@ -248,23 +248,20 @@ namespace Tubumu.Modules.Framework
             });
 
             // Add Hangfire services.
-            /*
-            services.AddHangfire(configuration => configuration
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(_configuration.GetConnectionString("Tubumu"), new SqlServerStorageOptions
-                {
-                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                    QueuePollInterval = TimeSpan.Zero,                      // 作业队列轮询间隔。默认值为15秒。
-                    JobExpirationCheckInterval = TimeSpan.FromHours(1),     // 作业到期检查间隔（管理过期记录）。默认值为1小时。
-                    UseRecommendedIsolationLevel = true,
-                    UsePageLocksOnDequeue = true,
-                    DisableGlobalLocks = true
-                }));
-            */
-
+            //services.AddHangfire(configuration => configuration
+            //    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+            //    .UseSimpleAssemblyNameTypeSerializer()
+            //    .UseRecommendedSerializerSettings()
+            //    .UseSqlServerStorage(_configuration.GetConnectionString("Tubumu"), new SqlServerStorageOptions
+            //    {
+            //        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+            //        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+            //        QueuePollInterval = TimeSpan.FromSeconds(15),           // 作业队列轮询间隔。默认值为15秒。
+            //        JobExpirationCheckInterval = TimeSpan.FromHours(1),     // 作业到期检查间隔（管理过期记录）。默认值为1小时。
+            //        UseRecommendedIsolationLevel = true,
+            //        UsePageLocksOnDequeue = true,
+            //        DisableGlobalLocks = true
+            //    }));
             services.AddHangfire(configuration =>
             {
                 // 推荐使用 ConnectionMultiplexer，见：https://github.com/marcoCasamento/Hangfire.Redis.StackExchange 。
