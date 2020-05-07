@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Xml.XPath;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -41,6 +42,36 @@ namespace Tubumu.Modules.Framework.Swagger
         public static void IncludeAuthorizationXmlComments(this SwaggerGenOptions swaggerGenOptions, string filePath, bool includeControllerXmlComments = false)
         {
             swaggerGenOptions.IncludeAuthorizationXmlComments((Func<XPathDocument>)(() => new XPathDocument(filePath)), includeControllerXmlComments);
+        }
+
+        public static void ApplyGrouping(this SwaggerGenOptions options)
+        {
+            options.TagActionsBy(a => new string[] { GetControllerName(a) });
+        }
+
+        private static string GetControllerName(ApiDescription api)
+        {
+            return api.ActionDescriptor.RouteValues.TryGetValue("controller", out var name) && !string.IsNullOrWhiteSpace(name)
+                ? name
+                : api.ActionDescriptor.DisplayName;
+        }
+
+        private static string GetActionDisplayName(ApiDescription api)
+        {
+            var name = api.ActionDescriptor.DisplayName;
+
+            var idx = name.IndexOf("(", StringComparison.OrdinalIgnoreCase);
+            if (idx > 0)
+                name = name.Substring(0, idx);
+
+            idx = name.LastIndexOf(".", StringComparison.OrdinalIgnoreCase);
+
+            if (idx > 0)
+                name = name.Substring(0, idx);
+
+            return name.Length > 0
+                ? name
+                : api.ActionDescriptor.DisplayName;
         }
     }
 }

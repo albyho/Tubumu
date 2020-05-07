@@ -14,7 +14,7 @@ namespace Tubumu.Core.Extensions
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="expression"></param>
-        /// <returns></returns>
+        /// <returns>类型属性的字符串表示</returns>
         public static string PropertyName<T>(Expression<Func<T, object>> expression)
         {
             switch (expression.Body.NodeType)

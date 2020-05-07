@@ -137,7 +137,7 @@ namespace Tubumu.Modules.Framework
 
             // Authentication
             services.AddSingleton<IAuthorizationPolicyProvider, TubumuAuthorizationPolicyProvider>();
-            
+
             services.AddSingleton<ITokenService, TokenService>();
             var tokenValidationSettings = _configuration.GetSection("TokenValidationSettings").Get<TokenValidationSettings>();
             services.AddSingleton(tokenValidationSettings);
@@ -236,15 +236,15 @@ namespace Tubumu.Modules.Framework
                     In = "header",
                     Type = "apiKey"
                 });
-                var security = new Dictionary<string, IEnumerable<string>>
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>>
                 {
                     {"Bearer", new string[] { }},
-                };
-                c.AddSecurityRequirement(security);
+                });
                 c.DescribeAllEnumsAsStrings();
                 c.DocumentFilter<HiddenApiDocumentFilter>();
                 IncludeXmlCommentsForModules(c);
                 c.OrderActionsBy(m => m.ActionDescriptor.DisplayName);
+                c.ApplyGrouping();
             });
 
             // Add Hangfire services.

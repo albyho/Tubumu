@@ -5,20 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using OrchardCore.Modules;
-using Senparc.CO2NET;
-using Senparc.CO2NET.RegisterServices;
-using Senparc.Weixin;
-using Senparc.Weixin.Cache.Redis;
-using Senparc.Weixin.Entities;
-using Senparc.Weixin.RegisterServices;
-using Senparc.Weixin.TenPay;
-using Senparc.Weixin.WxOpen;
 using Tubumu.Modules.Admin.Application.Services;
 using Tubumu.Modules.Admin.Domain.Entities;
 using Tubumu.Modules.Admin.Domain.Services;
-using Tubumu.Modules.Admin.FlashValidation;
 using Tubumu.Modules.Admin.Settings;
 using Tubumu.Modules.Admin.SignalR.Hubs;
 using Tubumu.Modules.Admin.Sms;
@@ -116,9 +106,6 @@ namespace Tubumu.Modules.Admin
             services.Configure<WeixinAppSettings>(_configuration.GetSection("WeixinSettings:App"));
             services.Configure<WeixinMobileEndSettings>(_configuration.GetSection("WeixinSettings:MobileEnd"));
             services.Configure<WeixinWebSettings>(_configuration.GetSection("WeixinSettings:Web"));
-
-            // 闪验
-            services.Configure<FlashValidationSettings>(_configuration.GetSection("FlashValidationSettings"));
         }
 
         /// <summary>
