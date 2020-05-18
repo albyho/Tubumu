@@ -228,7 +228,7 @@ namespace Tubumu.Modules.Framework
             // Swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = _environment.ApplicationName + " API", Version = "v1" });
+                c.SwaggerDoc("v1.0", new Info { Title = _environment.ApplicationName + " API", Version = "v1.0" });
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
                     Description = "权限认证(数据将在请求头中进行传输) 参数结构: \"Authorization: Bearer {token}\"",
@@ -310,7 +310,7 @@ namespace Tubumu.Modules.Framework
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", _environment.ApplicationName + " API v1");
+                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", _environment.ApplicationName + " API v1.0");
                 c.DefaultModelsExpandDepth(-1);
                 c.IndexStream = () => swaggerIndexAssembly.GetManifestResourceStream(swaggerIndexAssembly.GetName().Name + ".Tubumu.SwaggerUI.Index.html");
             });
