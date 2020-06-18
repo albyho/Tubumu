@@ -526,7 +526,7 @@ namespace Tubumu.Modules.Admin.Domain.Services
 
             IQueryable<User> query = _context.User;
             query = query.WhereIf(!criteria.GroupIds.IsNullOrEmpty(), m => criteria.GroupIds.Contains(m.GroupId));
-            query = query.WhereIf(criteria.Status.HasValue, m => m.Status == criteria.Status.Value);
+            query = query.WhereIf(!criteria.Statuses.IsNullOrEmpty(), m => criteria.Statuses.Contains(m.Status));
             if (criteria.CreationTimeBegin.HasValue)
             {
                 var begin = criteria.CreationTimeBegin?.Date;

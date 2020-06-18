@@ -24,7 +24,7 @@ namespace Tubumu.Modules.Admin.Models
         /// <summary>
         /// 用户状态
         /// </summary>
-        public UserStatus? Status { get; set; }
+        public UserStatus[] Statuses { get; set; }
 
         /// <summary>
         /// 创建时间起始
