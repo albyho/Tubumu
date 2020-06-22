@@ -28,7 +28,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 密码
         /// </summary>
         [Required(ErrorMessage = "请输入密码")]
-        [StringLength(32, MinimumLength = 6, ErrorMessage = "密码请保持在6-32个字符之间")]
+        [StringLength(32, MinimumLength = 8, ErrorMessage = "密码请保持在 8-32 个字符之间")]
         [DataType(DataType.Password)]
         [DisplayName("密码")]
         public string Password { get; set; }
@@ -37,7 +37,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 确认密码
         /// </summary>
         [Required(ErrorMessage = "确认密码不能为空")]
-        [StringLength(32, MinimumLength = 6, ErrorMessage = "确认密码请保持在6-32个字符之间")]
+        [StringLength(32, MinimumLength = 8, ErrorMessage = "确认密码请保持在 8-32个字符之间")]
         [Tubumu.DataAnnotations.Compare("Password", ValidationCompareOperator.Equal, ValidationDataType.String, ErrorMessage = "请确认两次输入的密码一致")]
         [DataType(DataType.Password)]
         [DisplayName("确认密码")]

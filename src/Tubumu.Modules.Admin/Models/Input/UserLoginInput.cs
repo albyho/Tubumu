@@ -33,7 +33,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         [Required(ErrorMessage = "请输入账号")]
         [SlugWithMobileEmail(ErrorMessage = "请输入合法的账号")]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "账号请保持在2-20个字符之间")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "账号请保持在 2-20 个字符之间")]
         [DisplayName("账号")]
         public string Account { get; set; }
 
@@ -41,7 +41,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 密码(客户端请进行 MD5 加密(小写))
         /// </summary>
         [Required(ErrorMessage = "请输入密码")]
-        [StringLength(32, MinimumLength = 6, ErrorMessage = "密码请保持在6-32个字符之间")]
+        [StringLength(32, MinimumLength = 8, ErrorMessage = "密码请保持在 8-32 个字符之间")]
         [DataType(DataType.Password)]
         [DisplayName("密码")]
         public string Password { get; set; }
@@ -64,7 +64,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// </summary>
         [Required(ErrorMessage = "请输入账号")]
         [SlugWithMobileEmail(ErrorMessage = "请输入合法的账号")]
-        [StringLength(20, MinimumLength = 2, ErrorMessage = "账号请保持在2-20个字符之间")]
+        [StringLength(20, MinimumLength = 2, ErrorMessage = "账号请保持在 8-20 个字符之间")]
         [DisplayName("账号")]
         public string Account { get; set; }
 
@@ -72,7 +72,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 密码(客户端请进行 MD5 加密(小写))
         /// </summary>
         [Required(ErrorMessage = "请输入密码")]
-        [StringLength(32, MinimumLength = 6, ErrorMessage = "密码请保持在6-32个字符之间")]
+        [StringLength(32, MinimumLength = 8, ErrorMessage = "密码请保持在 8-32 个字符之间")]
         [DataType(DataType.Password)]
         [DisplayName("密码")]
         public string Password { get; set; }
@@ -116,7 +116,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 密码(客户端请进行 MD5 加密(小写))
         /// </summary>
         [Required(ErrorMessage = "请输入密码")]
-        [StringLength(32, MinimumLength = 6, ErrorMessage = "密码请保持在6-32个字符之间")]
+        [StringLength(32, MinimumLength = 8, ErrorMessage = "密码请保持在 8-32 个字符之间")]
         [DataType(DataType.Password)]
         [DisplayName("密码")]
         public string Password { get; set; }

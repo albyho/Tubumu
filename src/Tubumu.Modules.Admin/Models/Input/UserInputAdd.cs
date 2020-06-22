@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Tubumu.DataAnnotations;
 
 namespace Tubumu.Modules.Admin.Models.Input
 {
@@ -11,6 +12,7 @@ namespace Tubumu.Modules.Admin.Models.Input
         /// 登录密码(客户端请进行 MD5 加密(小写))
         /// </summary>
         [Required(ErrorMessage = "登录密码不能为空")]
+        [StringLength(32, MinimumLength = 8, ErrorMessage = "登录密码请保持在 8-32 个字符之间")]
         public override string Password { get; set; }
 
         /// <summary>
