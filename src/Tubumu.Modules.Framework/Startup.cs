@@ -81,7 +81,7 @@ namespace Tubumu.Modules.Framework
         {
             // Background Service
             services.AddSingleton<IBackgroundTask, IdleBackgroundTask>();
-            services.AddSingleton<IBackgroundTask, NewDayBackgroundTask>();
+            services.AddSingleton<IBackgroundTask, DailyBackgroundTask>();
 
             // StackExchange.Redis.Extensions
             // https://github.com/imperugo/StackExchange.Redis.Extensions
